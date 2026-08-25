@@ -13,13 +13,50 @@ kaynak ve UTC indirme zaman damgasıyla birlikte yazılır.
 Aynadan gelen veriyle üretilen fixture'lar, oradaki elle doğrulama adımı tamamlanmadan
 "Diyanet doğrulamalı" sayılmaz.
 
-## Hemen başlayan iş: ayna
+## Ayna Cloudflare arkasında — bunun sonucu
 
-`.github/workflows/diyanet-mirror.yml` haftada iki kez (Pazartesi ve Perşembe) çalışır,
-12 ilçe için vakitleri ve **Diyanet'in resmi hicri tarihini** toplar. Hiçbir ayar
-gerekmiyor — dosyalar repoda olduğu anda çalışmaya başlar.
+Ayna, GitHub Actions koşucularının IP'lerini bot koruması ile reddediyor
+(`HTTP 403: Just a moment…`). Bu yüzden iki yol var ve script ikisini de destekliyor:
 
-Hemen denemek için: **Actions** → **Diyanet Vakitleri (ayna)** → **Run workflow**.
+1. **Doğrudan** — `.github/workflows/diyanet-mirror.yml` haftada iki kez deniyor.
+   Engel kalkarsa kendiliğinden çalışmaya başlar.
+2. **Kendi bilgisayarınızdan** — `fetch_mirror.ps1` (Windows, kurulum gerektirmez).
+   Ev bağlantınız sıradan bir tarayıcı bağlantısı olduğu için istek oradan geçiyor.
+
+Engel devam ettiği sürece iş **kırmızıya düşmüyor**: arşivde veri varsa "yeni veri yok"
+deyip yeşil biter. Yalnızca arşiv tamamen boşken kırmızı olur, çünkü o zaman gerçekten
+yapılacak bir iş vardır.
+
+### Kendi bilgisayarınızdan toplama (Windows)
+
+**Önce kontrol:** tarayıcıdan `https://ezanvakti.emushaf.net/ulkeler` adresini açın.
+
+- Bir sürü JSON görüyorsanız → devam edin.
+- "Just a moment…" veya hata görüyorsanız → ayna size de kapalı, bu yolu bırakın.
+
+Sonra:
+
+1. `fetch_mirror.ps1` dosyasını bir klasöre koyun (ör. Masaüstü).
+2. O klasörde **Shift + sağ tık** → **"Burada PowerShell penceresi aç"**
+3. Şunu yapıştırıp Enter:
+
+   ```
+   powershell -ExecutionPolicy Bypass -File .\fetch_mirror.ps1
+   ```
+
+4. Bitince yanında **`namaz-referans`** klasörü oluşur — 12 JSON dosyası.
+5. GitHub'da **Add file → Upload files**, dosyaları sürükleyin, hedef klasör
+   `Reference/diyanet/raw/` (yükleme kutusunda dosya adının önüne bu yolu yazabilirsiniz).
+
+Yükleme biter bitmez `diyanet-mirror.yml` kendiliğinden tetiklenir, ham dökümleri arşive
+işler ve commit'ler. Ham dosyalar **silinmez** — kaynak kayıt olarak repoda kalır.
+
+Ayı biriktirmek için bu adımı ayda bir tekrarlamanız yeterli; ayna kayan ~31 günlük pencere
+döndürdüğü için arşiv her seferinde büyür.
+
+### Doğrudan deneme
+
+**Actions** → **Diyanet Vakitleri (ayna)** → **Run workflow**.
 
 ## Sonra devreye girecek iş: resmi API + kimlik bilgisi
 
