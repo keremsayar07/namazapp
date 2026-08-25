@@ -1,0 +1,51 @@
+name: Kalibrasyon Raporu
+
+# PrayerKit'in hesapladığı vakitleri Diyanet referans verisiyle karşılaştırıp
+# Reference/diyanet/calibration-report.md dosyasını üretir ve commit'ler.
+#
+# Gerçek Swift kodunu gerçek Apple toolchain'inde çalıştırıyor: raporlanan fark,
+# uygulamanın gerçekten üreteceği fark.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Reference/diyanet/mirror/**"
+      - "Packages/PrayerKit/Sources/**"
+      - ".github/workflows/calibration.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: calibration
+  cancel-in-progress: true
+
+jobs:
+  calibrate:
+    runs-on: macos-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Swift sürümü
+        run: swift --version
+
+      - name: Kalibrasyon aracını çalıştır
+        working-directory: Packages/PrayerKit
+        run: swift run -c release prayerkit-calibrate "$GITHUB_WORKSPACE"
+
+      - name: Raporu özet olarak göster
+        run: cat Reference/diyanet/calibration-report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Raporu commit'le
+        run: |
+          if [ -z "$(git status --porcelain Reference/diyanet/calibration-report.md)" ]; then
+            echo "Rapor değişmedi, commit atlanıyor."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Reference/diyanet/calibration-report.md
+          git commit -m "Kalibrasyon raporu güncellendi"
+          git push
