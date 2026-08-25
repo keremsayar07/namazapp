@@ -46,9 +46,20 @@ resmi API kimlik bilgisi gelene kadar bekleriz. Yaklaşık değerle ilerlemek yo
 
 ### Doğrulama kaydı
 
-| Tarih (kontrol günü) | Şehir | Kontrol edilen günler | Sonuç | Kontrol eden |
+| Tarih | Şehir | Kontrol edilen günler | Sonuç | Kontrol eden |
 |---|---|---|---|---|
-| _(henüz yapılmadı)_ | | | | |
+| 2026-08-25 | İstanbul (9541) | 19.08, 25.08, 31.08, 05.09, 12.09 — altı vakit + hicri tarih | **Tamamı tuttu** | Kerem Sayar, `namazvakitleri.diyanet.gov.tr` üzerinden |
+| 2026-08-25 | Erzurum (9451) | 26.08, 28.08 — altı vakit + hicri tarih | **Tamamı tuttu** | Kerem Sayar, `namazvakitleri.diyanet.gov.tr` üzerinden |
+
+12.09.2026 bilinçli seçildi: o gün hicri ay değişiyor (`1 Rebiulahir 1448`). Ay başlangıçları,
+Diyanet takviminin Umm al-Qura'dan ayrılabildiği tam nokta olduğu için en sıkı testtir.
+
+Ayrıca boru hattının veriyi bozmadığı bağımsız olarak kontrol edildi: aynadan doğrudan
+çekilen 19.08.2026 İstanbul kaydı (04:35 / 06:11 / 13:13 / 17:00 / 20:05 / 21:34), PowerShell →
+JSON → GitHub → arşiv yolundan geçen kayıtla birebir aynı.
+
+**Durum: ayna sadık kabul edildi.** Bu veriden fixture üretilebilir.
+Yeni bir ay eklendiğinde kontrol tekrarlanmalı (yeni satır eklenerek).
 
 ## Neden bu kadar titiz
 
