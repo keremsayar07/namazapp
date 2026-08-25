@@ -111,6 +111,16 @@ public struct PrayerCalculationService: Sendable {
             ishaAngle: params.ishaAngle ?? params.fajrAngle
         )
 
+        // Final safety net: guarantee non-decreasing order across all 6 prayers no matter what
+        // the astronomical formulas produced. At latitudes close to the polar circle, the
+        // hour-angle equation can have its "before noon" / "after noon" branches converge on
+        // the wrong solution during the refinement pass (a known class of edge case — see the
+        // adhan-swift high-latitude issue referenced in NOTICE.md) even after
+        // HighLatitudeAdjuster's angle-based fallback. This does not claim astronomical
+        // precision at extreme latitudes (no simple formula can); it only guarantees the app
+        // never displays prayers out of order, which is the actual product requirement.
+        hours = Self.enforceChronologicalOrder(hours)
+
         return Prayer.allCases.compactMap { prayer -> PrayerTime? in
             guard let baseHour = hours[prayer] else { return nil }
             let hour = baseHour + Double(settings.manualOffsetMinutes(for: prayer)) / 60
@@ -133,6 +143,22 @@ public struct PrayerCalculationService: Sendable {
             return hourAngleTime(ishaAngle, dayFraction, true) ?? (sunsetHour + 90.0 / 60)
         }
         return sunsetHour + (params.ishaIntervalMinutes ?? 90) / 60
+    }
+
+    /// Walks the 6 prayers in their natural order and clamps each hour-of-day to be no earlier
+    /// than the one before it, so the returned schedule is always non-decreasing.
+    private static func enforceChronologicalOrder(_ hours: [Prayer: Double]) -> [Prayer: Double] {
+        var result = hours
+        var previous: Double?
+        for prayer in Prayer.allCases {
+            guard var value = result[prayer] else { continue }
+            if let previous, value < previous {
+                value = previous
+            }
+            result[prayer] = value
+            previous = value
+        }
+        return result
     }
 
     /// Builds an absolute `Date` by adding `hourFraction` hours to local midnight for the
