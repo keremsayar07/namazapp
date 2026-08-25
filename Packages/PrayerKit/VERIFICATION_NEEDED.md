@@ -1,69 +1,75 @@
-# Doğrulama için gereken veri — henüz eksik
+# Doğrulama verisi — durum ve otomatik toplama planı
 
-Bu dosya, Faz 1'in "doğruluk doğrulaması" adımının neden tamamlanmadığını ve tamamlanması için
-tam olarak neye ihtiyaç olduğunu belirtir. **Hiçbir tahmini/uydurma referans değer koda veya
-testlere eklenmedi.**
+Bu dosya, PrayerKit'in "doğruluk doğrulaması" adımının nerede durduğunu ve nasıl
+tamamlanacağını belirtir. **Hiçbir tahmini/uydurma referans değer koda veya testlere
+eklenmedi ve eklenmeyecek.**
 
-## 1. Namaz vakti referans verisi
+## Bulunan resmi kaynak
 
-Denenen kaynaklar ve sonuçları:
+Diyanet İşleri Başkanlığı Din İşleri Yüksek Kurulu'nun **resmi REST servisi**:
+`https://awqatsalah.diyanet.gov.tr` (referans uygulama: Kurul'un resmi GitHub hesabı,
+`github.com/DinIsleriYuksekKurulu/AwqatSalah`).
 
-- `namazvakitleri.diyanet.gov.tr` — otomatik erişim `robots.txt` tarafından engelleniyor; sayfa
-  ayrıca vakitleri JavaScript ile sonradan yüklüyor (statik HTML'de sayı yok).
-- `www.diyanet.gov.tr`, `vakithesaplama.diyanet.gov.tr` — otomatik erişim aynı şekilde engellendi
-  / zaman aşımına uğradı.
-- **`awqatsalah.diyanet.gov.tr`** — Diyanet'in **resmi** namaz vakti API'si bulundu
-  (bkz. github.com/DinIsleriYuksekKurulu/AwqatSalah, Din İşleri Yüksek Kurulu'nun resmi GitHub
-  hesabı). Ancak kullanıcı adı/şifre ile geliştirici kaydı gerektiriyor — bende böyle bir hesap yok.
+Diğer Diyanet alan adları (`namazvakitleri.diyanet.gov.tr`, `vakithesaplama.diyanet.gov.tr`,
+`www.diyanet.gov.tr`) otomatik erişime `robots.txt` ile kapalı ve vakitleri JavaScript ile
+yüklüyor — bu yüzden programatik olarak kullanılamıyor. Resmi API tek uygulanabilir yol.
 
-### İhtiyaç duyulan
+### Servisin bize verdikleri
 
-Aşağıdakilerden biri:
+| Endpoint | Ne veriyor | Neyi doğruluyor |
+|---|---|---|
+| `GET /api/PrayerTime/Monthly/{cityId}` | Bir ayın tamamı: `fajr`, `sunrise`, `dhuhr`, `asr`, `maghrib`, `isha` | Hesaplama motorunun dakika hassasiyeti |
+| aynı yanıt | `hijriDateShort`, `hijriDateLong` (her gün için) | **Diyanet'in resmi hicri tarihi** — override tablosunun kaynağı |
+| `GET /api/Place/CityDetail/{cityId}` | Kıble açısı, Kâbe uzaklığı | `QiblaMath` çıktısı |
+| `GET /api/PrayerTime/Ramadan/{cityId}` | Ramazan imsakiyesi | 1 Ramazan çapası |
+| `GET /api/PrayerTime/Eid/{cityId}` | Bayram namazı vakitleri | 1 Şevval / 10 Zilhicce çapaları |
 
-1. **(Önerilen)** `awqatsalah.diyanet.gov.tr` için ücretsiz geliştirici kaydı oluşturup elde
-   ettiğiniz API kimlik bilgilerini (veya doğrudan aşağıdaki şehir/tarih kombinasyonları için
-   API'den aldığınız JSON çıktısını) paylaşmanız — tek seferlik, tüm kombinasyonları kapsar.
-2. `namazvakitleri.diyanet.gov.tr` üzerinden aşağıdaki şehir/tarih kombinasyonları için İmsak,
-   Güneş, Öğle, İkindi, Akşam, Yatsı değerlerini kendinizin kopyalaması (12 veri noktası):
+Hicri tarihin her günlük kayıtta gelmesi, ikinci bir veri toplama işine gerek bırakmıyor:
+namaz vakti verisiyle birlikte hicri takvim verisi de aynı istekte geliyor.
 
-   | Şehir | Tarihler |
-   |---|---|
-   | İstanbul | 2026-03-20 (ekinoks), 2026-06-21 (yaz gündönümü), 2026-09-23 (ekinoks), 2026-12-21 (kış gündönümü) |
-   | Ankara | aynı 4 tarih |
-   | Gaziantep | aynı 4 tarih |
+### İki kısıt ve bunlara verilen cevap
 
-Veri geldiğinde `Tests/PrayerKitTests/DiyanetReferenceFixtures.swift` içine şehir, tarih,
-kullanılan yöntem (`turkey`) ve Diyanet referansı (kaynak URL/ekran görüntüsü) açıkça belirtilerek
-eklenecek ve ±1 dakika toleranslı testler yazılacak.
+1. **`Monthly` parametre almıyor** — yalnızca içinde bulunulan ayı döndürüyor. Geçmiş veya
+   gelecek bir ay çekilemiyor.
+2. **Kota**: standart rolde endpoint başına günde 5 istek (geliştirici rolünde 100).
 
-## 2. Hicri takvim referans verisi (Diyanet ↔ Umm al-Qura farkları)
+Çözüm: `Tools/diyanet_reference/fetch.py` + `.github/workflows/diyanet-reference.yml`.
+İş her gün çalışır, o ay için eksik şehirleri tamamlar, tamamlandığında hiç istek harcamadan
+çıkar, ay değiştiğinde yeni ayı toplamaya başlar. Mevsimsel kapsama kendiliğinden birikir;
+kimsenin elle veri girmesi gerekmez.
 
-`HijriDate` mimarisi hazır (`DiyanetHijriDateConverter`, bkz. `Hijri/`), Foundation'ın
-`Calendar(identifier: .islamicUmmAlQura)` hesaplamasını temel alıyor ve üzerine Diyanet'in resmi
-takviminin farklılaştığı belirli günler için bir "override" tablosu koyabiliyor. Bu tablo şu an
-**boş** — çünkü Diyanet'in resmi ay başlangıcı tarihlerine (`vakithesaplama.diyanet.gov.tr/dinigunler.php`,
-`www2.diyanet.gov.tr/.../HicridenMiladiye.aspx`) otomatik erişim aynı sebeplerle engellendi.
+## İkinci kaynak: açık ayna (kimlik bilgisi beklemeden)
 
-### İhtiyaç duyulan
+`*.diyanet.gov.tr` alan adları yurt dışı IP'lerden düzenli olarak zaman aşımına uğruyor —
+GitHub Actions koşucuları da yurt dışında olduğu için resmi servise erişim, kimlik bilgisi
+gelse bile garanti değil. Bu yüzden ikinci bir yol kuruldu: `ezanvakti.emushaf.net`,
+Diyanet'in vakitlerini yeniden yayımlayan açık bir ayna. Kimlik bilgisi ve kota yok,
+aynı hicri tarih ve kıble saati alanlarını içeriyor, ilçe kimlikleri Diyanet'inkilerle aynı.
 
-2025-2027 için Diyanet'in resmi "Dini Günler" listesinden şu tarihlerin Hicri karşılıkları:
+Bu **ikincil** bir kaynak. Kullanım koşulu ve elle doğrulama adımı:
+`Tools/diyanet_reference/PROVENANCE.md`.
 
-- Ramazan ayı başlangıcı (1 Ramazan)
-- Ramazan Bayramı (1 Şevval)
-- Kurban Bayramı (10 Zilhicce)
-- Hicri Yılbaşı (1 Muharrem)
+## Şu anki durum
 
-Bu 4 çapa nokta, yıl içindeki ay başlangıcı belirsizliklerinin büyük kısmını kapatar. Kaynak:
-Diyanet'in kendi web sitesi, resmi basın açıklamaları veya Resmî Gazete'de yayımlanan dini
-bayram tatili ilanları kabul edilebilir — haber sitelerinin "Diyanet'e göre" diye aktardığı
-tarihler ikincil kaynak sayılır, birincil doğrulama için tercih edilmez.
+- [x] Resmi kaynak tespit edildi, endpoint'leri ve alan adları doğrulandı
+- [x] Resmi API için otomatik toplayıcı ve GitHub Actions işi yazıldı
+- [x] Kimlik bilgisi beklemeden çalışan ayna toplayıcısı yazıldı (12 ilçe)
+- [ ] **Ayna verisinin Diyanet sitesine karşı elle doğrulanması** (~10 dk, `PROVENANCE.md`)
+- [ ] **Diyanet'ten API kimlik bilgisi alınması** (bkz. `Tools/diyanet_reference/README.md`)
+- [ ] İlk ayın verisi toplandıktan sonra `turkey` metodunun parametrelerinin kalibrasyonu
+- [ ] `Tests/PrayerKitTests/DiyanetReferenceFixtures.swift` içindeki boş dizinin toplanan
+      ham JSON'lardan üretilmesi ve ±1 dakika toleranslı testlerin yazılması
+- [ ] `DiyanetHijriDateConverter` override tablosunun `hijriDateShort` alanlarından üretilmesi
 
-## Bu arada ne yapıldı
+## Kalibrasyon neyi düzeltecek
 
-- Hesaplama motoru, adhan-swift'in de kullandığı standart açı değerleriyle (İmsak 18°, Yatsı 17°)
-  çalışıyor — bunlar Diyanet'e **yaklaşık**, ama dakika hassasiyetinde doğrulanmadı.
-- `CalculationSettings.manualOffsetsMinutes` üzerinden her vakit için ince ayar (dakika bazında)
-  yapılabiliyor — gerçek veri geldiğinde `turkey` metodunun varsayılan parametrelerini (özellikle
-  Akşam/temkin offseti) buna göre güncelleyeceğiz.
-- Testlerde şu an sadece "iç tutarlılık" doğrulanıyor (İmsak < Güneş < Öğle < İkindi < Akşam < Yatsı,
-  vb.) — bu gerçek dakika hassasiyetini garanti etmez, sadece kaba hataları yakalar.
+Motor şu an standart açı değerleriyle çalışıyor (İmsak 18°, Yatsı 17°) ve
+`CalculationMethod.turkey` içinde `maghribOffsetMinutes = 0` — yani Diyanet'in uyguladığı
+**temkin** payları henüz uygulanmıyor, çünkü gerçek değerleri doğrulanmadan yazmak tam olarak
+kaçındığımız şey olurdu. Gerçek veri geldiğinde her vakit için sistematik fark ölçülecek ve
+`turkey` preset'inin parametreleri buna göre güncellenecek.
+
+O zamana kadar testler yalnızca **iç tutarlılık** doğruluyor (vakitlerin sırası, determinizm,
+Hanefi ikindisinin Şafii'den erken olmaması, kıble açısının makul aralıkta olması). Bu, kaba
+hataları yakalar — nitekim Tromsø testi gerçek bir sıralama hatasını yakaladı — ama dakika
+hassasiyetini garanti etmez.
