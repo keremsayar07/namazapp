@@ -1,0 +1,40 @@
+name: Diyanet Vakitleri (ayna)
+
+on:
+  schedule:
+    - cron: "0 5 * * 1,4"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: diyanet-mirror
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Vakitleri topla
+        run: python3 Tools/diyanet_reference/fetch_mirror.py
+
+      - name: Değişiklikleri commit'le
+        run: |
+          if [ -z "$(git status --porcelain Reference/)" ]; then
+            echo "Yeni gün yok, commit atlanıyor."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Reference/
+          git commit -m "Diyanet vakitleri (ayna): yeni günler eklendi"
+          git push
