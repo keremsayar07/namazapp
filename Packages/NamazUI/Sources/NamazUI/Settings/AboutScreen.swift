@@ -18,7 +18,7 @@ struct AboutScreen: View {
             paragraph(L.t("about.calculation.body"))
 
             SectionLabel(L.t("about.section.hijri"))
-            paragraph(L.t("about.hijri.body"))
+            paragraph(Self.hijriStatus)
 
             SectionLabel(L.t("about.section.privacy"))
             paragraph(L.t("about.privacy.body"))
@@ -35,6 +35,22 @@ struct AboutScreen: View {
                     .foregroundStyle(Palette.inkSoft)
             }
         }
+    }
+
+    /// Hicri takvimin o anki durumu — elle yazılmış bir cümle değil, üretilmiş tablodan
+    /// okunuyor. Tablo dolduğunda metin kendiliğinden değişiyor; aksi hâlde bir gün
+    /// "henüz doğrulanmadı" yazan bir ekranla, dolu bir tabloyla baş başa kalırdık.
+    private static var hijriStatus: String {
+        guard let coverage = DiyanetHijriOverrides.coverage,
+              DiyanetHijriOverrides.examinedDayCount > 0 else {
+            return L.t("about.hijri.unverified")
+        }
+        return L.t(
+            "about.hijri.verified %@ %@ %@",
+            String(DiyanetHijriOverrides.examinedDayCount),
+            "\(coverage.lowerBound) – \(coverage.upperBound)",
+            String(DiyanetHijriOverrides.table.count)
+        )
     }
 
     private func paragraph(_ text: String) -> some View {

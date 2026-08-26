@@ -194,7 +194,8 @@
 "about.section.calculation" = "How times are calculated";
 "about.calculation.body" = "Times are computed directly from the position of the sun. The safety margins in the Turkey method are measured, not guessed: they were derived by comparing against Diyanet's own published calendar across 12 cities and 384 days, leaving a residual of about a tenth of a minute for every prayer. That measurement rests on one month of data; coverage grows every month.";
 "about.section.hijri" = "Hijri date";
-"about.hijri.body" = "The Hijri date currently comes from the Umm al-Qura tabular calendar. Diyanet's religious calendar can fall a day either side of it at the start of a month, which matters most for Ramadan and the two Eids. A correction table will fill in as verified Diyanet days accumulate. Until then, rely on Diyanet's own calendar for holiday dates.";
+"about.hijri.unverified" = "The Hijri date currently comes from the Umm al-Qura tabular calendar; no days have yet been verified against Diyanet's own calendar. The two can fall a day apart at the start of a month, which matters most for Ramadan and the two Eids. Rely on Diyanet's own calendar for holiday dates.";
+"about.hijri.verified %@ %@ %@" = "%1$@ days have been verified against Diyanet's published calendar (%2$@). Within that window the Hijri date follows Diyanet; on %3$@ of those days it diverged from Umm al-Qura and has been corrected. Outside the window Umm al-Qura is used again and may fall a day apart at the start of a month — rely on Diyanet's own calendar for holiday dates.";
 "about.section.privacy" = "Privacy";
 "about.privacy.body" = "Your location never leaves the device; times and the Qibla bearing are computed locally. Only the text you type when searching for a city is sent to Apple's location service to resolve it. There are no ads, no tracking and no analytics.";
 "about.section.version" = "Details";

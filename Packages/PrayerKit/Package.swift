@@ -12,7 +12,10 @@ let package = Package(
         .library(name: "PrayerKit", targets: ["PrayerKit"]),
         // Diyanet referans verisiyle karşılaştırma raporu üreten geliştirme aracı.
         // Uygulamaya dahil edilmez; yalnızca CI'da çalışır.
-        .executable(name: "prayerkit-calibrate", targets: ["PrayerKitCalibration"])
+        .executable(name: "prayerkit-calibrate", targets: ["PrayerKitCalibration"]),
+        // Diyanet ayna arşivinden hicri düzeltme tablosunu üreten geliştirme aracı.
+        // Uygulamaya dahil edilmez; yalnızca CI'da çalışır.
+        .executable(name: "prayerkit-hijri-table", targets: ["PrayerKitHijriTable"])
     ],
     targets: [
         .target(
@@ -23,6 +26,11 @@ let package = Package(
             name: "PrayerKitCalibration",
             dependencies: ["PrayerKit"],
             path: "Sources/PrayerKitCalibration"
+        ),
+        .executableTarget(
+            name: "PrayerKitHijriTable",
+            dependencies: ["PrayerKit"],
+            path: "Sources/PrayerKitHijriTable"
         ),
         .testTarget(
             name: "PrayerKitTests",
