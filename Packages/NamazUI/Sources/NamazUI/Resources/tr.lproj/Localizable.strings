@@ -35,9 +35,6 @@
 
 "home.loading.accessibility" = "Vakitler yükleniyor";
 
-/* Henüz yazılmamış ekranlar */
-"placeholder.title %@" = "%@ ekranı";
-"placeholder.body" = "Bu bölüm sonraki fazda geliyor.";
 
 /* Hicri ay adları — PrayerKit'in HijriDate.monthLocalizationKey değerleriyle eşleşir */
 "hijri.month.muharrem" = "Muharrem";
@@ -102,3 +99,26 @@
 "calendar.accessibility.today %@" = "%@, bugün";
 "calendar.empty.title" = "Önce bir konum gerekiyor";
 "calendar.empty.body" = "Takvim, vakitleri hesaplamak için konuma ihtiyaç duyuyor. Vakit sekmesinden konum iznini verebilir ya da şehrinizi elle seçebilirsiniz.";
+
+/* Kıble */
+"qibla.bearing.label" = "Kıble açısı";
+"qibla.degrees %@" = "%@°";
+"qibla.distance %@" = "Kâbe'ye kuş uçuşu %@.";
+"qibla.aligned" = "Kıble yönündesiniz";
+"qibla.turn.right %@" = "%@° sağa dönün";
+"qibla.turn.left %@" = "%@° sola dönün";
+"qibla.waiting" = "Pusula okunuyor…";
+"qibla.accuracy %@" = "Sapma payı yaklaşık ±%@°.";
+"qibla.calibration %@" = "Pusula doğruluğu düşük (yaklaşık ±%@°). Telefonu havada sekiz çizerek sallayın.";
+"qibla.nocompass.title" = "Bu cihazda pusula yok";
+"qibla.nocompass.body" = "İbre canlı değil: çember, ekranın üstü kuzeymiş gibi çizildi. Yukarıdaki açı yine de geçerli, başka bir pusulayla kullanabilirsiniz.";
+"qibla.nolocation.title" = "Önce bir konum gerekiyor";
+"qibla.nolocation.body" = "Kıble açısı bulunduğunuz yere göre hesaplanıyor. Vakit sekmesinden konum iznini verebilir ya da şehrinizi elle seçebilirsiniz.";
+"qibla.note" = "Telefon pusulası hassas bir alet değildir; metal yüzeyler, mıknatıslar ve elektronik cihazlar okumayı bozar.";
+"qibla.accessibility.static %@" = "Kıble açısı %@. Bu cihazda pusula olmadığı için canlı yön gösterilemiyor.";
+
+/* Pusula yönleri — tek harf */
+"compass.north" = "K";
+"compass.east" = "D";
+"compass.south" = "G";
+"compass.west" = "B";

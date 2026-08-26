@@ -28,8 +28,11 @@ public struct RootTabView: View {
             )
             .tabItem { Label(L.t("tab.calendar"), systemImage: "calendar") }
 
-            PlaceholderScreen(name: L.t("tab.qibla"))
-                .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }
+            QiblaScreen(
+                location: dependencies.homeModel.state.schedule?.location,
+                headingService: dependencies.heading
+            )
+            .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }
 
             NotificationSettingsScreen(
                 coordinator: dependencies.notifications,
@@ -59,38 +62,6 @@ public struct RootTabView: View {
             location: dependencies.homeModel.state.schedule?.location,
             calculationSettings: dependencies.homeModel.settings
         )
-    }
-}
-
-/// Sonraki fazlarda dolacak sekmeler. Boş bir ekran göstermek yerine ne olduğunu söylüyor —
-/// geliştirme sırasında bile "bozuk mu, boş mu" sorusunu ortadan kaldırıyor.
-struct PlaceholderScreen: View {
-    let name: String
-
-    var body: some View {
-        ZStack {
-            Palette.ground.ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 10) {
-                Rectangle()
-                    .fill(Palette.ink)
-                    .frame(height: 2)
-                    .padding(.bottom, 12)
-                    .accessibilityHidden(true)
-
-                Text(L.t("placeholder.title %@", name))
-                    .font(Font.system(.title2, design: .serif))
-                    .foregroundStyle(Palette.ink)
-
-                Text(L.t("placeholder.body"))
-                    .font(Typography.prayerName)
-                    .foregroundStyle(Palette.inkSoft)
-
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 24)
-            .padding(.top, 18)
-        }
     }
 }
 

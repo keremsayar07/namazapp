@@ -36,8 +36,6 @@
 "home.loading.accessibility" = "Loading prayer times";
 
 /* Screens not built yet */
-"placeholder.title %@" = "%@";
-"placeholder.body" = "This section arrives in a later phase.";
 
 /* Hijri month names — match PrayerKit's HijriDate.monthLocalizationKey values */
 "hijri.month.muharrem" = "Muharram";
@@ -102,3 +100,26 @@
 "calendar.accessibility.today %@" = "%@, today";
 "calendar.empty.title" = "A location is needed first";
 "calendar.empty.body" = "The calendar needs a location to calculate prayer times. Grant location access on the Times tab, or pick your city manually.";
+
+/* Qibla */
+"qibla.bearing.label" = "Qibla bearing";
+"qibla.degrees %@" = "%@°";
+"qibla.distance %@" = "%@ to the Kaaba as the crow flies.";
+"qibla.aligned" = "You are facing the Qibla";
+"qibla.turn.right %@" = "Turn %@° right";
+"qibla.turn.left %@" = "Turn %@° left";
+"qibla.waiting" = "Reading the compass…";
+"qibla.accuracy %@" = "Accurate to roughly ±%@°.";
+"qibla.calibration %@" = "Compass accuracy is low (roughly ±%@°). Wave the phone in a figure eight.";
+"qibla.nocompass.title" = "This device has no compass";
+"qibla.nocompass.body" = "The needle is not live: the dial is drawn as if the top of the screen were north. The bearing above still holds — you can use it with any other compass.";
+"qibla.nolocation.title" = "A location is needed first";
+"qibla.nolocation.body" = "The Qibla bearing is calculated from where you are. Grant location access on the Times tab, or pick your city manually.";
+"qibla.note" = "A phone compass is not a precision instrument; metal surfaces, magnets and electronics all distort the reading.";
+"qibla.accessibility.static %@" = "Qibla bearing %@. This device has no compass, so no live direction can be shown.";
+
+/* Compass points — single letter */
+"compass.north" = "N";
+"compass.east" = "E";
+"compass.south" = "S";
+"compass.west" = "W";

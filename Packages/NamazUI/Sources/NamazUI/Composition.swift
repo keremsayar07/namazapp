@@ -10,15 +10,20 @@ public struct Dependencies {
     public let homeModel: HomeViewModel
     public let citySearch: CitySearching
     public let notifications: NotificationCoordinator
+    /// Pusula. Kıble ekranı dışında kimse kullanmıyor ama burada duruyor: manyetometreyi
+    /// açan tek nesnenin nereden geldiği tek bakışta görünsün.
+    public let heading: HeadingProviding
 
     public init(
         homeModel: HomeViewModel,
         citySearch: CitySearching,
-        notifications: NotificationCoordinator
+        notifications: NotificationCoordinator,
+        heading: HeadingProviding
     ) {
         self.homeModel = homeModel
         self.citySearch = citySearch
         self.notifications = notifications
+        self.heading = heading
     }
 
     /// Üretim yapılandırması: gerçek CoreLocation ve gerçek coğrafi kodlama.
@@ -37,7 +42,8 @@ public struct Dependencies {
             notifications: NotificationCoordinator(
                 scheduler: UserNotificationScheduler(),
                 content: NotificationText.provider
-            )
+            ),
+            heading: CoreLocationHeadingService()
         )
     }
 
@@ -57,6 +63,10 @@ public struct Dependencies {
                 scheduler: StubNotificationScheduler(),
                 content: NotificationText.provider,
                 preferences: Preferences(store: InMemoryPreferenceStore())
+            ),
+            // Önizlemede manyetometre yok; sabit bir okuma kadranın çizimini gösteriyor.
+            heading: StubHeadingService(
+                snapshots: [HeadingSnapshot(trueHeading: 120, accuracy: 8)]
             )
         )
     }

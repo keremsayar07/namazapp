@@ -88,6 +88,20 @@ enum Formatting {
         return (0..<7).map { symbols[($0 + shift) % 7] }
     }
 
+    // MARK: - Kıble
+
+    /// Tam sayı derece: "151°". Ondalık gösterilmiyor — ne telefon pusulası ne de elde
+    /// tutulan bir cihaz o hassasiyeti taşıyor; virgülden sonrası uydurma bir kesinlik olur.
+    static func degrees(_ value: Double) -> String {
+        L.t("qibla.degrees %@", String(Int(value.rounded())))
+    }
+
+    /// Kâbe'ye uzaklık. Birim (km / mil) cihazın ölçü sistemine bırakılıyor.
+    static func distance(_ meters: Double) -> String {
+        Measurement(value: meters, unit: UnitLength.meters)
+            .formatted(.measurement(width: .abbreviated, usage: .road))
+    }
+
     /// Hicri ay aralığı: "Rebiülevvel – Rebiülahir 1448" ya da tek aya sığıyorsa
     /// "Muharrem 1448". Yıl da değişiyorsa iki tarafta da yazılıyor.
     static func hijriSpanLine(_ span: [HijriDate]) -> String {
