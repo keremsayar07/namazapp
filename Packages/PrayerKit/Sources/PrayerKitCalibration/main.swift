@@ -153,13 +153,21 @@ func format(_ value: Double, _ decimals: Int = 1) -> String {
 
 // MARK: - Koordinat fit'i
 
+/// `.turkey` artık ölçülmüş temkin paylarını içeriyor. Koordinat fit'i bu paylardan
+/// ETKİLENMEMELİ — yoksa fit, payları koordinat kaymasıyla telafi etmeye çalışır ve
+/// boylamı 1.25 derece kaydırır. Bu yüzden fit aşamasında aynı açılara sahip ama temkin
+/// payı olmayan `.custom` kullanılıyor; ölçüm aşamasında ise gerçek `.turkey`.
+let bareMethod = CalculationMethod.custom(fajrAngle: 18, ishaAngle: 17)
+
 func computedMinutes(
     for day: ObservedDay,
     coordinate: Coordinate,
-    madhab: Madhab
+    madhab: Madhab,
+    method: CalculationMethod
 ) -> [Prayer: Double] {
     var settings = CalculationSettings.defaultForTurkey(latitude: coordinate.latitude)
     settings.madhab = madhab
+    settings.method = method
     let daily = service.dailyTimes(for: day.anchor, coordinate: coordinate, settings: settings)
     var result: [Prayer: Double] = [:]
     for prayer in Prayer.allCases {
@@ -183,7 +191,7 @@ func fitLongitude(days: [ObservedDay], seedLatitude: Double, seedLongitude: Doub
                 latitude: seedLatitude, longitude: longitude, timeZoneIdentifier: timeZoneIdentifier
             )
             guard let computedNoon = computedMinutes(
-                for: day, coordinate: coordinate, madhab: .shafi
+                for: day, coordinate: coordinate, madhab: .shafi, method: bareMethod
             )[.dhuhr] else { continue }
             deltas.append(computedNoon - observedSolarNoon)
         }
@@ -204,7 +212,9 @@ func fitLatitude(days: [ObservedDay], longitude: Double, seedLatitude: Double) -
         var sunriseDeltas: [Double] = []
         var sunsetDeltas: [Double] = []
         for day in days {
-            let computed = computedMinutes(for: day, coordinate: coordinate, madhab: .shafi)
+            let computed = computedMinutes(
+                for: day, coordinate: coordinate, madhab: .shafi, method: bareMethod
+            )
             if let observed = day.minutes[.sunrise], let value = computed[.sunrise] {
                 sunriseDeltas.append(value - observed)
             }
@@ -330,7 +340,9 @@ func analyze(id: String, name: String, days: [ObservedDay]) -> CityReport {
     func collect(madhab: Madhab) -> [Prayer: PrayerStats] {
         var buckets: [Prayer: [Double]] = [:]
         for day in days {
-            let computed = computedMinutes(for: day, coordinate: coordinate, madhab: madhab)
+            let computed = computedMinutes(
+                for: day, coordinate: coordinate, madhab: madhab, method: .turkey
+            )
             for prayer in Prayer.allCases {
                 guard let observed = day.minutes[prayer], let value = computed[prayer] else { continue }
                 // Pozitif fark = Diyanet daha geç = hesabımıza bu kadar dakika EKLEMELİYİZ.

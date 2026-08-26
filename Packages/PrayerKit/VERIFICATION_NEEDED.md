@@ -54,9 +54,17 @@ Bu **ikincil** bir kaynak. Kullanım koşulu ve elle doğrulama adımı:
 - [x] Resmi kaynak tespit edildi, endpoint'leri ve alan adları doğrulandı
 - [x] Resmi API için otomatik toplayıcı ve GitHub Actions işi yazıldı
 - [x] Kimlik bilgisi beklemeden çalışan ayna toplayıcısı yazıldı (12 ilçe)
-- [ ] **Ayna verisinin Diyanet sitesine karşı elle doğrulanması** (~10 dk, `PROVENANCE.md`)
+- [x] **Ayna verisinin Diyanet sitesine karşı elle doğrulanması** — 7 gün, 2 şehir, tamamı tuttu
+- [x] **384 günlük veri toplandı** (12 il, 19.08–19.09.2026)
+- [x] **`turkey` metodunun temkin payları ölçüldü ve koda geçirildi** —
+      `Reference/diyanet/calibration-report.md`
+- [x] **İkindi mezhebi düzeltildi** — Diyanet asr-ı evvel (Şafii) yayımlıyor; varsayılan
+      Hanefi olsaydı uygulama Diyanet'ten ~52 dakika sapardı
+- [ ] Kalibrasyon sonrası artığın ~0 olduğunun raporla teyidi
+- [ ] Referans veriye karşı otomatik regresyon testi (offset'ler sessizce bozulmasın)
+- [ ] Mevsimsel doğrulama — aylık toplamayla kendiliğinden birikiyor
+- [ ] `DiyanetHijriDateConverter` override tablosunun `HicriTarihUzun` alanlarından üretilmesi
 - [ ] **Diyanet'ten API kimlik bilgisi alınması** (bkz. `Tools/diyanet_reference/README.md`)
-- [ ] İlk ayın verisi toplandıktan sonra `turkey` metodunun parametrelerinin kalibrasyonu
 - [ ] `Tests/PrayerKitTests/DiyanetReferenceFixtures.swift` içindeki boş dizinin toplanan
       ham JSON'lardan üretilmesi ve ±1 dakika toleranslı testlerin yazılması
 - [ ] `DiyanetHijriDateConverter` override tablosunun `hijriDateShort` alanlarından üretilmesi

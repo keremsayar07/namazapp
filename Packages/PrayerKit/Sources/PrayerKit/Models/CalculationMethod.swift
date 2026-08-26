@@ -10,21 +10,31 @@ public struct CalculationParameters: Sendable, Hashable {
     public var ishaAngle: Double?
     /// Minutes after Maghrib, used only when `ishaAngle` is `nil`.
     public var ishaIntervalMinutes: Double?
-    /// Extra minutes added after the astronomically computed sunset for Maghrib — a fixed
-    /// safety margin some authorities (Diyanet included) apply. Defaults to 0 until the
-    /// exact figure is confirmed against verified reference data — see `VERIFICATION_NEEDED.md`.
+    /// Extra minutes added after the astronomically computed sunset for Maghrib, for methods
+    /// that define Maghrib as a fixed interval rather than sunset itself. Not the same thing
+    /// as `temkinMinutes` below — this one changes what Maghrib *means*.
     public var maghribOffsetMinutes: Double
+    /// Per-prayer safety margin ("temkin") in minutes, added after the astronomical
+    /// calculation. This is not a fudge factor: authorities publish times that deliberately
+    /// differ from the pure astronomical instant, and reproducing an authority's calendar
+    /// means reproducing its margins. Positive = later, negative = earlier.
+    ///
+    /// Only `.turkey` sets these today, and its values were **measured**, not guessed — see
+    /// `Reference/diyanet/calibration-report.md`.
+    public var temkinMinutes: [Prayer: Double]
 
     public init(
         fajrAngle: Double,
         ishaAngle: Double?,
         ishaIntervalMinutes: Double? = nil,
-        maghribOffsetMinutes: Double = 0
+        maghribOffsetMinutes: Double = 0,
+        temkinMinutes: [Prayer: Double] = [:]
     ) {
         self.fajrAngle = fajrAngle
         self.ishaAngle = ishaAngle
         self.ishaIntervalMinutes = ishaIntervalMinutes
         self.maghribOffsetMinutes = maghribOffsetMinutes
+        self.temkinMinutes = temkinMinutes
     }
 }
 
@@ -57,10 +67,26 @@ public enum CalculationMethod: Codable, Sendable, Hashable {
     public var parameters: CalculationParameters {
         switch self {
         case .turkey:
-            // Approximates Diyanet İşleri Başkanlığı. Angle values match adhan-swift's
-            // "turkey" preset; the Maghrib safety-margin (temkin) figure is intentionally
-            // left at 0 until we have verified reference data — see VERIFICATION_NEEDED.md.
-            return CalculationParameters(fajrAngle: 18, ishaAngle: 17, maghribOffsetMinutes: 0)
+            // Diyanet İşleri Başkanlığı. Açılar (İmsak 18°, Yatsı 17°) yayımlanmış değerler;
+            // temkin payları ise TAHMİN DEĞİL, ÖLÇÜM: 12 ilde 384 günlük resmi Diyanet
+            // verisiyle karşılaştırılarak bulundu (Reference/diyanet/calibration-report.md).
+            //
+            // Her vakit için farkın standart sapması 0.3 dakika civarında çıktı — yani bunlar
+            // rastgele sapmalar değil, sabit ve sistematik paylar; sabit offset olarak
+            // kodlanmaları doğru. Ölçüm bir aylık veriye (19.08–19.09.2026) dayanıyor;
+            // aylık toplama sürdükçe mevsimsel doğrulama da birikiyor.
+            return CalculationParameters(
+                fajrAngle: 18,
+                ishaAngle: 17,
+                temkinMinutes: [
+                    .fajr: -0.4,     // ölçülen ortalama fark
+                    .sunrise: -7.3,  // Diyanet güneşi ~7 dk erken yayımlıyor
+                    .dhuhr: 5.0,
+                    .asr: 4.4,
+                    .maghrib: 8.0,
+                    .isha: 1.3
+                ]
+            )
         case .muslimWorldLeague:
             return CalculationParameters(fajrAngle: 18, ishaAngle: 17)
         case .egyptian:

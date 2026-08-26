@@ -111,6 +111,15 @@ public struct PrayerCalculationService: Sendable {
             ishaAngle: params.ishaAngle ?? params.fajrAngle
         )
 
+        // Yöntemin temkin payları. Kullanıcının kendi `manualOffsets` ayarından ayrı tutuluyor:
+        // bu paylar otoritenin takvimini yeniden üretmek için, o ayar ise kişisel ince ayar için.
+        // Sıra düzeltmesinden ÖNCE uygulanıyor, çünkü paylar (özellikle güneşin negatif payı)
+        // teorik olarak sırayı bozabilir ve son ağın bunu da kapsaması gerekir.
+        for (prayer, minutes) in params.temkinMinutes {
+            guard let current = hours[prayer] else { continue }
+            hours[prayer] = current + minutes / 60
+        }
+
         // Final safety net: guarantee non-decreasing order across all 6 prayers no matter what
         // the astronomical formulas produced. At latitudes close to the polar circle, the
         // hour-angle equation can have its "before noon" / "after noon" branches converge on
