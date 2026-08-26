@@ -18,8 +18,10 @@ permissions:
   contents: write
 
 concurrency:
-  group: calibration
-  cancel-in-progress: true
+  # Depoya yazan tüm iş akışları tek grupta: aynı anda ikisi push etmeye
+  # çalışmasın. İptal etmiyoruz, sıraya giriyorlar.
+  group: repo-write
+  cancel-in-progress: false
 
 jobs:
   calibrate:
@@ -35,17 +37,51 @@ jobs:
         working-directory: Packages/PrayerKit
         run: swift run -c release prayerkit-calibrate "$GITHUB_WORKSPACE"
 
+      # Araç tolerans aşımında kırmızı bitiyor. Raporun yine de görünmesini ve
+      # commit'lenmesini istiyoruz — neyin bozulduğu repoda kalsın.
       - name: Raporu özet olarak göster
-        run: cat Reference/diyanet/calibration-report.md >> "$GITHUB_STEP_SUMMARY"
+        if: always()
+        run: cat Reference/diyanet/calibration-report.md >> "$GITHUB_STEP_SUMMARY" || true
 
       - name: Raporu commit'le
+        if: always()
         run: |
-          if [ -z "$(git status --porcelain Reference/diyanet/calibration-report.md)" ]; then
+          REPORT=Reference/diyanet/calibration-report.md
+          if [ -z "$(git status --porcelain $REPORT)" ]; then
             echo "Rapor değişmedi, commit atlanıyor."
+            exit 0
+          fi
+          # Rapor her koşuda üretim zaman damgasını yeniliyor. Yalnızca o satır değiştiyse
+          # commit atmak, hiçbir bilgi taşımayan bir geçmiş üretir — ve depoya yazan her
+          # koşuyu diğer iş akışlarıyla push yarışına sokar. Değişikliği geri alıp çıkıyoruz.
+          # `|| true` şart: hiçbir satır eşleşmezse grep 1 döner ve `set -e -o pipefail`
+          # altında adım hata verirdi. Zaman damgası satırı ASCII bir kalıpla ayıklanıyor
+          # (koşucudaki bash 3.2 `$'\uXXXX'` kaçışlarını anlamıyor).
+          SUBSTANTIVE=$(git diff -U0 -- "$REPORT" \
+            | grep -E '^[+-]' \
+            | grep -Ev '^(\+\+\+|---)' \
+            | grep -Ev '[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z' \
+            || true)
+          if [ -z "$SUBSTANTIVE" ]; then
+            echo "Yalnızca zaman damgası değişti, commit atlanıyor."
+            git checkout -- "$REPORT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Reference/diyanet/calibration-report.md
+          git add "$REPORT"
           git commit -m "Kalibrasyon raporu güncellendi"
-          git push
+          # Aynı push birden fazla iş akışını tetikleyip her biri commit atabiliyor.
+          # `actions/checkout` tetikleyen commit'i alıyor, dolayısıyla ilk push geçtiğinde
+          # bizim dalımız geride kalıyor ve push "fetch first" diye reddediliyor. Farklı
+          # dosyalara dokunduğumuz için rebase temiz geçiyor; üç deneme fazlasıyla yeter.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push reddedildi (deneme $attempt), rebase edilip tekrar denenecek."
+            git fetch origin "$GITHUB_REF_NAME" || exit 1
+            git rebase "origin/$GITHUB_REF_NAME" || { git rebase --abort; exit 1; }
+          done
+          echo "Push üç denemede de başarısız oldu."
+          exit 1
