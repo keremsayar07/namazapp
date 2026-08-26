@@ -238,13 +238,35 @@ guard let first = days.first, let last = days.last else {
 // MARK: - Swift kaynağını yaz
 
 let sortedOverrides = overrides.sorted { $0.key < $1.key }
-let entriesText: String = sortedOverrides.isEmpty
-    ? "        // Kapsanan aralıkta Ümmü'l-Kura ile Diyanet arasında fark bulunmadı."
-    : sortedOverrides.map { day, hijri in
+
+// Boş sözlüğün `[:]` yazılması ZORUNLU. İçinde yalnızca yorum bulunan `[ ]` Swift için boş
+// bir DİZİ'dir ve sözlük tipine atanamaz — üretilen dosya derlenmez. Tablonun boş çıkması
+// beklenen bir sonuç (iki takvim kapsanan aralıkta hiç ayrılmamış olabilir), dolayısıyla bu
+// dal sıra dışı değil, normal işleyişin parçası.
+let tableDeclaration: String
+if sortedOverrides.isEmpty {
+    tableDeclaration = """
+        /// Miladi gün → Diyanet'in o gün için yayımladığı hicri tarih.
+        ///
+        /// Kapsanan aralıkta Ümmü'l-Kura ile Diyanet arasında fark bulunmadı. Bu, hiç
+        /// ayrılmayacakları anlamına gelmiyor: ayrışma ay başlarında yoğunlaşıyor ve
+        /// pencere dar. Arşiv genişledikçe tablo dolabilir.
+        public static let table: [GregorianDay: HijriDate] = [:]
+    """
+} else {
+    let entriesText = sortedOverrides.map { day, hijri in
         "        GregorianDay(year: \(day.year), month: \(day.month), day: \(day.day)): "
             + "HijriDate(year: \(hijri.year), month: \(hijri.month), day: \(hijri.day)),"
             + "  // \(day)"
     }.joined(separator: "\n")
+
+    tableDeclaration = """
+        /// Miladi gün → Diyanet'in o gün için yayımladığı hicri tarih.
+        public static let table: [GregorianDay: HijriDate] = [
+    \(entriesText)
+        ]
+    """
+}
 
 let source = """
 // ÜRETİLMİŞ DOSYA — elle düzenlemeyin.
@@ -272,17 +294,16 @@ import Foundation
 /// Diyanet'in resmi takviminin Ümmü'l-Kura tablosundan ayrıldığı, doğrulanmış günler.
 public enum DiyanetHijriOverrides {
 
-    /// Miladi gün → Diyanet'in o gün için yayımladığı hicri tarih.
-    public static let table: [GregorianDay: HijriDate] = [
-\(entriesText)
-    ]
+\(tableDeclaration)
 
     /// Arşivin kapsadığı ilk ve son miladi gün. Bu aralığın dışındaki tarihlerde
     /// `DiyanetHijriDateConverter` doğrulanmamış bir tahmin (Ümmü'l-Kura) döndürür —
     /// arayüzün bunu kullanıcıya söyleyebilmesi için aralık burada duruyor.
+    ///
+    /// `...` çevresinde boşluk YOK: boşluklu yazımda Swift'in operatörü sonek mi ek mi
+    /// çözmesi satır sonuyla birlikte belirsizleşebiliyor.
     public static let coverage: ClosedRange<GregorianDay>? =
-        GregorianDay(year: \(first.year), month: \(first.month), day: \(first.day))
-        ... GregorianDay(year: \(last.year), month: \(last.month), day: \(last.day))
+        GregorianDay(year: \(first.year), month: \(first.month), day: \(first.day))...GregorianDay(year: \(last.year), month: \(last.month), day: \(last.day))
 
     /// Tabloyu üreten çalışmanın kaç günlük veriyi incelediği. Kapsamın ne kadar dar
     /// olduğunu görünür kılmak için — sıfır olması "fark yok" değil, "veri yok" demektir.

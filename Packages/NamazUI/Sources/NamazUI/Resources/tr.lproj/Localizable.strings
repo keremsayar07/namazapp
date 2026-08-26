@@ -194,7 +194,7 @@
 "about.calculation.body" = "Vakitler, güneşin konumundan doğrudan hesaplanıyor. Türkiye yöntemindeki temkin payları tahmin değil ölçüm: Diyanet'in kendi yayımladığı takvimle 12 ilde 384 günlük karşılaştırma yapıldı ve kalan fark tüm vakitlerde dakikanın onda biri mertebesine indi. Ölçüm bir aylık veriye dayanıyor; kapsam her ay genişliyor.";
 "about.section.hijri" = "Hicri tarih";
 "about.hijri.unverified" = "Hicri tarih şu an Ümmü'l-Kura takvim tablosundan geliyor; Diyanet'in kendi takvimiyle karşılaştırılmış doğrulanmış gün henüz yok. İki takvim ay başlarında bir gün ayrılabiliyor ve bu, özellikle Ramazan ile bayram başlangıçlarında önem taşır. Bayram tarihleri için Diyanet'in kendi takvimini esas alın.";
-"about.hijri.verified %@ %@ %@" = "Diyanet'in kendi yayımladığı takvimden %1$@ gün doğrulandı (%2$@). Bu aralıkta hicri tarih Diyanet'e göre veriliyor; %3$@ günde Ümmü'l-Kura tablosundan ayrıldığı bulundu ve o günler düzeltildi. Aralığın dışında yine Ümmü'l-Kura kullanılıyor, ay başlarında bir gün farklı olabilir — bayram tarihleri için Diyanet'in takvimini esas alın.";
+"about.hijri.verified %@ %@ %@" = "Diyanet'in kendi yayımladığı takvimle %1$@ gün karşılaştırıldı (%2$@); iki takvimin ayrıldığı gün sayısı: %3$@. Ayrılan günler Diyanet'e göre düzeltiliyor. Bu aralığın dışında Ümmü'l-Kura tablosu kullanılıyor ve ay başlarında bir gün farklı olabilir — bayram tarihleri için Diyanet'in kendi takvimini esas alın.";
 "about.section.privacy" = "Gizlilik";
 "about.privacy.body" = "Konumunuz cihazdan çıkmaz; vakitler ve kıble açısı yerelde hesaplanır. Yalnızca elle şehir ararken yazdığınız metin, sonucu bulmak için Apple'ın konum servisine gönderilir. Uygulamada reklam, izleme ve analiz yoktur.";
 "about.section.version" = "Künye";
