@@ -15,6 +15,12 @@ final class HomeViewModelTests: XCTestCase {
         source: .manual
     )
 
+    /// Testler gerçek kullanıcı ayarlarına dokunmamalı: bir test koştuğunda
+    /// geliştiricinin seçtiği şehir silinmemeli.
+    private func memoryPreferences() -> Preferences {
+        Preferences(store: InMemoryPreferenceStore())
+    }
+
     private func date(_ iso: String) -> Date {
         let formatter = ISO8601DateFormatter()
         formatter.formatOptions = [.withInternetDateTime]
@@ -28,7 +34,7 @@ final class HomeViewModelTests: XCTestCase {
             authorization: .notDetermined,
             authorizationAfterRequest: .whenInUse
         )
-        let model = HomeViewModel(locationService: service)
+        let model = HomeViewModel(locationService: service, preferences: memoryPreferences())
 
         await model.refresh()
 
@@ -42,7 +48,7 @@ final class HomeViewModelTests: XCTestCase {
             authorization: .notDetermined,
             authorizationAfterRequest: .denied
         )
-        let model = HomeViewModel(locationService: service)
+        let model = HomeViewModel(locationService: service, preferences: memoryPreferences())
 
         await model.refresh()
 
@@ -54,7 +60,7 @@ final class HomeViewModelTests: XCTestCase {
             authorization: .whenInUse,
             result: .failure(.unavailable)
         )
-        let model = HomeViewModel(locationService: service)
+        let model = HomeViewModel(locationService: service, preferences: memoryPreferences())
 
         await model.refresh()
 
@@ -66,7 +72,9 @@ final class HomeViewModelTests: XCTestCase {
     func test_manualLocation_bypassesLocationServiceEntirely() async {
         // Konum servisi reddedilmiş olsa bile elle seçilen şehirle çalışmalı.
         let service = StubLocationService(authorization: .denied)
-        let model = HomeViewModel(locationService: service, manualLocation: istanbul)
+        let model = HomeViewModel(
+            locationService: service, preferences: memoryPreferences(), manualLocation: istanbul
+        )
 
         await model.refresh()
 
@@ -78,7 +86,9 @@ final class HomeViewModelTests: XCTestCase {
             authorization: .whenInUse,
             result: .success(LocationSnapshot(latitude: 39.93, longitude: 32.86, placeName: nil))
         )
-        let model = HomeViewModel(locationService: service, unknownPlaceName: "Konumunuz")
+        let model = HomeViewModel(
+            locationService: service, preferences: memoryPreferences(), unknownPlaceName: "Konumunuz"
+        )
 
         await model.refresh()
 
@@ -90,6 +100,7 @@ final class HomeViewModelTests: XCTestCase {
     func test_nextPrayer_isAlwaysPresent_evenLateAtNightAfterIsha() async {
         let model = HomeViewModel(
             locationService: StubLocationService(),
+            preferences: memoryPreferences(),
             manualLocation: istanbul
         )
         await model.refresh()
@@ -106,6 +117,7 @@ final class HomeViewModelTests: XCTestCase {
     func test_timeRemaining_isNeverNegative() async {
         let model = HomeViewModel(
             locationService: StubLocationService(),
+            preferences: memoryPreferences(),
             manualLocation: istanbul
         )
         await model.refresh()
@@ -122,6 +134,7 @@ final class HomeViewModelTests: XCTestCase {
     func test_currentPrayer_isNilBeforeTheDaysFirstPrayer() async {
         let model = HomeViewModel(
             locationService: StubLocationService(),
+            preferences: memoryPreferences(),
             manualLocation: istanbul
         )
         await model.refresh()
@@ -134,7 +147,7 @@ final class HomeViewModelTests: XCTestCase {
 
     func test_changingMadhab_recomputesWithoutAskingForLocationAgain() async {
         let service = StubLocationService(authorization: .whenInUse)
-        let model = HomeViewModel(locationService: service)
+        let model = HomeViewModel(locationService: service, preferences: memoryPreferences())
         await model.refresh()
 
         let shafiAsr = model.state.schedule?.today.time(for: .asr)

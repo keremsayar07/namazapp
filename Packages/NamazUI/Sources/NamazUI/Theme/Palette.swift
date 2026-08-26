@@ -1,4 +1,7 @@
 import SwiftUI
+// UIKit açıkça import ediliyor: `UIColor` ve `UITraitCollection` SwiftUI'ın kendi yüzeyi
+// değil. SwiftUI çoğu durumda UIKit'i dolaylı olarak getiriyor ama bu garanti değil.
+import UIKit
 
 /// "Dizgi" yönünün paleti.
 ///

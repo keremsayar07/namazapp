@@ -43,22 +43,28 @@ public final class HomeViewModel {
 
     private let locationService: LocationProviding
     private let repository: PrayerTimesRepository
+    private let preferences: Preferences
     private let clock: @Sendable () -> Date
     /// Konum adı çözülemezse Home'da gösterilecek ad.
     private let unknownPlaceName: String
 
+    /// `manualLocation` ve `settings` verilmezse kalıcı tercihlerden okunuyor — kullanıcı
+    /// uygulamayı kapatıp açtığında seçtiği şehri tekrar seçmek zorunda kalmasın.
+    /// Açıkça verilirse o kazanır; testler ve önizlemeler bu yolu kullanıyor.
     public init(
         locationService: LocationProviding,
         repository: PrayerTimesRepository = PrayerTimesRepository(),
-        settings: CalculationSettings = .defaultForTurkey(),
+        preferences: Preferences = Preferences(),
+        settings: CalculationSettings? = nil,
         manualLocation: SavedLocation? = nil,
         unknownPlaceName: String = "Konumunuz",
         clock: @escaping @Sendable () -> Date = { Date() }
     ) {
         self.locationService = locationService
         self.repository = repository
-        self.settings = settings
-        self.manualLocation = manualLocation
+        self.preferences = preferences
+        self.settings = settings ?? preferences.calculationSettings()
+        self.manualLocation = manualLocation ?? preferences.selectedLocation()
         self.unknownPlaceName = unknownPlaceName
         self.clock = clock
     }
@@ -100,12 +106,14 @@ public final class HomeViewModel {
     /// Konum servisine hiç dokunmadığı için `async` bile değil — sonuç anında hazır.
     public func selectManualLocation(_ location: SavedLocation) {
         manualLocation = location
+        preferences.setSelectedLocation(location)
         state = .ready(makeSchedule(for: location))
     }
 
     /// Elle seçimden cihaz konumuna dönmek.
     public func useDeviceLocation() async {
         manualLocation = nil
+        preferences.setSelectedLocation(nil)
         await refresh()
     }
 
@@ -113,6 +121,7 @@ public final class HomeViewModel {
     /// tekrar sorulmaz; elde olan konumla yeni ayarlar uygulanır.
     public func apply(settings newSettings: CalculationSettings) {
         settings = newSettings
+        preferences.setCalculationSettings(newSettings)
         if let location = state.schedule?.location {
             state = .ready(makeSchedule(for: location))
         }

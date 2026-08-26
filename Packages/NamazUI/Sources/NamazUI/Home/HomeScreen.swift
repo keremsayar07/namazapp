@@ -1,4 +1,6 @@
 import SwiftUI
+// `UIApplication.openSettingsURLString` için — SwiftUI'ın kendi yüzeyinde değil.
+import UIKit
 import NamazCore
 import PrayerKit
 
@@ -27,7 +29,7 @@ public struct HomeScreen: View {
             case .locationDenied:
                 LocationNoticeView(
                     title: L.t("home.denied.title"),
-                    body: L.t("home.denied.body"),
+                    message: L.t("home.denied.body"),
                     primary: .init(title: L.t("home.denied.pick"), action: {}),
                     // Reddedilmiş izinde "tekrar dene" yok: sistem bir daha sormaz,
                     // düğme hiçbir şey yapmazdı. Tek gerçek yol Ayarlar.
@@ -36,7 +38,7 @@ public struct HomeScreen: View {
             case .locationUnavailable:
                 LocationNoticeView(
                     title: L.t("home.unavailable.title"),
-                    body: L.t("home.unavailable.body"),
+                    message: L.t("home.unavailable.body"),
                     // Burada tekrar denemek gerçekten işe yarayabilir, o yüzden birincil eylem o.
                     primary: .init(title: L.t("home.unavailable.retry"), action: { Task { await model.refresh() } }),
                     secondary: .init(title: L.t("home.unavailable.pick"), action: {})
@@ -184,7 +186,7 @@ private struct LedgerRow: View {
         }
         .opacity(opacity)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(accessibilityLabel)
+        .accessibilityLabel(spokenRow)
     }
 
     private var nameText: some View {
@@ -203,7 +205,7 @@ private struct LedgerRow: View {
 
     /// VoiceOver satırı tek parça okur ve durumu da söyler — görsel soluklaştırma ekran
     /// okuyucuya hiçbir şey anlatmaz, o bilgi metne girmek zorunda.
-    private var accessibilityLabel: String {
+    private var spokenRow: String {
         if isCurrent {
             return L.t("home.accessibility.current %@ %@", name, clock)
         }
@@ -254,7 +256,8 @@ private struct LocationNoticeView: View {
     }
 
     let title: String
-    let body: String
+    /// `body` DEĞİL: `View` protokolünün `body`'siyle çakışırdı ve derlenmezdi.
+    let message: String
     let primary: Action
     let secondary: Action
 
@@ -270,7 +273,7 @@ private struct LocationNoticeView: View {
                 .font(Font.system(.title2, design: .serif))
                 .foregroundStyle(Palette.ink)
 
-            Text(self.body)
+            Text(message)
                 .font(Typography.prayerName)
                 .foregroundStyle(Palette.inkSoft)
                 .fixedSize(horizontal: false, vertical: true)
