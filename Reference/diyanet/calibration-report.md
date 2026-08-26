@@ -2,10 +2,15 @@
 
 Bu dosya `prayerkit-calibrate` tarafından üretilir, elle düzenlenmez.
 
-- Üretim (UTC): `2026-08-26T07:15:56Z`
+- Üretim (UTC): `2026-08-26T07:21:33Z`
 - Kaynak: `Reference/diyanet/mirror` — bkz. `Tools/diyanet_reference/PROVENANCE.md`
-- Yöntem: `CalculationMethod.turkey` (İmsak 18°, Yatsı 17°, akşam offseti 0)
+- Yöntem: `CalculationMethod.turkey` (İmsak 18°, Yatsı 17° + ölçülen temkin payları)
 - Şehir sayısı: 12, toplam gün: 384
+
+## ✅ Geçti
+
+Varsayılan yapılandırmada (Şafii ikindi) her vakit için ortalama fark
+±0.5 dakikanın, en uç gün ±2.5 dakikanın içinde.
 
 **Fark tanımı:** `Diyanet − PrayerKit`, dakika cinsinden. Pozitif değer,
 Diyanet'in vakti daha geç yayımladığı anlamına gelir; yani hesabımıza o kadar
