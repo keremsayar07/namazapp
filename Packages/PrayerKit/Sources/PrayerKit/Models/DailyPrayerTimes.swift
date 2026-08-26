@@ -38,4 +38,17 @@ public struct DailyPrayerTimes: Codable, Sendable, Hashable {
     public func pastPrayers(relativeTo now: Date) -> Set<Prayer> {
         Set(times.filter { $0.date <= now }.map(\.prayer))
     }
+
+    /// The prayer period `now` falls inside — that is, the last entry at or before `now`.
+    /// `nil` when `now` precedes this day's first entry, which means the previous day's isha
+    /// is still running; this type never looks outside its own day.
+    ///
+    /// Sunrise counts as an entry here: the stretch between sunrise and dhuhr genuinely is
+    /// "after sunrise", and the Home screen highlights that row for it.
+    public func currentPrayer(at now: Date) -> Prayer? {
+        times
+            .filter { $0.date <= now }
+            .max { $0.date < $1.date }?
+            .prayer
+    }
 }

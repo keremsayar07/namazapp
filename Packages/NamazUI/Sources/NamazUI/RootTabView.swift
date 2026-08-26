@@ -20,8 +20,13 @@ public struct RootTabView: View {
             HomeScreen(model: dependencies.homeModel, citySearch: dependencies.citySearch)
                 .tabItem { Label(L.t("tab.times"), systemImage: "clock") }
 
-            PlaceholderScreen(name: L.t("tab.calendar"))
-                .tabItem { Label(L.t("tab.calendar"), systemImage: "calendar") }
+            // Takvim kendi konumunu tutmuyor: Vakit sekmesindeki tek gerçeği okuyor.
+            // Kullanıcı orada şehri değiştirdiğinde takvim de aynı anda değişiyor.
+            CalendarScreen(
+                location: dependencies.homeModel.state.schedule?.location,
+                calculationSettings: dependencies.homeModel.settings
+            )
+            .tabItem { Label(L.t("tab.calendar"), systemImage: "calendar") }
 
             PlaceholderScreen(name: L.t("tab.qibla"))
                 .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }

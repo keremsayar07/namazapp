@@ -60,4 +60,48 @@ enum Formatting {
         style.timeZone = timeZone
         return date.formatted(style)
     }
+
+    /// Takvim başlığı: "Ağustos 2026". Ay adı ve yılın sırası biçimlendiriciden geliyor,
+    /// elle birleştirilmiyor — bazı dillerde yıl önce gelir.
+    static func monthLine(_ date: Date, in timeZone: TimeZone) -> String {
+        var style = Date.FormatStyle().month(.wide).year()
+        style.timeZone = timeZone
+        return date.formatted(style)
+    }
+
+    /// Seçili günün üst satırı: "Salı, 25 Ağustos 2026".
+    static func weekdayLine(_ date: Date, in timeZone: TimeZone) -> String {
+        var style = Date.FormatStyle().weekday(.wide).day().month(.wide).year()
+        style.timeZone = timeZone
+        return date.formatted(style)
+    }
+
+    /// Izgaranın üstündeki gün kısaltmaları — haftanın ilk gününden başlayarak.
+    ///
+    /// `veryShortWeekdaySymbols` her zaman pazardan başlar; takvimin `firstWeekday`'ine göre
+    /// döndürüyoruz. Türkiye'de hafta pazartesi, ABD'de pazar başlıyor ve ızgaranın
+    /// hizalaması da (`CalendarMonth.leadingBlanks`) aynı değere dayanıyor.
+    static func weekdayInitials(_ calendar: Calendar) -> [String] {
+        let symbols = calendar.veryShortWeekdaySymbols
+        guard symbols.count == 7 else { return symbols }
+        let shift = calendar.firstWeekday - 1
+        return (0..<7).map { symbols[($0 + shift) % 7] }
+    }
+
+    /// Hicri ay aralığı: "Rebiülevvel – Rebiülahir 1448" ya da tek aya sığıyorsa
+    /// "Muharrem 1448". Yıl da değişiyorsa iki tarafta da yazılıyor.
+    static func hijriSpanLine(_ span: [HijriDate]) -> String {
+        func single(_ hijri: HijriDate) -> String {
+            L.t("calendar.hijri.single %@ %@", L.t(hijri.monthLocalizationKey), String(hijri.year))
+        }
+        guard let first = span.first else { return "" }
+        guard let last = span.last, span.count > 1 else { return single(first) }
+
+        // Aynı yıl içindeysek yılı bir kez yazıyoruz: "Rebiülevvel 1448 – Rebiülahir 1448"
+        // hem uzun hem de fazladan bilgi taşımıyor.
+        let leading = first.year == last.year
+            ? L.t(first.monthLocalizationKey)
+            : single(first)
+        return L.t("calendar.hijri.span %@ %@", leading, single(last))
+    }
 }

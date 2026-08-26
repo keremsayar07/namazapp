@@ -91,3 +91,14 @@
 /* Bildirim metinleri */
 "notification.body.at_time %@" = "%@ vakti girdi.";
 "notification.body.reminder %@ %@" = "%1$@ vaktine %2$@ dakika kaldı.";
+
+/* Takvim */
+"calendar.previous" = "Önceki ay";
+"calendar.next" = "Sonraki ay";
+"calendar.today" = "Bugüne dön";
+"calendar.hint" = "Vakitlerini görmek için bir güne dokunun.";
+"calendar.hijri.single %@ %@" = "%1$@ %2$@";
+"calendar.hijri.span %@ %@" = "%1$@ – %2$@";
+"calendar.accessibility.today %@" = "%@, bugün";
+"calendar.empty.title" = "Önce bir konum gerekiyor";
+"calendar.empty.body" = "Takvim, vakitleri hesaplamak için konuma ihtiyaç duyuyor. Vakit sekmesinden konum iznini verebilir ya da şehrinizi elle seçebilirsiniz.";

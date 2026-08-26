@@ -33,11 +33,11 @@ public struct PrayerSchedule: Sendable, Hashable {
     /// O an içinde bulunulan vakit — yani `now`'dan önceki son vakit. Home ekranı bunu
     /// vurgulamak için kullanıyor. Günün ilk vaktinden önceyse dünün yatsısındayız demektir,
     /// bu durumda `nil` döner ve ekran vurgusuz kalır.
+    ///
+    /// Kuralın kendisi `DailyPrayerTimes` içinde: takvim ekranı da aynı vurguyu çiziyor ve
+    /// iki ayrı yerde tanımlanan bir kural er ya da geç birbirinden ayrı düşer.
     public func currentPrayer(at now: Date) -> Prayer? {
-        today.times
-            .filter { $0.date <= now }
-            .max { $0.date < $1.date }?
-            .prayer
+        today.currentPrayer(at: now)
     }
 }
 

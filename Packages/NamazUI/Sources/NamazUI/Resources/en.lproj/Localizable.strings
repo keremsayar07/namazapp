@@ -91,3 +91,14 @@
 /* Notification text */
 "notification.body.at_time %@" = "It's time for %@.";
 "notification.body.reminder %@ %@" = "%2$@ minutes until %1$@.";
+
+/* Calendar */
+"calendar.previous" = "Previous month";
+"calendar.next" = "Next month";
+"calendar.today" = "Back to today";
+"calendar.hint" = "Tap a day to see its prayer times.";
+"calendar.hijri.single %@ %@" = "%1$@ %2$@";
+"calendar.hijri.span %@ %@" = "%1$@ – %2$@";
+"calendar.accessibility.today %@" = "%@, today";
+"calendar.empty.title" = "A location is needed first";
+"calendar.empty.body" = "The calendar needs a location to calculate prayer times. Grant location access on the Times tab, or pick your city manually.";
