@@ -2,7 +2,7 @@
 
 Bu dosya `prayerkit-calibrate` tarafından üretilir, elle düzenlenmez.
 
-- Üretim (UTC): `2026-08-26T12:45:40Z`
+- Üretim (UTC): `2026-08-26T13:26:55Z`
 - Kaynak: `Reference/diyanet/mirror` — bkz. `Tools/diyanet_reference/PROVENANCE.md`
 - Yöntem: `CalculationMethod.turkey` (İmsak 18°, Yatsı 17° + ölçülen temkin payları)
 - Şehir sayısı: 12, toplam gün: 384
