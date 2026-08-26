@@ -1,0 +1,61 @@
+name: Hicri Düzeltme Tablosu
+
+# Diyanet ayna arşivindeki `HicriTarihUzun` alanlarından, Diyanet takviminin Ümmü'l-Kura'dan
+# ayrıldığı günlerin tablosunu üretir ve değişiklik varsa commit'ler.
+#
+# Araç, veriyi anlamadığı her durumda (ayrıştırılamayan ay adı, ilçeler arası uyuşmazlık)
+# kırmızı bitiyor ve dosyayı hiç yazmıyor. Anlaşılmayan veriden tablo üretmek, uydurmakla
+# aynı kapıya çıkardı.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Reference/diyanet/mirror/**"
+      - "Packages/PrayerKit/Sources/PrayerKitHijriTable/**"
+      - "Packages/PrayerKit/Sources/PrayerKit/Hijri/**"
+      - ".github/workflows/hijri-table.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hijri-table
+  cancel-in-progress: true
+
+jobs:
+  generate:
+    runs-on: macos-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Swift sürümü
+        run: swift --version
+
+      - name: Tabloyu üret
+        working-directory: Packages/PrayerKit
+        run: swift run -c release prayerkit-hijri-table "$GITHUB_WORKSPACE"
+
+      - name: Raporu özet olarak göster
+        if: always()
+        run: cat Reference/diyanet/hijri-report.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      # Üretilen tablo testlerden geçmeden commit'lenmesin: bozuk bir tabloyu depoya
+      # yazmaktansa iş akışının kırmızı bitmesi yeğdir.
+      - name: PrayerKit testleri
+        working-directory: Packages/PrayerKit
+        run: swift test
+
+      - name: Tabloyu commit'le
+        run: |
+          FILES="Packages/PrayerKit/Sources/PrayerKit/Hijri/DiyanetHijriOverrides.swift Reference/diyanet/hijri-report.md"
+          if [ -z "$(git status --porcelain $FILES)" ]; then
+            echo "Tablo değişmedi, commit atlanıyor."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $FILES
+          git commit -m "Hicri düzeltme tablosu güncellendi"
+          git push
