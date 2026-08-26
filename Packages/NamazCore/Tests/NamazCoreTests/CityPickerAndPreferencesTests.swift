@@ -3,6 +3,34 @@ import XCTest
 import PrayerKit
 @testable import NamazCore
 
+/// Türkçe metin karşılaştırmasının kendi testleri.
+///
+/// Bu hata CI'da gerçekten yakalandı: "ista" yazınca "İstanbul" bulunamıyordu, çünkü
+/// Unicode'da "İ" küçük harfe inince iki koda ayrılıyor (`i` + birleşen nokta). Kullanıcı
+/// açısından "arama çalışmıyor" gibi görünür, log'da hiçbir iz bırakmazdı.
+final class SearchFoldingTests: XCTestCase {
+
+    func test_dottedCapitalI_matchesPlainAscii() {
+        XCTAssertTrue(SearchFolding.contains("İstanbul", "ista"))
+        XCTAssertTrue(SearchFolding.contains("İstanbul", "İSTA"))
+        XCTAssertTrue(SearchFolding.contains("İzmir", "izm"))
+    }
+
+    func test_otherTurkishLettersFold() {
+        XCTAssertTrue(SearchFolding.contains("Şahinbey", "sahin"))
+        XCTAssertTrue(SearchFolding.contains("Gaziantep", "gazi"))
+        XCTAssertTrue(SearchFolding.contains("Çankaya", "cank"))
+        XCTAssertTrue(SearchFolding.contains("Bağlar", "bag"))
+        XCTAssertTrue(SearchFolding.contains("Ortahisar", "ortahisar"))
+    }
+
+    func test_nonMatchStillFails() {
+        // Katlama her şeyi eşleştirmemeli — aksi hâlde arama işe yaramaz.
+        XCTAssertFalse(SearchFolding.contains("Ankara", "zzz"))
+        XCTAssertFalse(SearchFolding.contains("Van", "berlin"))
+    }
+}
+
 @MainActor
 final class CityPickerViewModelTests: XCTestCase {
 

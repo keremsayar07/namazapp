@@ -53,6 +53,41 @@ public protocol CitySearching: Sendable {
     func search(_ query: String) async throws -> [CityCandidate]
 }
 
+/// Türkçe metinde arama karşılaştırması.
+///
+/// `localizedCaseInsensitiveContains` bu iş için yetmiyor ve nedeni sinsi: Unicode kuralı
+/// gereği "İ" küçük harfe indiğinde tek bir karaktere değil, **iki koda** dönüşüyor —
+/// `i` artı birleşen nokta (U+0307). Yani "İstanbul" küçük harfte "i̇stanbul" oluyor ve
+/// kullanıcının yazdığı "ista" ile eşleşmiyor. Aramada hiçbir sonuç dönmüyor, ortada da
+/// görünür bir hata yok.
+///
+/// Çözüm, karşılaştırmadan önce her iki tarafı da ASCII'ye indirmek. Tablo kod
+/// noktalarıyla kuruluyor ki bu dosyada tek bir Türkçe karakter geçmesin — kaynak dosya
+/// kodlaması ne olursa olsun çalışsın.
+enum SearchFolding {
+    private static let map: [UInt32: Character] = [
+        0x0131: "i", 0x0130: "i", 0x0049: "i", 0x0069: "i",   // ı İ I i
+        0x015F: "s", 0x015E: "s",                             // ş Ş
+        0x011F: "g", 0x011E: "g",                             // ğ Ğ
+        0x00FC: "u", 0x00DC: "u",                             // ü Ü
+        0x00F6: "o", 0x00D6: "o",                             // ö Ö
+        0x00E7: "c", 0x00C7: "c",                             // ç Ç
+        0x00E2: "a", 0x00C2: "a",                             // â Â
+        0x00EE: "i", 0x00CE: "i",                             // î Î
+        0x00FB: "u", 0x00DB: "u"                              // û Û
+    ]
+
+    static func fold(_ text: String) -> String {
+        String(text.unicodeScalars.map { scalar in
+            map[scalar.value] ?? Character(scalar)
+        }).lowercased()
+    }
+
+    static func contains(_ haystack: String, _ needle: String) -> Bool {
+        fold(haystack).contains(fold(needle))
+    }
+}
+
 /// Test ve önizleme için sabit sonuç dönen arama.
 public struct StubCitySearch: CitySearching {
     private let results: [CityCandidate]
@@ -68,8 +103,8 @@ public struct StubCitySearch: CitySearching {
         let trimmed = query.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return [] }
         return results.filter {
-            $0.name.localizedCaseInsensitiveContains(trimmed)
-                || $0.region.localizedCaseInsensitiveContains(trimmed)
+            SearchFolding.contains($0.name, trimmed)
+                || SearchFolding.contains($0.region, trimmed)
         }
     }
 
