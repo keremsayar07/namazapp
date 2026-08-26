@@ -17,6 +17,7 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_shortQuery_doesNotSearch() async {
         let model = makeModel()
         model.query = "i"
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         // Tek harf için arama yapmak hem kotayı harcar hem de yüzlerce alakasız sonuç verir.
@@ -26,6 +27,7 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_matchingQuery_producesResults() async {
         let model = makeModel()
         model.query = "ista"
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         guard case .results(let results) = model.state else {
@@ -37,6 +39,7 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_noMatch_isDistinctFromFailure() async {
         let model = makeModel()
         model.query = "zzzzzz"
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         // "Bulunamadı" ile "arama çalışmadı" ayrı durumlar: ilki kullanıcının yazdığıyla,
@@ -47,6 +50,7 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_searchFailure_reportsFailedNotEmpty() async {
         let model = makeModel(search: StubCitySearch(error: .unavailable))
         model.query = "ankara"
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         XCTAssertEqual(model.state, .failed)
@@ -55,8 +59,10 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_clearingQuery_returnsToEmpty() async {
         let model = makeModel()
         model.query = "ankara"
+        model.queryChanged()
         await model.waitForPendingSearch()
         model.query = ""
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         XCTAssertEqual(model.state, .empty)
@@ -65,6 +71,7 @@ final class CityPickerViewModelTests: XCTestCase {
     func test_candidateCarriesItsOwnTimeZone() async {
         let model = makeModel()
         model.query = "berlin"
+        model.queryChanged()
         await model.waitForPendingSearch()
 
         guard case .results(let results) = model.state, let berlin = results.first else {
