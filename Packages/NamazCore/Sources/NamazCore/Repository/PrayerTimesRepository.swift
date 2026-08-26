@@ -90,6 +90,21 @@ public struct PrayerTimesRepository: Sendable {
         )
     }
 
+    /// Tek bir takvim gününün vakitleri.
+    ///
+    /// Bildirim planlayıcısı ileriye doğru gün gün yürürken bunu kullanıyor; `schedule(for:)`
+    /// her çağrıda yarını da hesaplayacağı için iki katı iş olurdu.
+    public func dailyTimes(
+        on date: Date,
+        location: SavedLocation,
+        settings: CalculationSettings
+    ) -> DailyPrayerTimes {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = location.coordinate.timeZone
+        let noon = calendar.startOfDay(for: date).addingTimeInterval(12 * 3600)
+        return daily(at: noon, location: location, settings: settings)
+    }
+
     private func daily(
         at date: Date,
         location: SavedLocation,

@@ -70,6 +70,7 @@ public struct Preferences: Sendable {
     private enum Key {
         static let location = "namaz.selectedLocation"
         static let settings = "namaz.calculationSettings"
+        static let notifications = "namaz.notificationSettings"
     }
 
     private let store: PreferenceStoring
@@ -97,6 +98,16 @@ public struct Preferences: Sendable {
 
     public func setCalculationSettings(_ settings: CalculationSettings) {
         encode(settings, forKey: Key.settings)
+    }
+
+    // MARK: - Bildirim ayarları
+
+    public func notificationSettings() -> NotificationSettings {
+        decode(NotificationSettings.self, forKey: Key.notifications) ?? .default
+    }
+
+    public func setNotificationSettings(_ settings: NotificationSettings) {
+        encode(settings, forKey: Key.notifications)
     }
 
     // MARK: - Kodlama
