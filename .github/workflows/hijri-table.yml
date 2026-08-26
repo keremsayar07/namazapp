@@ -20,8 +20,10 @@ permissions:
   contents: write
 
 concurrency:
-  group: hijri-table
-  cancel-in-progress: true
+  # Depoya yazan tüm iş akışları tek grupta: aynı anda ikisi push etmeye
+  # çalışmasın. İptal etmiyoruz, sıraya giriyorlar.
+  group: repo-write
+  cancel-in-progress: false
 
 jobs:
   generate:
@@ -58,4 +60,17 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add $FILES
           git commit -m "Hicri düzeltme tablosu güncellendi"
-          git push
+          # Aynı push birden fazla iş akışını tetikleyip her biri commit atabiliyor.
+          # `actions/checkout` tetikleyen commit'i alıyor, dolayısıyla ilk push geçtiğinde
+          # bizim dalımız geride kalıyor ve push "fetch first" diye reddediliyor. Farklı
+          # dosyalara dokunduğumuz için rebase temiz geçiyor; üç deneme fazlasıyla yeter.
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push reddedildi (deneme $attempt), rebase edilip tekrar denenecek."
+            git fetch origin "$GITHUB_REF_NAME" || exit 1
+            git rebase "origin/$GITHUB_REF_NAME" || { git rebase --abort; exit 1; }
+          done
+          echo "Push üç denemede de başarısız oldu."
+          exit 1
