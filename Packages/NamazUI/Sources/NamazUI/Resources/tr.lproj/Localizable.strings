@@ -1,0 +1,56 @@
+/* Vakit adları — PrayerKit'in Prayer.localizationKey değerleriyle eşleşir */
+"prayer.fajr" = "İmsak";
+"prayer.sunrise" = "Güneş";
+"prayer.dhuhr" = "Öğle";
+"prayer.asr" = "İkindi";
+"prayer.maghrib" = "Akşam";
+"prayer.isha" = "Yatsı";
+
+/* Sekmeler */
+"tab.times" = "Vakit";
+"tab.calendar" = "Takvim";
+"tab.qibla" = "Kıble";
+"tab.settings" = "Ayarlar";
+
+/* Ana ekran */
+"home.countdown.label %@" = "%@ vaktine kalan";
+"home.location.fallback" = "Konumunuz";
+"home.accessibility.remaining %@ %@" = "%1$@ vaktine %2$@ kaldı";
+"home.accessibility.passed %@ %@" = "%1$@, %2$@, geçti";
+"home.accessibility.upcoming %@ %@" = "%1$@, %2$@";
+"home.accessibility.current %@ %@" = "%1$@, %2$@, şu anki vakit";
+
+/* Konum izni reddedildi. Sistem bir daha sormayacağı için "tekrar dene" YOK —
+   kullanıcıyı işe yaramayacak bir düğmeye tıklatmak çıkmaza sokar. */
+"home.denied.title" = "Konum izni kapalı";
+"home.denied.body" = "Vakitleri bulunduğunuz yere göre hesaplamak için konum gerekiyor. Dilerseniz şehrinizi elle de seçebilirsiniz.";
+"home.denied.pick" = "Şehir seç";
+"home.denied.settings" = "Ayarlar'ı aç";
+
+/* Konum alınamadı — bu durumda tekrar denemek işe yarar. */
+"home.unavailable.title" = "Konum alınamadı";
+"home.unavailable.body" = "Kapalı alanda konum bulmak uzun sürebiliyor. Tekrar deneyebilir ya da şehrinizi elle seçebilirsiniz.";
+"home.unavailable.retry" = "Tekrar dene";
+"home.unavailable.pick" = "Şehir seç";
+
+"home.loading.accessibility" = "Vakitler yükleniyor";
+
+/* Henüz yazılmamış ekranlar */
+"placeholder.title %@" = "%@ ekranı";
+"placeholder.body" = "Bu bölüm sonraki fazda geliyor.";
+
+/* Hicri ay adları — PrayerKit'in HijriDate.monthLocalizationKey değerleriyle eşleşir */
+"hijri.month.muharrem" = "Muharrem";
+"hijri.month.safer" = "Safer";
+"hijri.month.rebiulevvel" = "Rebiülevvel";
+"hijri.month.rebiulahir" = "Rebiülahir";
+"hijri.month.cemaziyelevvel" = "Cemaziyelevvel";
+"hijri.month.cemaziyelahir" = "Cemaziyelahir";
+"hijri.month.recep" = "Recep";
+"hijri.month.saban" = "Şaban";
+"hijri.month.ramazan" = "Ramazan";
+"hijri.month.sevval" = "Şevval";
+"hijri.month.zilkade" = "Zilkade";
+"hijri.month.zilhicce" = "Zilhicce";
+"hijri.month.unknown" = "—";
+"hijri.dateline %@ %@ %@" = "%1$@ %2$@ %3$@";

@@ -1,0 +1,56 @@
+/* Prayer names — match PrayerKit's Prayer.localizationKey values */
+"prayer.fajr" = "Fajr";
+"prayer.sunrise" = "Sunrise";
+"prayer.dhuhr" = "Dhuhr";
+"prayer.asr" = "Asr";
+"prayer.maghrib" = "Maghrib";
+"prayer.isha" = "Isha";
+
+/* Tabs */
+"tab.times" = "Times";
+"tab.calendar" = "Calendar";
+"tab.qibla" = "Qibla";
+"tab.settings" = "Settings";
+
+/* Home */
+"home.countdown.label %@" = "Until %@";
+"home.location.fallback" = "Your location";
+"home.accessibility.remaining %@ %@" = "%2$@ until %1$@";
+"home.accessibility.passed %@ %@" = "%1$@, %2$@, passed";
+"home.accessibility.upcoming %@ %@" = "%1$@, %2$@";
+"home.accessibility.current %@ %@" = "%1$@, %2$@, current period";
+
+/* Location permission denied. No "try again" — the system will not ask a second time,
+   so offering a button that cannot work would trap the user. */
+"home.denied.title" = "Location is turned off";
+"home.denied.body" = "Prayer times are calculated from where you are. You can also pick your city by hand.";
+"home.denied.pick" = "Pick a city";
+"home.denied.settings" = "Open Settings";
+
+/* Location unavailable — here retrying genuinely helps. */
+"home.unavailable.title" = "Couldn't get your location";
+"home.unavailable.body" = "Finding a location indoors can take a while. Try again, or pick your city by hand.";
+"home.unavailable.retry" = "Try again";
+"home.unavailable.pick" = "Pick a city";
+
+"home.loading.accessibility" = "Loading prayer times";
+
+/* Screens not built yet */
+"placeholder.title %@" = "%@";
+"placeholder.body" = "This section arrives in a later phase.";
+
+/* Hijri month names — match PrayerKit's HijriDate.monthLocalizationKey values */
+"hijri.month.muharrem" = "Muharram";
+"hijri.month.safer" = "Safar";
+"hijri.month.rebiulevvel" = "Rabi al-Awwal";
+"hijri.month.rebiulahir" = "Rabi al-Thani";
+"hijri.month.cemaziyelevvel" = "Jumada al-Awwal";
+"hijri.month.cemaziyelahir" = "Jumada al-Thani";
+"hijri.month.recep" = "Rajab";
+"hijri.month.saban" = "Sha'ban";
+"hijri.month.ramazan" = "Ramadan";
+"hijri.month.sevval" = "Shawwal";
+"hijri.month.zilkade" = "Dhu al-Qi'dah";
+"hijri.month.zilhicce" = "Dhu al-Hijjah";
+"hijri.month.unknown" = "—";
+"hijri.dateline %@ %@ %@" = "%1$@ %2$@ %3$@";
