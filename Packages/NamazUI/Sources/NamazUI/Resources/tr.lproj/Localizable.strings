@@ -102,7 +102,7 @@
 
 /* Kıble */
 "qibla.bearing.label" = "Kıble açısı";
-"qibla.degrees %@" = "%@°";
+"format.degrees %@" = "%@°";
 "qibla.distance %@" = "Kâbe'ye kuş uçuşu %@.";
 "qibla.aligned" = "Kıble yönündesiniz";
 "qibla.turn.right %@" = "%@° sağa dönün";
@@ -122,3 +122,81 @@
 "compass.east" = "D";
 "compass.south" = "G";
 "compass.west" = "B";
+
+/* Ayarlar — kök */
+"settings.title" = "Ayarlar";
+"settings.section.location" = "Konum";
+"settings.location.none" = "Konum seçilmedi";
+"settings.location.source.manual" = "Elle seçildi";
+"settings.location.source.device" = "Cihaz konumu";
+"settings.location.useDevice" = "Cihaz konumuna dön";
+"settings.location.useDevice.action" = "Kullan";
+"settings.section.preferences" = "Tercihler";
+"settings.notifications.off" = "Kapalı";
+"settings.notifications.count %@" = "%@ vakit";
+"settings.section.language" = "Dil";
+"settings.language" = "Uygulama dili";
+"settings.language.note" = "Uygulama sistem dilini izliyor; Türkçe ve İngilizce destekleniyor. Yalnızca bu uygulamanın dilini iOS Ayarlar'dan değiştirebilirsiniz.";
+"settings.language.open" = "Ayarlar'ı aç";
+"settings.section.about" = "Uygulama";
+
+/* Hesaplama ayarları */
+"calc.title" = "Hesaplama";
+"calc.section.method" = "Yöntem";
+"calc.method.angles %@ %@" = "İmsak %1$@ · Yatsı %2$@";
+"calc.method.interval %@ %@" = "İmsak %1$@ · Yatsı akşamdan %2$@ dk sonra";
+"calc.method.turkey.calibrated" = "Diyanet takvimine göre kalibre edildi";
+"calc.method.note" = "Yöntemler, İmsak ve Yatsı'nın güneşin ufkun kaç derece altında olmasıyla tanımlandığını belirler. Türkiye yöntemi ayrıca Diyanet'in yayımladığı takvimden ölçülen temkin paylarını uygular.";
+"calc.section.madhab" = "İkindi (mezhep)";
+"calc.madhab.shafi.detail" = "Gölge boyu cismin bir katı (asr-ı evvel)";
+"calc.madhab.hanafi.detail" = "Gölge boyu cismin iki katı (asr-ı sani)";
+"calc.madhab.note" = "İkindi vaktinin tanımı gölge uzunluğuna dayanır. Diyanet takviminde asr-ı evvel yayımlanır.";
+"calc.madhab.diyanet.warning" = "Türkiye yöntemiyle Hanefi seçtiniz. Diyanet asr-ı evvel yayımladığı için İkindi vakti, resmi takvimden yaklaşık 52 dakika sonraya kayar. Bu bir hata değil, bilinçli bir tercih olmalı.";
+"calc.section.highLatitude" = "Yüksek enlem kuralı";
+"calc.highLatitude.middleOfNight.detail" = "İmsak ve Yatsı, gecenin ortasını geçemez.";
+"calc.highLatitude.seventhOfNight.detail" = "İmsak ve Yatsı, gecenin yedide birini geçemez. Yaklaşık 48° kuzeyin üstü için önerilir.";
+"calc.highLatitude.twilightAngle.detail" = "Gece, yöntemin kendi açılarına göre bölünür.";
+"calc.highLatitude.note" = "Bu kural yalnızca güneşin gerekli açıya hiç inmediği enlemlerde devreye girer. Türkiye'nin tamamında sonucu değiştirmez.";
+"calc.section.offsets" = "Elle düzeltme";
+"calc.offset.none" = "Yok";
+"calc.offset.value %@" = "%@ dk";
+"calc.offset.accessibility %@ %@" = "%1$@ düzeltmesi: %2$@";
+"calc.offsets.note" = "Bulunduğunuz yerdeki ezan, hesaplanan vakitten birkaç dakika farklıysa buradan ince ayar yapabilirsiniz. Düzeltme, seçtiğiniz yöntemin üstüne eklenir.";
+"calc.reset" = "Varsayılanlara dön";
+"calc.reset.note" = "Yöntem, mezhep, yüksek enlem kuralı ve tüm elle düzeltmeler Türkiye varsayılanlarına döner.";
+
+/* Hesaplama yöntemleri */
+"method.turkey" = "Türkiye (Diyanet)";
+"method.muslimWorldLeague" = "Müslüman Dünya Birliği";
+"method.egyptian" = "Mısır Genel Araştırma Kurumu";
+"method.karachi" = "Karaçi";
+"method.ummAlQura" = "Ümmü'l-Kura (Mekke)";
+"method.dubai" = "Dubai";
+"method.qatar" = "Katar";
+"method.kuwait" = "Kuveyt";
+"method.moonsightingCommittee" = "Moonsighting Committee";
+"method.singapore" = "Singapur";
+"method.tehran" = "Tahran";
+"method.northAmerica" = "Kuzey Amerika (ISNA)";
+"method.custom" = "Özel";
+
+/* Mezhep ve yüksek enlem */
+"madhab.shafi" = "Şafii";
+"madhab.hanafi" = "Hanefi";
+"highLatitude.middleOfNight" = "Gecenin ortası";
+"highLatitude.seventhOfNight" = "Gecenin yedide biri";
+"highLatitude.twilightAngle" = "Şafak açısı";
+
+/* Hakkında */
+"about.title" = "Hakkında";
+"about.intro" = "Namaz, vakitleri cihazınızda hesaplar. Vakit almak için internet bağlantısı gerekmez.";
+"about.section.calculation" = "Vakitler nasıl hesaplanıyor";
+"about.calculation.body" = "Vakitler, güneşin konumundan doğrudan hesaplanıyor. Türkiye yöntemindeki temkin payları tahmin değil ölçüm: Diyanet'in kendi yayımladığı takvimle 12 ilde 384 günlük karşılaştırma yapıldı ve kalan fark tüm vakitlerde dakikanın onda biri mertebesine indi. Ölçüm bir aylık veriye dayanıyor; kapsam her ay genişliyor.";
+"about.section.hijri" = "Hicri tarih";
+"about.hijri.body" = "Hicri tarih şu an Ümmü'l-Kura takvim tablosundan geliyor. Diyanet'in dini takvimi ay başlarında bundan bir gün farklı olabiliyor; bu, özellikle Ramazan ve bayram başlangıçlarında önem taşır. Doğrulanmış Diyanet günleri biriktikçe düzeltme tablosu dolacak. O tablo dolana kadar bayram tarihleri için Diyanet'in kendi takvimini esas alın.";
+"about.section.privacy" = "Gizlilik";
+"about.privacy.body" = "Konumunuz cihazdan çıkmaz; vakitler ve kıble açısı yerelde hesaplanır. Yalnızca elle şehir ararken yazdığınız metin, sonucu bulmak için Apple'ın konum servisine gönderilir. Uygulamada reklam, izleme ve analiz yoktur.";
+"about.section.version" = "Künye";
+"about.version" = "Sürüm";
+"about.version.unknown" = "—";
+"about.kaaba" = "Kâbe koordinatı";

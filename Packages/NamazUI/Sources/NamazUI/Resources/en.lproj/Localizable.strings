@@ -103,7 +103,7 @@
 
 /* Qibla */
 "qibla.bearing.label" = "Qibla bearing";
-"qibla.degrees %@" = "%@°";
+"format.degrees %@" = "%@°";
 "qibla.distance %@" = "%@ to the Kaaba as the crow flies.";
 "qibla.aligned" = "You are facing the Qibla";
 "qibla.turn.right %@" = "Turn %@° right";
@@ -123,3 +123,81 @@
 "compass.east" = "E";
 "compass.south" = "S";
 "compass.west" = "W";
+
+/* Settings — root */
+"settings.title" = "Settings";
+"settings.section.location" = "Location";
+"settings.location.none" = "No location selected";
+"settings.location.source.manual" = "Chosen manually";
+"settings.location.source.device" = "Device location";
+"settings.location.useDevice" = "Back to device location";
+"settings.location.useDevice.action" = "Use";
+"settings.section.preferences" = "Preferences";
+"settings.notifications.off" = "Off";
+"settings.notifications.count %@" = "%@ prayers";
+"settings.section.language" = "Language";
+"settings.language" = "App language";
+"settings.language.note" = "The app follows your system language; Turkish and English are supported. You can change the language for this app alone in iOS Settings.";
+"settings.language.open" = "Open Settings";
+"settings.section.about" = "App";
+
+/* Calculation settings */
+"calc.title" = "Calculation";
+"calc.section.method" = "Method";
+"calc.method.angles %@ %@" = "Fajr %1$@ · Isha %2$@";
+"calc.method.interval %@ %@" = "Fajr %1$@ · Isha %2$@ min after Maghrib";
+"calc.method.turkey.calibrated" = "Calibrated against the Diyanet calendar";
+"calc.method.note" = "A method defines how far below the horizon the sun must be for Fajr and Isha. The Turkey method additionally applies safety margins measured from Diyanet's own published calendar.";
+"calc.section.madhab" = "Asr (school)";
+"calc.madhab.shafi.detail" = "Shadow equal to the object's length (earlier Asr)";
+"calc.madhab.hanafi.detail" = "Shadow twice the object's length (later Asr)";
+"calc.madhab.note" = "Asr is defined by shadow length. The Diyanet calendar publishes the earlier definition.";
+"calc.madhab.diyanet.warning" = "You have chosen Hanafi with the Turkey method. Because Diyanet publishes the earlier Asr, your Asr will fall roughly 52 minutes after the official calendar. That is not a bug — but it should be a deliberate choice.";
+"calc.section.highLatitude" = "High-latitude rule";
+"calc.highLatitude.middleOfNight.detail" = "Fajr and Isha never pass the midpoint of the night.";
+"calc.highLatitude.seventhOfNight.detail" = "Fajr and Isha never pass one seventh of the night. Recommended above roughly 48°.";
+"calc.highLatitude.twilightAngle.detail" = "The night is divided in proportion to the method's own angles.";
+"calc.highLatitude.note" = "This rule only applies where the sun never reaches the required angle. It changes nothing anywhere in Turkey.";
+"calc.section.offsets" = "Manual adjustment";
+"calc.offset.none" = "None";
+"calc.offset.value %@" = "%@ min";
+"calc.offset.accessibility %@ %@" = "%1$@ adjustment: %2$@";
+"calc.offsets.note" = "If the adhan where you are runs a few minutes off the calculated time, fine-tune it here. The adjustment is applied on top of your chosen method.";
+"calc.reset" = "Restore defaults";
+"calc.reset.note" = "Method, school, high-latitude rule and every manual adjustment return to the Turkey defaults.";
+
+/* Calculation methods */
+"method.turkey" = "Turkey (Diyanet)";
+"method.muslimWorldLeague" = "Muslim World League";
+"method.egyptian" = "Egyptian General Authority of Survey";
+"method.karachi" = "Karachi";
+"method.ummAlQura" = "Umm al-Qura (Makkah)";
+"method.dubai" = "Dubai";
+"method.qatar" = "Qatar";
+"method.kuwait" = "Kuwait";
+"method.moonsightingCommittee" = "Moonsighting Committee";
+"method.singapore" = "Singapore";
+"method.tehran" = "Tehran";
+"method.northAmerica" = "North America (ISNA)";
+"method.custom" = "Custom";
+
+/* School and high latitude */
+"madhab.shafi" = "Shafi";
+"madhab.hanafi" = "Hanafi";
+"highLatitude.middleOfNight" = "Middle of the night";
+"highLatitude.seventhOfNight" = "One seventh of the night";
+"highLatitude.twilightAngle" = "Twilight angle";
+
+/* About */
+"about.title" = "About";
+"about.intro" = "Namaz calculates prayer times on your device. No internet connection is needed to get them.";
+"about.section.calculation" = "How times are calculated";
+"about.calculation.body" = "Times are computed directly from the position of the sun. The safety margins in the Turkey method are measured, not guessed: they were derived by comparing against Diyanet's own published calendar across 12 cities and 384 days, leaving a residual of about a tenth of a minute for every prayer. That measurement rests on one month of data; coverage grows every month.";
+"about.section.hijri" = "Hijri date";
+"about.hijri.body" = "The Hijri date currently comes from the Umm al-Qura tabular calendar. Diyanet's religious calendar can fall a day either side of it at the start of a month, which matters most for Ramadan and the two Eids. A correction table will fill in as verified Diyanet days accumulate. Until then, rely on Diyanet's own calendar for holiday dates.";
+"about.section.privacy" = "Privacy";
+"about.privacy.body" = "Your location never leaves the device; times and the Qibla bearing are computed locally. Only the text you type when searching for a city is sent to Apple's location service to resolve it. There are no ads, no tracking and no analytics.";
+"about.section.version" = "Details";
+"about.version" = "Version";
+"about.version.unknown" = "—";
+"about.kaaba" = "Kaaba coordinates";

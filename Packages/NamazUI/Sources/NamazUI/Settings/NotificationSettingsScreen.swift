@@ -3,8 +3,7 @@ import UIKit
 import NamazCore
 import PrayerKit
 
-/// Bildirim ayarları — şimdilik Ayarlar sekmesinin tamamı. Faz 7'de hesaplama ayarları
-/// ve dil seçenekleri de buraya gelecek.
+/// Bildirim ayarları. Ayarlar sekmesinin altına itilen bir sayfa.
 struct NotificationSettingsScreen: View {
 
     let coordinator: NotificationCoordinator
@@ -19,31 +18,14 @@ struct NotificationSettingsScreen: View {
     private let reminderChoices: [Int?] = [nil, 10, 15, 20, 30, 45]
 
     var body: some View {
-        ZStack {
-            Palette.ground.ignoresSafeArea()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    Rectangle().fill(Palette.ink).frame(height: 2)
-                        .accessibilityHidden(true)
-
-                    Text(L.t("notifications.title"))
-                        .font(Font.system(.title, design: .serif))
-                        .foregroundStyle(Palette.ink)
-                        .padding(.top, 14)
-
-                    switch coordinator.authorization {
-                    case .notDetermined:
-                        permissionPrompt
-                    case .denied:
-                        deniedNotice
-                    case .authorized, .provisional:
-                        controls
-                    }
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 18)
-                .padding(.bottom, 32)
+        SettingsPage(title: L.t("notifications.title")) {
+            switch coordinator.authorization {
+            case .notDetermined:
+                permissionPrompt
+            case .denied:
+                deniedNotice
+            case .authorized, .provisional:
+                controls
             }
         }
         .task { await coordinator.refreshAuthorization() }
@@ -70,7 +52,7 @@ struct NotificationSettingsScreen: View {
             .buttonStyle(FilledActionStyle())
             .padding(.top, 6)
         }
-        .padding(.top, 24)
+        .padding(.top, 18)
     }
 
     private var deniedNotice: some View {
@@ -91,14 +73,14 @@ struct NotificationSettingsScreen: View {
             .buttonStyle(OutlineActionStyle())
             .padding(.top, 6)
         }
-        .padding(.top, 24)
+        .padding(.top, 18)
     }
 
     // MARK: - Ayarlar
 
     private var controls: some View {
         VStack(alignment: .leading, spacing: 0) {
-            sectionLabel(L.t("notifications.section.prayers"))
+            SectionLabel(L.t("notifications.section.prayers"), topPadding: 18)
 
             ForEach(Prayer.allCases.filter(\.isPerformablePrayer)) { prayer in
                 SettingRow(title: Formatting.prayerName(prayer)) {
@@ -108,7 +90,7 @@ struct NotificationSettingsScreen: View {
                 }
             }
 
-            sectionLabel(L.t("notifications.section.timing"))
+            SectionLabel(L.t("notifications.section.timing"))
 
             SettingRow(title: L.t("notifications.at_time")) {
                 Toggle("", isOn: boolBinding(\.notifyAtPrayerTime))
@@ -155,13 +137,6 @@ struct NotificationSettingsScreen: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.top, 28)
-    }
-
-    private func sectionLabel(_ text: String) -> some View {
-        Text(text)
-            .microLabelStyle()
-            .padding(.top, 28)
-            .padding(.bottom, 6)
     }
 
     private func label(for minutes: Int?) -> String {
@@ -218,52 +193,5 @@ struct NotificationSettingsScreen: View {
         await coordinator.reschedule(
             location: location, calculationSettings: calculationSettings
         )
-    }
-}
-
-// MARK: - Satır ve düğme biçimleri
-
-/// Ad solda, kontrol sağda, altında saç teli çizgi. `Form`/`List` kullanmıyoruz: ikisi de
-/// kendi arka planını ve ayırıcılarını getirip "Dizgi" yönünü bozardı.
-private struct SettingRow<Control: View>: View {
-    let title: String
-    @ViewBuilder let control: Control
-
-    var body: some View {
-        HStack(alignment: .center) {
-            Text(title)
-                .font(Typography.prayerName)
-                .foregroundStyle(Palette.ink)
-            Spacer(minLength: 12)
-            control
-        }
-        .padding(.vertical, 7)
-        .overlay(alignment: .bottom) {
-            Rectangle().fill(Palette.rule).frame(height: 1)
-        }
-    }
-}
-
-private struct FilledActionStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(Typography.prayerName)
-            .foregroundStyle(Palette.ground)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .background(Palette.mark)
-            .opacity(configuration.isPressed ? 0.82 : 1)
-    }
-}
-
-private struct OutlineActionStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(Typography.prayerName)
-            .foregroundStyle(Palette.mark)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 13)
-            .overlay { Rectangle().stroke(Palette.rule, lineWidth: 1) }
-            .opacity(configuration.isPressed ? 0.6 : 1)
     }
 }

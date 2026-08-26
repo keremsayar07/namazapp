@@ -34,12 +34,8 @@ public struct RootTabView: View {
             )
             .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }
 
-            NotificationSettingsScreen(
-                coordinator: dependencies.notifications,
-                location: dependencies.homeModel.state.schedule?.location,
-                calculationSettings: dependencies.homeModel.settings
-            )
-            .tabItem { Label(L.t("tab.settings"), systemImage: "gearshape") }
+            SettingsScreen(dependencies: dependencies)
+                .tabItem { Label(L.t("tab.settings"), systemImage: "gearshape") }
         }
         .tint(Palette.mark)
         .task { await rescheduleNotifications() }
@@ -53,6 +49,13 @@ public struct RootTabView: View {
         // Şehir değiştiğinde bildirimler de değişmeli: eski şehrin vaktinde çalan bir ezan,
         // hiç bildirim gelmemesinden kötü.
         .onChange(of: dependencies.homeModel.state.schedule?.location) {
+            Task { await rescheduleNotifications() }
+        }
+        // Aynısı hesaplama ayarı için de geçerli: mezhep ya da yöntem değişince kurulu
+        // bildirimler eski vakitlere kalmış olur. Ayarlar ekranı bunu kendisi yapamaz —
+        // bildirim planlayıcısını orada da çağırmak, iki ayrı yerde iki ayrı zamanlama
+        // mantığı demek olurdu.
+        .onChange(of: dependencies.homeModel.settings) {
             Task { await rescheduleNotifications() }
         }
     }

@@ -90,10 +90,16 @@ enum Formatting {
 
     // MARK: - Kıble
 
-    /// Tam sayı derece: "151°". Ondalık gösterilmiyor — ne telefon pusulası ne de elde
-    /// tutulan bir cihaz o hassasiyeti taşıyor; virgülden sonrası uydurma bir kesinlik olur.
+    /// Tam sayı derece: "151°". Kıble için ondalık gösterilmiyor — ne telefon pusulası ne de
+    /// elde tutulan bir cihaz o hassasiyeti taşıyor; virgülden sonrası uydurma bir kesinlik.
     static func degrees(_ value: Double) -> String {
-        L.t("qibla.degrees %@", String(Int(value.rounded())))
+        L.t("format.degrees %@", String(Int(value.rounded())))
+    }
+
+    /// Yöntem açısı: "18°", "18,5°". Burada ondalık anlamlı — yayımlanmış değerin kendisi.
+    /// Ondalık ayırıcı yerelden geliyor: Türkçe'de virgül, İngilizce'de nokta.
+    static func angle(_ value: Double) -> String {
+        L.t("format.degrees %@", value.formatted(.number.precision(.fractionLength(0...1))))
     }
 
     /// Kâbe'ye uzaklık. Birim (km / mil) cihazın ölçü sistemine bırakılıyor.
