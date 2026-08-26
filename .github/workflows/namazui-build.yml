@@ -1,0 +1,34 @@
+name: NamazUI Build
+
+on:
+  push:
+    paths:
+      - "Packages/NamazUI/**"
+      - "Packages/NamazCore/**"
+      - "Packages/PrayerKit/Sources/**"
+      - ".github/workflows/namazui-build.yml"
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Araç sürümleri
+        run: |
+          swift --version
+          xcodebuild -version
+
+      - name: iOS için derle
+        working-directory: Packages/NamazUI
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -scheme NamazUI \
+            -destination 'generic/platform=iOS' \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -60
