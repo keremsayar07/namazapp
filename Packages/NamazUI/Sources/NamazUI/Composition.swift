@@ -9,10 +9,16 @@ import NamazCore
 public struct Dependencies {
     public let homeModel: HomeViewModel
     public let citySearch: CitySearching
+    public let notifications: NotificationCoordinator
 
-    public init(homeModel: HomeViewModel, citySearch: CitySearching) {
+    public init(
+        homeModel: HomeViewModel,
+        citySearch: CitySearching,
+        notifications: NotificationCoordinator
+    ) {
         self.homeModel = homeModel
         self.citySearch = citySearch
+        self.notifications = notifications
     }
 
     /// Üretim yapılandırması: gerçek CoreLocation ve gerçek coğrafi kodlama.
@@ -27,7 +33,11 @@ public struct Dependencies {
                 locationService: CoreLocationService(),
                 unknownPlaceName: L.t("home.location.fallback")
             ),
-            citySearch: GeocoderCitySearch()
+            citySearch: GeocoderCitySearch(),
+            notifications: NotificationCoordinator(
+                scheduler: UserNotificationScheduler(),
+                content: NotificationText.provider
+            )
         )
     }
 
@@ -42,7 +52,37 @@ public struct Dependencies {
                 preferences: Preferences(store: InMemoryPreferenceStore()),
                 unknownPlaceName: L.t("home.location.fallback")
             ),
-            citySearch: StubCitySearch()
+            citySearch: StubCitySearch(),
+            notifications: NotificationCoordinator(
+                scheduler: StubNotificationScheduler(),
+                content: NotificationText.provider,
+                preferences: Preferences(store: InMemoryPreferenceStore())
+            )
         )
+    }
+}
+
+/// Bildirim metinleri. `NamazCore` yerelleştirilmiş metin tutmuyor — planlayıcı sadece
+/// hangi vakit ve kaç dakika olduğunu biliyor, sözcükler burada, UI paketinin kaynak
+/// paketinden geliyor.
+enum NotificationText {
+    static let provider: @Sendable (PlannedNotification) -> NotificationContent = { planned in
+        let name = Formatting.prayerName(planned.prayer)
+        switch planned.kind {
+        case .atTime:
+            return NotificationContent(
+                title: name,
+                body: L.t("notification.body.at_time %@", name)
+            )
+        case .reminder:
+            return NotificationContent(
+                title: name,
+                body: L.t(
+                    "notification.body.reminder %@ %@",
+                    name,
+                    String(planned.minutesBefore ?? 0)
+                )
+            )
+        }
     }
 }

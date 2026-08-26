@@ -9,6 +9,7 @@ import NamazCore
 public struct RootTabView: View {
 
     private let dependencies: Dependencies
+    @Environment(\.scenePhase) private var scenePhase
 
     public init(dependencies: Dependencies) {
         self.dependencies = dependencies
@@ -25,10 +26,34 @@ public struct RootTabView: View {
             PlaceholderScreen(name: L.t("tab.qibla"))
                 .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }
 
-            PlaceholderScreen(name: L.t("tab.settings"))
-                .tabItem { Label(L.t("tab.settings"), systemImage: "gearshape") }
+            NotificationSettingsScreen(
+                coordinator: dependencies.notifications,
+                location: dependencies.homeModel.state.schedule?.location,
+                calculationSettings: dependencies.homeModel.settings
+            )
+            .tabItem { Label(L.t("tab.settings"), systemImage: "gearshape") }
         }
         .tint(Palette.mark)
+        .task { await rescheduleNotifications() }
+        // Bildirim penceresi kayan bir pencere: iOS'un 64 bildirim sınırı yüzünden ancak
+        // ~10 gün ileriyi kapsıyor. Uygulama her öne geldiğinde tazeliyoruz — kullanıcı
+        // uygulamayı düzenli açtığı sürece bildirimler hiç tükenmiyor.
+        .onChange(of: scenePhase) {
+            guard scenePhase == .active else { return }
+            Task { await rescheduleNotifications() }
+        }
+        // Şehir değiştiğinde bildirimler de değişmeli: eski şehrin vaktinde çalan bir ezan,
+        // hiç bildirim gelmemesinden kötü.
+        .onChange(of: dependencies.homeModel.state.schedule?.location) {
+            Task { await rescheduleNotifications() }
+        }
+    }
+
+    private func rescheduleNotifications() async {
+        await dependencies.notifications.reschedule(
+            location: dependencies.homeModel.state.schedule?.location,
+            calculationSettings: dependencies.homeModel.settings
+        )
     }
 }
 

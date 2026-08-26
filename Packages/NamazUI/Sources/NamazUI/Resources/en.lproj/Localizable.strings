@@ -68,3 +68,26 @@
 "city.accessibility.select %@ %@" = "%1$@, %2$@. Double tap to select.";
 "home.change_location" = "Change";
 "home.change_location.accessibility" = "Change city";
+
+/* Notifications */
+"notifications.title" = "Notifications";
+"notifications.permission.title" = "Allow notifications";
+"notifications.permission.body" = "We need permission to let you know when a prayer time arrives.";
+"notifications.permission.button" = "Allow";
+"notifications.denied.title" = "Notifications are off";
+"notifications.denied.body" = "Notification permission was declined. The system won't ask again — turn it on in Settings.";
+"notifications.denied.settings" = "Open Settings";
+"notifications.section.prayers" = "Prayers";
+"notifications.section.timing" = "Timing";
+"notifications.at_time" = "At the prayer time";
+"notifications.sound" = "Play sound";
+"notifications.remind_before" = "Remind me before";
+"notifications.remind_before.off" = "Off";
+"notifications.remind_before.value %@" = "%@ minutes before";
+"notifications.coverage %@" = "Notifications are set for the next %@ days.";
+"notifications.coverage.none" = "No notifications are currently set.";
+"notifications.coverage.note" = "iOS allows an app 64 pending notifications at a time. With the early reminder on, each prayer schedules two, so this window roughly halves. Opening the app refreshes it.";
+
+/* Notification text */
+"notification.body.at_time %@" = "It's time for %@.";
+"notification.body.reminder %@ %@" = "%2$@ minutes until %1$@.";

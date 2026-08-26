@@ -68,3 +68,26 @@
 "city.accessibility.select %@ %@" = "%1$@, %2$@. Seçmek için çift dokunun.";
 "home.change_location" = "Değiştir";
 "home.change_location.accessibility" = "Şehri değiştir";
+
+/* Bildirimler */
+"notifications.title" = "Bildirimler";
+"notifications.permission.title" = "Bildirimlere izin verin";
+"notifications.permission.body" = "Vakit girdiğinde haber verebilmemiz için bildirim izni gerekiyor.";
+"notifications.permission.button" = "İzin ver";
+"notifications.denied.title" = "Bildirimler kapalı";
+"notifications.denied.body" = "Bildirim izni reddedilmiş. Sistem tekrar sormuyor; açmak için Ayarlar'a gitmeniz gerekiyor.";
+"notifications.denied.settings" = "Ayarlar'ı aç";
+"notifications.section.prayers" = "Vakitler";
+"notifications.section.timing" = "Zamanlama";
+"notifications.at_time" = "Vakit girdiğinde";
+"notifications.sound" = "Ses çal";
+"notifications.remind_before" = "Önceden hatırlat";
+"notifications.remind_before.off" = "Kapalı";
+"notifications.remind_before.value %@" = "%@ dakika önce";
+"notifications.coverage %@" = "Bildirimler önümüzdeki %@ gün için kurulu.";
+"notifications.coverage.none" = "Şu an kurulu bildirim yok.";
+"notifications.coverage.note" = "iOS bir uygulamaya aynı anda 64 bekleyen bildirim izni veriyor. Önceden hatırlatma açıkken her vakit için iki bildirim kurulduğundan bu süre yaklaşık yarıya iniyor. Uygulamayı açtığınızda pencere kendiliğinden tazeleniyor.";
+
+/* Bildirim metinleri */
+"notification.body.at_time %@" = "%@ vakti girdi.";
+"notification.body.reminder %@ %@" = "%1$@ vaktine %2$@ dakika kaldı.";
