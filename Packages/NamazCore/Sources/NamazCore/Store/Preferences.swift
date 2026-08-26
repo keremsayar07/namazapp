@@ -71,6 +71,7 @@ public struct Preferences: Sendable {
         static let location = "namaz.selectedLocation"
         static let settings = "namaz.calculationSettings"
         static let notifications = "namaz.notificationSettings"
+        static let lastKnownLocation = "namaz.lastKnownLocation"
     }
 
     private let store: PreferenceStoring
@@ -88,6 +89,23 @@ public struct Preferences: Sendable {
 
     public func setSelectedLocation(_ location: SavedLocation?) {
         encode(location, forKey: Key.location)
+    }
+
+    /// Cihaz konumundan en son çözülen yer.
+    ///
+    /// **Widget için var.** Widget ayrı bir süreçte çalışıyor ve CoreLocation'ı güvenilir
+    /// biçimde kullanamıyor: konum izni uygulamaya ait, GPS uyandırmak pil bütçesinin
+    /// dışında ve zaman çizelgesi üretilirken beklenecek bir şey yok. Kullanıcı elle şehir
+    /// seçmemişse widget'ın elinde başka hiçbir konum bilgisi olmazdı.
+    ///
+    /// Bu yüzden uygulama her konum çözdüğünde sonucu buraya yazıyor. Widget "seçili şehir
+    /// yoksa en son bilinen konumu kullan" diyerek çalışmaya devam ediyor.
+    public func lastKnownLocation() -> SavedLocation? {
+        decode(SavedLocation.self, forKey: Key.lastKnownLocation)
+    }
+
+    public func setLastKnownLocation(_ location: SavedLocation?) {
+        encode(location, forKey: Key.lastKnownLocation)
     }
 
     // MARK: - Hesaplama ayarları

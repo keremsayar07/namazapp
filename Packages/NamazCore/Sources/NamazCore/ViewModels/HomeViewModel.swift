@@ -94,6 +94,9 @@ public final class HomeViewModel {
         do {
             let snapshot = try await locationService.currentLocation()
             let location = SavedLocation.fromDevice(snapshot, fallbackName: unknownPlaceName)
+            // Widget CoreLocation'ı kullanamıyor; elle şehir seçilmemişse elindeki tek
+            // konum bilgisi bu olacak. Her çözümde tazeliyoruz.
+            preferences.setLastKnownLocation(location)
             state = .ready(makeSchedule(for: location))
         } catch LocationError.unauthorized {
             state = .locationDenied

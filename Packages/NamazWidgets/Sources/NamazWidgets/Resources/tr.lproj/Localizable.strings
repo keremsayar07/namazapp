@@ -1,0 +1,18 @@
+/* Vakit adları — PrayerKit'in Prayer.localizationKey değerleriyle eşleşir */
+"prayer.fajr" = "İmsak";
+"prayer.sunrise" = "Güneş";
+"prayer.dhuhr" = "Öğle";
+"prayer.asr" = "İkindi";
+"prayer.maghrib" = "Akşam";
+"prayer.isha" = "Yatsı";
+
+/* Widget galerisi */
+"widget.home.title" = "Namaz Vakti";
+"widget.home.description" = "Sıradaki vakti ve günün tamamını ana ekranınızda gösterir.";
+"widget.lock.title" = "Namaz Vakti (Kilit Ekranı)";
+"widget.lock.description" = "Sıradaki vakti kilit ekranınızda gösterir.";
+
+/* Şehir seçilmemişse */
+"widget.empty.title" = "Şehir seçilmedi";
+"widget.empty.body" = "Vakitleri görmek için uygulamayı açıp konum izni verin ya da şehrinizi seçin.";
+"widget.empty.short" = "Uygulamayı açın";

@@ -1,0 +1,18 @@
+/* Prayer names — match PrayerKit's Prayer.localizationKey values */
+"prayer.fajr" = "Fajr";
+"prayer.sunrise" = "Sunrise";
+"prayer.dhuhr" = "Dhuhr";
+"prayer.asr" = "Asr";
+"prayer.maghrib" = "Maghrib";
+"prayer.isha" = "Isha";
+
+/* Widget gallery */
+"widget.home.title" = "Prayer Times";
+"widget.home.description" = "Shows the next prayer and the whole day on your Home Screen.";
+"widget.lock.title" = "Prayer Times (Lock Screen)";
+"widget.lock.description" = "Shows the next prayer on your Lock Screen.";
+
+/* No city selected */
+"widget.empty.title" = "No city selected";
+"widget.empty.body" = "Open the app and allow location, or pick your city, to see prayer times.";
+"widget.empty.short" = "Open the app";
