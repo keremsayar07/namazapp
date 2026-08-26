@@ -277,6 +277,58 @@ struct CityReport {
     var longitudeDrift: Double { fittedLongitude - seedLongitude }
 }
 
+// MARK: - Regresyon kapısı
+
+/// Kalibrasyon sonrası artık bu sınırların içinde kalmalı. Aşarsa araç kırmızı biter.
+///
+/// Bu, raporun asıl işlevini değiştiriyor: bir kez ölçüm yapıp kenara çekilen bir belge
+/// değil, her değişiklikte çalışan bir koruma. Temkin payları, açı değerleri veya
+/// astronomik formüldeki bir şey bozulursa CI bunu sessizce geçirmez.
+///
+/// Sınırlar ölçülen artıktan türetildi: ortalama ±0.1 dk, en uç gün ±1.8 dk (İstanbul ve
+/// Trabzon'un koordinat fit'i kaynaklı artığı). Pay bırakılarak yuvarlandı.
+enum Tolerance {
+    static let mean = 0.5
+    static let extreme = 2.5
+}
+
+struct GateFailure {
+    let scope: String
+    let prayer: Prayer
+    let reason: String
+}
+
+/// Yalnızca varsayılan yapılandırma (Şafii ikindi) denetlenir — Hanefi ikindi kasıtlı
+/// olarak Diyanet'ten ~57 dakika farklıdır, bu bir sapma değil kullanıcı tercihidir.
+func gateFailures(cities: [CityReport]) -> [GateFailure] {
+    var failures: [GateFailure] = []
+
+    for prayer in Prayer.allCases {
+        let pooled = cities.flatMap { $0.statsShafi[prayer]?.deltas ?? [] }
+        guard !pooled.isEmpty else {
+            failures.append(GateFailure(
+                scope: "birleşik", prayer: prayer, reason: "hiç veri yok"
+            ))
+            continue
+        }
+        let average = mean(pooled)
+        if abs(average) > Tolerance.mean {
+            failures.append(GateFailure(
+                scope: "birleşik", prayer: prayer,
+                reason: "ortalama fark \(format(average, 2)) dk, sınır ±\(Tolerance.mean)"
+            ))
+        }
+        let worst = pooled.map(abs).max() ?? 0
+        if worst > Tolerance.extreme {
+            failures.append(GateFailure(
+                scope: "birleşik", prayer: prayer,
+                reason: "en uç gün \(format(worst, 2)) dk, sınır ±\(Tolerance.extreme)"
+            ))
+        }
+    }
+    return failures
+}
+
 func label(_ prayer: Prayer) -> String {
     switch prayer {
     case .fajr: return "İmsak"
@@ -378,7 +430,7 @@ func statsRow(_ stats: PrayerStats?) -> String {
         + "| \(format(stats.spread, 2)) | \(stats.count) |"
 }
 
-func buildReport(cities: [CityReport], generatedAt: String) -> String {
+func buildReport(cities: [CityReport], generatedAt: String, failures: [GateFailure]) -> String {
     var lines: [String] = []
     lines.append("# Kalibrasyon raporu")
     lines.append("")
@@ -386,8 +438,25 @@ func buildReport(cities: [CityReport], generatedAt: String) -> String {
     lines.append("")
     lines.append("- Üretim (UTC): `\(generatedAt)`")
     lines.append("- Kaynak: `Reference/diyanet/mirror` — bkz. `Tools/diyanet_reference/PROVENANCE.md`")
-    lines.append("- Yöntem: `CalculationMethod.turkey` (İmsak 18°, Yatsı 17°, akşam offseti 0)")
+    lines.append("- Yöntem: `CalculationMethod.turkey` (İmsak 18°, Yatsı 17° + ölçülen temkin payları)")
     lines.append("- Şehir sayısı: \(cities.count), toplam gün: \(cities.reduce(0) { $0 + $1.dayCount })")
+    lines.append("")
+
+    // Sonuç en üstte: rapora bakan ilk şeyi görsün.
+    if failures.isEmpty {
+        lines.append("## ✅ Geçti")
+        lines.append("")
+        lines.append("Varsayılan yapılandırmada (Şafii ikindi) her vakit için ortalama fark")
+        lines.append("±\(Tolerance.mean) dakikanın, en uç gün ±\(Tolerance.extreme) dakikanın içinde.")
+    } else {
+        lines.append("## ❌ Kaldı")
+        lines.append("")
+        lines.append("| Kapsam | Vakit | Sebep |")
+        lines.append("|---|---|---|")
+        for failure in failures {
+            lines.append("| \(failure.scope) | \(label(failure.prayer)) | \(failure.reason) |")
+        }
+    }
     lines.append("")
     lines.append("**Fark tanımı:** `Diyanet − PrayerKit`, dakika cinsinden. Pozitif değer,")
     lines.append("Diyanet'in vakti daha geç yayımladığı anlamına gelir; yani hesabımıza o kadar")
@@ -500,7 +569,10 @@ formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 formatter.timeZone = TimeZone(identifier: "UTC")
 formatter.locale = Locale(identifier: "en_US_POSIX")
 
-let markdown = buildReport(cities: reports, generatedAt: formatter.string(from: Date()))
+let failures = gateFailures(cities: reports)
+let markdown = buildReport(
+    cities: reports, generatedAt: formatter.string(from: Date()), failures: failures
+)
 do {
     try FileManager.default.createDirectory(
         at: outputURL.deletingLastPathComponent(), withIntermediateDirectories: true
@@ -509,5 +581,18 @@ do {
     print("\nRapor yazıldı: \(outputURL.path)")
 } catch {
     FileHandle.standardError.write(Data("HATA: rapor yazılamadı → \(error)\n".utf8))
+    exit(1)
+}
+
+// Rapor her hâlükârda yazıldı — kırmızı bitsek bile neyin bozulduğu repoda görünsün.
+if failures.isEmpty {
+    print("\n✅ Geçti: tüm vakitlerde artık tolerans içinde.")
+} else {
+    FileHandle.standardError.write(Data("\n❌ Kaldı:\n".utf8))
+    for failure in failures {
+        FileHandle.standardError.write(
+            Data("  \(failure.scope) / \(label(failure.prayer)): \(failure.reason)\n".utf8)
+        )
+    }
     exit(1)
 }
