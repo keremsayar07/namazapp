@@ -56,25 +56,29 @@ final class NotificationCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(scheduler: scheduler)
 
         await coordinator.reschedule(location: istanbul, calculationSettings: .defaultForTurkey())
-        XCTAssertGreaterThan(await scheduler.pendingCount(), 0)
+        let beforeClearing = await scheduler.pendingCount()
+        XCTAssertGreaterThan(beforeClearing, 0)
 
         // Konum kaybolduğunda eski şehrin vakitleri için çalan bir ezan, hiç bildirim
         // gelmemesinden kötü.
         await coordinator.reschedule(location: nil, calculationSettings: .defaultForTurkey())
-        XCTAssertEqual(await scheduler.pendingCount(), 0)
+        let afterClearing = await scheduler.pendingCount()
+        XCTAssertEqual(afterClearing, 0)
     }
 
     func test_turningEverythingOff_clearsPendingNotifications() async {
         let scheduler = StubNotificationScheduler(authorization: .authorized)
         let coordinator = makeCoordinator(scheduler: scheduler)
         await coordinator.reschedule(location: istanbul, calculationSettings: .defaultForTurkey())
-        XCTAssertGreaterThan(await scheduler.pendingCount(), 0)
+        let beforeSilencing = await scheduler.pendingCount()
+        XCTAssertGreaterThan(beforeSilencing, 0)
 
         var silent = NotificationSettings()
         silent.enabledPrayers = []
         await coordinator.update(silent, location: istanbul, calculationSettings: .defaultForTurkey())
 
-        XCTAssertEqual(await scheduler.pendingCount(), 0)
+        let afterSilencing = await scheduler.pendingCount()
+        XCTAssertEqual(afterSilencing, 0)
     }
 
     func test_settingsArePersistedAcrossLaunches() async {
@@ -109,12 +113,14 @@ final class NotificationCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(scheduler: scheduler)
 
         await coordinator.reschedule(location: istanbul, calculationSettings: .defaultForTurkey())
-        let shafiAsr = await scheduler.scheduled.first { $0.prayer == .asr }?.fireDate
+        let afterShafi = await scheduler.scheduled
+        let shafiAsr = afterShafi.first { $0.prayer == .asr }?.fireDate
 
         var hanafi = CalculationSettings.defaultForTurkey()
         hanafi.madhab = .hanafi
         await coordinator.reschedule(location: istanbul, calculationSettings: hanafi)
-        let hanafiAsr = await scheduler.scheduled.first { $0.prayer == .asr }?.fireDate
+        let afterHanafi = await scheduler.scheduled
+        let hanafiAsr = afterHanafi.first { $0.prayer == .asr }?.fireDate
 
         XCTAssertNotNil(shafiAsr)
         XCTAssertNotNil(hanafiAsr)
