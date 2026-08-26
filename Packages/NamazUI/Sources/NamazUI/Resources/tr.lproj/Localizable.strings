@@ -54,3 +54,17 @@
 "hijri.month.zilhicce" = "Zilhicce";
 "hijri.month.unknown" = "—";
 "hijri.dateline %@ %@ %@" = "%1$@ %2$@ %3$@";
+
+/* Şehir seçme */
+"city.title" = "Şehir seç";
+"city.placeholder" = "Şehir veya ilçe adı";
+"city.hint" = "Aramak için en az iki harf yazın.";
+"city.searching" = "Aranıyor…";
+"city.noresults.title" = "Sonuç bulunamadı";
+"city.noresults.body" = "Yazımı kontrol edin ya da ilçe yerine il adını deneyin.";
+"city.failed.title" = "Arama şu an çalışmıyor";
+"city.failed.body" = "Şehir arama internet bağlantısı gerektiriyor. Bağlantınızı kontrol edip tekrar deneyin.";
+"city.cancel" = "Vazgeç";
+"city.accessibility.select %@ %@" = "%1$@, %2$@. Seçmek için çift dokunun.";
+"home.change_location" = "Değiştir";
+"home.change_location.accessibility" = "Şehri değiştir";

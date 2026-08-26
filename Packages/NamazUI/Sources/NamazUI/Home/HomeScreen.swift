@@ -12,10 +12,14 @@ import PrayerKit
 public struct HomeScreen: View {
 
     @State private var model: HomeViewModel
+    @State private var isPickingCity = false
     @Environment(\.openURL) private var openURL
 
-    public init(model: HomeViewModel) {
+    private let citySearch: CitySearching
+
+    public init(model: HomeViewModel, citySearch: CitySearching) {
         _model = State(initialValue: model)
+        self.citySearch = citySearch
     }
 
     public var body: some View {
@@ -30,7 +34,7 @@ public struct HomeScreen: View {
                 LocationNoticeView(
                     title: L.t("home.denied.title"),
                     message: L.t("home.denied.body"),
-                    primary: .init(title: L.t("home.denied.pick"), action: {}),
+                    primary: .init(title: L.t("home.denied.pick"), action: pickCity),
                     // Reddedilmiş izinde "tekrar dene" yok: sistem bir daha sormaz,
                     // düğme hiçbir şey yapmazdı. Tek gerçek yol Ayarlar.
                     secondary: .init(title: L.t("home.denied.settings"), action: openSettings)
@@ -41,13 +45,23 @@ public struct HomeScreen: View {
                     message: L.t("home.unavailable.body"),
                     // Burada tekrar denemek gerçekten işe yarayabilir, o yüzden birincil eylem o.
                     primary: .init(title: L.t("home.unavailable.retry"), action: { Task { await model.refresh() } }),
-                    secondary: .init(title: L.t("home.unavailable.pick"), action: {})
+                    secondary: .init(title: L.t("home.unavailable.pick"), action: pickCity)
                 )
             case .ready(let schedule):
-                ScheduleView(schedule: schedule)
+                ScheduleView(schedule: schedule, changeCity: pickCity)
             }
         }
         .task { await model.refresh() }
+        .sheet(isPresented: $isPickingCity) {
+            CityPickerScreen(
+                model: CityPickerViewModel(search: citySearch),
+                onSelect: { model.selectManualLocation($0) }
+            )
+        }
+    }
+
+    private func pickCity() {
+        isPickingCity = true
     }
 
     private func openSettings() {
@@ -60,6 +74,7 @@ public struct HomeScreen: View {
 
 private struct ScheduleView: View {
     let schedule: PrayerSchedule
+    let changeCity: () -> Void
 
     private var timeZone: TimeZone { schedule.location.coordinate.timeZone }
 
@@ -101,20 +116,28 @@ private struct ScheduleView: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(schedule.location.name)
-                .font(Typography.place)
-                .foregroundStyle(Palette.ink)
-                .lineLimit(2)
-                .minimumScaleFactor(0.7)
+        HStack(alignment: .firstTextBaseline, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(schedule.location.name)
+                    .font(Typography.place)
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.7)
 
-            Text(dateline)
-                .font(Typography.dateline)
-                .foregroundStyle(Palette.inkSoft)
+                Text(dateline)
+                    .font(Typography.dateline)
+                    .foregroundStyle(Palette.inkSoft)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+
+            // Görünür bir "Değiştir" bağlantısı. Şehir adına gizlice dokunmak da işe
+            // yarardı ama kimse denemez; keşfedilemeyen arayüz, olmayan arayüzdür.
+            Button(L.t("home.change_location"), action: changeCity)
+                .microLabelStyle(color: Palette.mark)
+                .accessibilityLabel(L.t("home.change_location.accessibility"))
         }
         .padding(.top, 14)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .accessibilityElement(children: .combine)
     }
 
     private var dateline: String {
@@ -339,26 +362,33 @@ private struct OutlineButtonStyle: ButtonStyle {
 // MARK: - Önizlemeler
 
 #Preview("Hazır") {
-    HomeScreen(model: HomeViewModel(
-        locationService: StubLocationService(),
-        manualLocation: SavedLocation(
-            name: "İstanbul",
-            coordinate: Coordinate(
-                latitude: 41.0082, longitude: 28.9784, timeZoneIdentifier: "Europe/Istanbul"
-            ),
-            source: .manual
-        )
-    ))
+    HomeScreen(
+        model: HomeViewModel(
+            locationService: StubLocationService(),
+            manualLocation: SavedLocation(
+                name: "İstanbul",
+                coordinate: Coordinate(
+                    latitude: 41.0082, longitude: 28.9784, timeZoneIdentifier: "Europe/Istanbul"
+                ),
+                source: .manual
+            )
+        ),
+        citySearch: StubCitySearch()
+    )
 }
 
 #Preview("İzin reddedildi") {
-    HomeScreen(model: HomeViewModel(
-        locationService: StubLocationService(authorization: .denied)
-    ))
+    HomeScreen(
+        model: HomeViewModel(locationService: StubLocationService(authorization: .denied)),
+        citySearch: StubCitySearch()
+    )
 }
 
 #Preview("Konum alınamadı") {
-    HomeScreen(model: HomeViewModel(
-        locationService: StubLocationService(authorization: .whenInUse, result: .failure(.unavailable))
-    ))
+    HomeScreen(
+        model: HomeViewModel(
+            locationService: StubLocationService(authorization: .whenInUse, result: .failure(.unavailable))
+        ),
+        citySearch: StubCitySearch()
+    )
 }

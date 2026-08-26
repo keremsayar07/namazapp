@@ -54,3 +54,17 @@
 "hijri.month.zilhicce" = "Dhu al-Hijjah";
 "hijri.month.unknown" = "—";
 "hijri.dateline %@ %@ %@" = "%1$@ %2$@ %3$@";
+
+/* City picker */
+"city.title" = "Pick a city";
+"city.placeholder" = "City or district name";
+"city.hint" = "Type at least two letters to search.";
+"city.searching" = "Searching…";
+"city.noresults.title" = "No results";
+"city.noresults.body" = "Check the spelling, or try the province name instead of the district.";
+"city.failed.title" = "Search isn't working";
+"city.failed.body" = "City search needs an internet connection. Check yours and try again.";
+"city.cancel" = "Cancel";
+"city.accessibility.select %@ %@" = "%1$@, %2$@. Double tap to select.";
+"home.change_location" = "Change";
+"home.change_location.accessibility" = "Change city";

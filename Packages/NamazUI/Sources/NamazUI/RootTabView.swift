@@ -8,15 +8,15 @@ import NamazCore
 /// bir görünüm, sekme çubuğuna bağlı hiçbir şey bilmiyor.
 public struct RootTabView: View {
 
-    private let homeModel: HomeViewModel
+    private let dependencies: Dependencies
 
-    public init(homeModel: HomeViewModel) {
-        self.homeModel = homeModel
+    public init(dependencies: Dependencies) {
+        self.dependencies = dependencies
     }
 
     public var body: some View {
         TabView {
-            HomeScreen(model: homeModel)
+            HomeScreen(model: dependencies.homeModel, citySearch: dependencies.citySearch)
                 .tabItem { Label(L.t("tab.times"), systemImage: "clock") }
 
             PlaceholderScreen(name: L.t("tab.calendar"))
@@ -65,5 +65,5 @@ struct PlaceholderScreen: View {
 }
 
 #Preview {
-    RootTabView(homeModel: HomeViewModel(locationService: StubLocationService()))
+    RootTabView(dependencies: .preview())
 }
