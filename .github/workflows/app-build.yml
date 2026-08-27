@@ -1,0 +1,80 @@
+name: Uygulama Derlemesi
+
+# Bugüne kadar CI yalnızca PAKETLERİ doğruluyordu. Uygulama hedefi ile widget uzantısının
+# birleşimi — Info.plist, entitlements, App Group, gömme (embedding), varlık kataloğu —
+# hiç sınanmamıştı. Bu iş akışı `project.yml`'den projeyi üretip ikisini birlikte derliyor.
+#
+# Neyi doğrular: proje üretilebiliyor, tüm hedefler derleniyor, uzantı uygulamaya
+# gömülüyor, plist ve entitlements dosyaları geçerli, ikon kataloğu okunuyor.
+#
+# Neyi DOĞRULAMAZ: imzalama, gerçek App Group konteynerine erişim, bildirim izinleri,
+# widget'ın ana ekranda gerçekten veri göstermesi. Bunlar yalnızca cihazda görülür —
+# Faz 8b'nin işi.
+
+on:
+  push:
+    paths:
+      - "App/**"
+      - "WidgetExtension/**"
+      - "Packages/**"
+      - "project.yml"
+      - ".github/workflows/app-build.yml"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: app-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: Kodu indir
+        uses: actions/checkout@v4
+
+      - name: Araç sürümleri
+        run: |
+          swift --version
+          xcodebuild -version
+
+      - name: XcodeGen kur
+        run: brew install xcodegen
+
+      - name: Projeyi üret
+        run: xcodegen generate --spec project.yml
+
+      # Üretilen projeyi commit'lemiyoruz; her koşuda yeniden üretiliyor. Böylece
+      # `project.yml` ile `.xcodeproj` arasında sessiz bir sapma oluşamıyor.
+      - name: Üretilen yapıyı göster
+        run: |
+          xcodebuild -list -project Namaz.xcodeproj
+
+      - name: iOS için derle
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project Namaz.xcodeproj \
+            -scheme Namaz \
+            -destination 'generic/platform=iOS' \
+            -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO \
+            | tail -80
+
+      # App Group kimliği üç yerde geçiyor: iki entitlements dosyası ve PrayerKit'teki
+      # `AppGroup.identifier`. Üçü birebir aynı olmazsa widget çöker değil — sessizce boş
+      # kalır. Sessiz hatalar en pahalı hatalardır, o yüzden burada açıkça kontrol ediliyor.
+      - name: App Group kimliği tutarlı mı
+        run: |
+          SWIFT_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' \
+            Packages/PrayerKit/Sources/PrayerKit/SharedStore/PrayerTimesSnapshot.swift | head -1)
+          APP_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' App/Namaz.entitlements | head -1)
+          WIDGET_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' WidgetExtension/NamazWidgets.entitlements | head -1)
+          echo "PrayerKit : $SWIFT_ID"
+          echo "Uygulama  : $APP_ID"
+          echo "Widget    : $WIDGET_ID"
+          if [ -z "$SWIFT_ID" ] || [ "$SWIFT_ID" != "$APP_ID" ] || [ "$SWIFT_ID" != "$WIDGET_ID" ]; then
+            echo "HATA: App Group kimlikleri birbirini tutmuyor."
+            exit 1
+          fi
+          echo "Üçü de aynı."
