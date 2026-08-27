@@ -110,7 +110,14 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.keremsayar.namaz.widgets
-        PRODUCT_NAME: NamazWidgets
+        # ÜRÜN ADI PAKET ADIYLA AYNI OLMAMALI.
+        #
+        # Burada `NamazWidgets` yazıyordu ve `NamazWidgets` aynı zamanda paketin modül
+        # adı. İkisi de `Build/Products/.../NamazWidgets.swiftmodule` yoluna yazmaya
+        # çalışınca Xcode "duplicate output file" deyip derlemeyi hiç kuramıyor — üstelik
+        # tek bir `error:` satırı bile basmadan. Uzantının içindeki dosya da
+        # `import NamazWidgets` dediği için fiilen kendini import etmiş oluyordu.
+        PRODUCT_NAME: NamazWidgetsExtension
     info:
       path: WidgetExtension/Info.plist
       properties:
