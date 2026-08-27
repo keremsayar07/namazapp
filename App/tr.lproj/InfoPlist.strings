@@ -1,0 +1,3 @@
+/* Konum izni istenirken sistemin gosterdigi metin. Neden istendigini soyluyor,
+   ne yapilacagini degil: "konumunuza erisim" degil, "vakitleri bulundugunuz yere gore" */
+"NSLocationWhenInUseUsageDescription" = "Namaz vakitlerini bulunduğunuz yere göre hesaplamak için konumunuz kullanılır. Konum cihazınızdan çıkmaz; dilerseniz izin vermeyip şehrinizi elle de seçebilirsiniz.";

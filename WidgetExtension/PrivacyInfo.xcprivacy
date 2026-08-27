@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Izleme yok. Reklam agi yok, kimlik eslestirme yok. -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <!-- Hicbir veri TOPLANMIYOR. Apple'in tanimina gore "toplama", verinin cihazdan
+         cikip bize veya ucuncu tarafa ulasmasi demek. Konum cihazda hesaplaniyor ve
+         cihazdan cikmiyor; bu yuzden burasi bos. -->
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <!-- UserDefaults: yalnizca uygulamanin kendi App Group'u icinde, widget ile
+                 tercih paylasmak icin. CA92.1 tam olarak bu gerekce. -->
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

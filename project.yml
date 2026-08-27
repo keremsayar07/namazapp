@@ -1,0 +1,145 @@
+# XcodeGen tarifi — Xcode projesi bu dosyadan ÜRETİLİR.
+#
+# Neden .xcodeproj deposunda durmuyor
+# -----------------------------------
+# Bir .xcodeproj dosyası binlerce satırlık, birleştirilmesi zor, elle okunamayan bir
+# metin. Mac'i olmayan biri onu ne inceleyebilir ne düzeltebilir. Bu dosya ise okunabilir
+# ve tek komutla projeye dönüşüyor:
+#
+#     brew install xcodegen && xcodegen generate && open Namaz.xcodeproj
+#
+# Asıl kazanç: CI de aynı komutu çalıştırabildiği için UYGULAMA HEDEFİ de Mac olmadan
+# derlenebiliyor. Bugüne kadar yalnızca paketleri doğruluyorduk; App target ile widget
+# uzantısının birleşimi doğrulanmamıştı.
+#
+# Proje bozulursa `Namaz.xcodeproj` silinip komut yeniden çalıştırılır — kaybolacak bir
+# ayar yok, her şey burada.
+
+name: Namaz
+
+options:
+  bundleIdPrefix: com.keremsayar
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: tr
+  createIntermediateGroups: true
+  # Xcode'un ürettiği şemalar yerine aşağıda açıkça tanımlıyoruz; CI'nın hangi şemayı
+  # derleyeceği tahmine kalmasın.
+  xcodeVersion: "15.0"
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.10"
+    # v1 iPhone. iPad'e geçildiğinde burası "1,2" olacak; mimari zaten hazır.
+    TARGETED_DEVICE_FAMILY: "1"
+    CODE_SIGN_STYLE: Automatic
+    # Kuzenin Mac'inde Xcode'un Signing sekmesinden doldurulacak. Boş bırakmak CI'da
+    # imzasız derlemeyi engellemiyor.
+    DEVELOPMENT_TEAM: ""
+    SWIFT_EMIT_LOC_STRINGS: "YES"
+    ENABLE_USER_SCRIPT_SANDBOXING: "YES"
+    SWIFT_STRICT_CONCURRENCY: minimal
+
+packages:
+  PrayerKit:
+    path: Packages/PrayerKit
+  NamazCore:
+    path: Packages/NamazCore
+  NamazUI:
+    path: Packages/NamazUI
+  NamazWidgets:
+    path: Packages/NamazWidgets
+
+targets:
+
+  # ---------------------------------------------------------------- uygulama
+
+  Namaz:
+    type: application
+    platform: iOS
+    sources:
+      - path: App
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.keremsayar.namaz
+        PRODUCT_NAME: Namaz
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Namaz
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        # Gerçek metin App/tr.lproj ve App/en.lproj altındaki InfoPlist.strings'ten
+        # geliyor; buradaki değer yalnızca yedek.
+        NSLocationWhenInUseUsageDescription: >-
+          Namaz vakitlerini bulunduğunuz yere göre hesaplamak için konumunuz kullanılır.
+        # Boş sözlük: SwiftUI uygulaması için açılış ekranı üretilsin, storyboard yok.
+        UILaunchScreen: {}
+        # Dikey. Ekranların tamamı dikey düzene göre tasarlandı; yatayda kıble kadranı ve
+        # defter hizası bozuluyor. Yatay desteği v1 kapsamında değil.
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        # Uygulama yalnızca Apple'ın kendi şifrelemesini kullanıyor (HTTPS, Data
+        # Protection) — bunlar ihracat muafiyeti kapsamında. Bu anahtar olmadan her
+        # TestFlight yüklemesinde aynı soru tekrar sorulur.
+        ITSAppUsesNonExemptEncryption: false
+    entitlements:
+      path: App/Namaz.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.keremsayar.namaz
+    dependencies:
+      - package: NamazUI
+      - package: NamazCore
+      - package: PrayerKit
+      # Uzantıyı uygulamanın içine gömer. Bu satır olmadan widget derlenir ama cihaza
+      # gitmez ve widget galerisinde hiç görünmez.
+      - target: NamazWidgetsExtension
+
+  # ---------------------------------------------------------------- widget
+
+  NamazWidgetsExtension:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: WidgetExtension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.keremsayar.namaz.widgets
+        PRODUCT_NAME: NamazWidgets
+    info:
+      path: WidgetExtension/Info.plist
+      properties:
+        CFBundleDisplayName: Namaz
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: WidgetExtension/NamazWidgets.entitlements
+      properties:
+        # UYGULAMA İLE BİREBİR AYNI OLMAK ZORUNDA. Widget ayrı bir süreç; uygulamanın
+        # belleğine erişemiyor. Tercihleri ve son bilinen konumu okuyabildiği tek yer bu
+        # App Group. Bir harf farkı olursa widget sessizce boş kalır — çökmez, hata
+        # vermez, sadece hiçbir zaman veri bulamaz.
+        com.apple.security.application-groups:
+          - group.com.keremsayar.namaz
+    dependencies:
+      - package: NamazWidgets
+      - package: NamazCore
+      - package: PrayerKit
+
+schemes:
+  Namaz:
+    build:
+      targets:
+        Namaz: all
+        NamazWidgetsExtension: all
+    run:
+      config: Debug
+    archive:
+      config: Release
