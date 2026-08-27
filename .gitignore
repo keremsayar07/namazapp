@@ -1,0 +1,15 @@
+# XcodeGen'in urettigi proje. Depoda tutulmuyor: `project.yml` tek kaynak, proje her
+# zaman ondan uretiliyor. Boylece ikisi arasinda sessiz bir sapma olusamiyor.
+Namaz.xcodeproj/
+*.xcworkspace/
+xcuserdata/
+
+# XcodeGen'in urettigi plist ve entitlements dosyalari da ureticiden geliyor.
+App/Info.plist
+App/Namaz.entitlements
+WidgetExtension/Info.plist
+WidgetExtension/NamazWidgets.entitlements
+
+.build/
+DerivedData/
+.DS_Store
