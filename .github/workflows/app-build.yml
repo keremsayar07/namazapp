@@ -22,9 +22,13 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
-  group: app-build-${{ github.ref }}
-  cancel-in-progress: true
+  # Depoya yazan diğer iş akışlarıyla aynı grupta — ikisi aynı anda push etmeye çalışmasın.
+  group: repo-write
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -44,22 +48,38 @@ jobs:
       - name: Projeyi üret
         run: xcodegen generate --spec project.yml
 
-      # Üretilen projeyi commit'lemiyoruz; her koşuda yeniden üretiliyor. Böylece
-      # `project.yml` ile `.xcodeproj` arasında sessiz bir sapma oluşamıyor.
       - name: Üretilen yapıyı göster
         run: |
           xcodebuild -list -project Namaz.xcodeproj
 
+      # Çıktı dosyaya alınıyor, ekrana yalnızca işe yarayan kısım basılıyor.
+      # `| tail -80` yeterli değildi: xcodebuild hata satırlarını uzun bir özetin ortasına
+      # gömebiliyor ve kuyruk onları kesiyor. Önce hataları, sonra kuyruğu yazıyoruz.
       - name: iOS için derle
         run: |
-          set -o pipefail
-          xcodebuild build \
-            -project Namaz.xcodeproj \
-            -scheme Namaz \
-            -destination 'generic/platform=iOS' \
-            -skipMacroValidation \
-            CODE_SIGNING_ALLOWED=NO \
-            | tail -80
+          if xcodebuild build \
+              -project Namaz.xcodeproj \
+              -scheme Namaz \
+              -destination 'generic/platform=iOS' \
+              -skipMacroValidation \
+              CODE_SIGNING_ALLOWED=NO > build.log 2>&1; then
+            echo "Derleme başarılı."
+            exit 0
+          fi
+          echo "================ HATA SATIRLARI ================"
+          grep -E "error:|error " build.log | head -40 || echo "(grep bir şey bulamadı)"
+          echo "================ SON 150 SATIR ================="
+          tail -150 build.log
+          exit 1
+
+      # Hata satırları ekrandan kayarsa diye tam günlük indirilebilir kalsın.
+      - name: Derleme günlüğünü sakla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build.log
+          retention-days: 7
 
       # App Group kimliği üç yerde geçiyor: iki entitlements dosyası ve PrayerKit'teki
       # `AppGroup.identifier`. Üçü birebir aynı olmazsa widget çöker değil — sessizce boş
@@ -78,3 +98,33 @@ jobs:
             exit 1
           fi
           echo "Üçü de aynı."
+
+      # Üretilen projeyi depoya yazıyoruz. Sebebi tek: Mac'te hiçbir şey kurmaya gerek
+      # kalmasın. Kullanıcı depoyu indirip `Namaz.xcodeproj` dosyasını çift tıklıyor,
+      # bitti. Sapma riski yok — dosyayı kimse elle düzenlemiyor, her değişiklikte burada
+      # yeniden üretiliyor.
+      #
+      # Yalnızca push'ta commit'liyoruz; pull request'te üretip derleyip bırakıyoruz.
+      - name: Projeyi commit'le
+        if: github.event_name == 'push'
+        run: |
+          FILES="Namaz.xcodeproj App/Info.plist App/Namaz.entitlements \
+                 WidgetExtension/Info.plist WidgetExtension/NamazWidgets.entitlements"
+          if [ -z "$(git status --porcelain $FILES)" ]; then
+            echo "Proje değişmedi, commit atlanıyor."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add $FILES
+          git commit -m "Xcode projesi yeniden üretildi"
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "Push reddedildi (deneme $attempt), rebase edilip tekrar denenecek."
+            git fetch origin "$GITHUB_REF_NAME" || exit 1
+            git rebase "origin/$GITHUB_REF_NAME" || { git rebase --abort; exit 1; }
+          done
+          echo "Push üç denemede de başarısız oldu."
+          exit 1
