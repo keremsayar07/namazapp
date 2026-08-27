@@ -84,6 +84,26 @@ jobs:
       # App Group kimliği üç yerde geçiyor: iki entitlements dosyası ve PrayerKit'teki
       # `AppGroup.identifier`. Üçü birebir aynı olmazsa widget çöker değil — sessizce boş
       # kalır. Sessiz hatalar en pahalı hatalardır, o yüzden burada açıkça kontrol ediliyor.
+      # Bu sefer bunu elle bulmak üç tur sürdü: uzantının ürün adı bir paketin modül
+      # adıyla aynıydı, ikisi aynı dosyaya yazmaya çalıştı ve Xcode tek bir `error:`
+      # satırı bile basmadan derlemeyi kuramadı. Bir daha aynı tuzağa düşmeyelim.
+      - name: Ürün adları paket adlarıyla çakışıyor mu
+        if: always()
+        run: |
+          PACKAGES=$(ls Packages)
+          CLASH=0
+          for name in $PACKAGES; do
+            if grep -qE "PRODUCT_NAME: +$name\s*$" project.yml; then
+              echo "HATA: '$name' hem paket modülü hem de bir hedefin PRODUCT_NAME değeri."
+              CLASH=1
+            fi
+          done
+          if [ "$CLASH" = "1" ]; then
+            echo "Aynı ada sahip iki üretici aynı .swiftmodule yoluna yazar ve derleme kurulamaz."
+            exit 1
+          fi
+          echo "Çakışma yok."
+
       - name: App Group kimliği tutarlı mı
         run: |
           SWIFT_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' \
