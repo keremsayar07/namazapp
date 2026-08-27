@@ -23,15 +23,15 @@ options:
     iOS: "17.0"
   developmentLanguage: tr
   createIntermediateGroups: true
-  # Xcode'un ürettiği şemalar yerine aşağıda açıkça tanımlıyoruz; CI'nın hangi şemayı
-  # derleyeceği tahmine kalmasın.
-  xcodeVersion: "15.0"
 
 settings:
   base:
     MARKETING_VERSION: "1.0"
     CURRENT_PROJECT_VERSION: "1"
-    SWIFT_VERSION: "5.10"
+    # DİKKAT: bu, derleyici sürümü DEĞİL dil kipi. Geçerli değerler 4 / 4.2 / 5 / 6.
+    # Paketlerdeki `swift-tools-version:5.10` bambaşka bir şey; "5.10" yazmak
+    # "unsupported SWIFT_VERSION" hatasıyla derlemeyi düşürüyor.
+    SWIFT_VERSION: "5.0"
     # v1 iPhone. iPad'e geçildiğinde burası "1,2" olacak; mimari zaten hazır.
     TARGETED_DEVICE_FAMILY: "1"
     CODE_SIGN_STYLE: Automatic
@@ -66,7 +66,6 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.keremsayar.namaz
         PRODUCT_NAME: Namaz
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
-        INFOPLIST_KEY_UILaunchScreen_Generation: "YES"
     info:
       path: App/Info.plist
       properties:
@@ -93,9 +92,10 @@ targets:
         com.apple.security.application-groups:
           - group.com.keremsayar.namaz
     dependencies:
+      # YALNIZCA NamazUI. `NamazCore` ve `PrayerKit` zaten onun bağımlılıkları; ayrıca
+      # yazmak aynı modülü iki kez bağlamak demek ve "duplicate output file" hatası
+      # üretiyor. Paket bağımlılıkları geçişli (transitive) çözülüyor.
       - package: NamazUI
-      - package: NamazCore
-      - package: PrayerKit
       # Uzantıyı uygulamanın içine gömer. Bu satır olmadan widget derlenir ama cihaza
       # gitmez ve widget galerisinde hiç görünmez.
       - target: NamazWidgetsExtension
@@ -129,16 +129,17 @@ targets:
         com.apple.security.application-groups:
           - group.com.keremsayar.namaz
     dependencies:
+      # Aynı gerekçe: `NamazWidgets` paketi `NamazCore` ve `PrayerKit`'i kendisi getiriyor.
       - package: NamazWidgets
-      - package: NamazCore
-      - package: PrayerKit
 
 schemes:
   Namaz:
     build:
       targets:
+        # SADECE uygulama. Uzantı buraya da yazılırsa iki kez sıraya giriyor — bir kez
+        # uygulamanın bağımlılığı olarak, bir kez şemanın kendi listesinden — ve ikisi
+        # aynı çıktı dosyasını aynı yere yazmaya kalkıyor. Bağımlılık zaten yeterli.
         Namaz: all
-        NamazWidgetsExtension: all
     run:
       config: Debug
     archive:
