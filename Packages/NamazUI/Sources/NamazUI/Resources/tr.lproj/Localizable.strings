@@ -201,3 +201,44 @@
 "about.version" = "Sürüm";
 "about.version.unknown" = "—";
 "about.kaaba" = "Kâbe koordinatı";
+
+/* Araçlar sekmesi */
+"tab.tools" = "Araçlar";
+"tools.section.practice" = "Günlük";
+"tools.note" = "Buradaki her şey yalnızca cihazınızda saklanır. Hiçbir kayıt sunucuya gönderilmez.";
+
+/* Zikirmatik */
+"tasbih.title" = "Zikirmatik";
+"tasbih.of %@" = "/ %@";
+"tasbih.today %@" = "Bugün toplam %@";
+"tasbih.reset" = "Sıfırla";
+"tasbih.add" = "Zikir ekle";
+"tasbih.delete" = "Sil";
+"tasbih.section.presets" = "Zikirler";
+"tasbih.note" = "Sıfırlamak yalnızca sayacı sıfırlar; günlük toplam olduğu gibi kalır. Bir zikri silmek için üzerine basılı tutun.";
+"tasbih.accessibility.tap" = "Sayaç. Artırmak için çift dokunun.";
+"tasbih.new.name" = "Ad";
+"tasbih.new.placeholder" = "Zikrin adı";
+"tasbih.new.target" = "Hedef";
+"tasbih.new.save" = "Ekle";
+
+/* Namaz takibi */
+"log.title" = "Namaz takibi";
+"log.today" = "Bugün";
+"log.previous" = "Önceki gün";
+"log.next" = "Sonraki gün";
+"log.section.prayers" = "Vakitler";
+"log.section.recent" = "Son yedi gün";
+"log.note" = "Bu kayıt yalnızca sizin içindir. Unuttuğunuz bir günü geriye giderek işaretleyebilirsiniz.";
+"log.accessibility.done %@" = "%@, kılındı olarak işaretli";
+"log.accessibility.notDone %@" = "%@, işaretli değil";
+"log.accessibility.day %@ %@" = "%1$@: %2$@ vakit işaretli";
+
+/* Kaza namazı */
+"qadha.title" = "Kaza namazı";
+"qadha.total" = "Toplam";
+"qadha.section.prayers" = "Vakitler";
+"qadha.addDay" = "Bir gün ekle";
+"qadha.note" = "Bir gün eklemek beş vaktin her birini bir artırır. Sayaçlar sıfırın altına inmez.";
+"qadha.accessibility.increase %@" = "%@ kazasını artır";
+"qadha.accessibility.decrease %@" = "%@ kazasını azalt";

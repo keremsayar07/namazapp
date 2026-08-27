@@ -34,6 +34,12 @@ public struct RootTabView: View {
             )
             .tabItem { Label(L.t("tab.qibla"), systemImage: "location.north.line") }
 
+            // Beşinci sekme. Vakit / Takvim / Kıble her gün bakılan ekranlar; Araçlar
+            // ise aranıp girilen şeyler. Ayrı sekmeler yapmak çubuğu yedi sekmeye
+            // çıkarır ve hiçbirini bulunabilir bırakmazdı.
+            ToolsScreen(dependencies: dependencies)
+                .tabItem { Label(L.t("tab.tools"), systemImage: "circle.grid.2x2") }
+
             SettingsScreen(dependencies: dependencies)
                 .tabItem { Label(L.t("tab.settings"), systemImage: "gearshape") }
         }

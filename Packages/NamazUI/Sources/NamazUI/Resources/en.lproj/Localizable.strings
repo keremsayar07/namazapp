@@ -202,3 +202,44 @@
 "about.version" = "Version";
 "about.version.unknown" = "—";
 "about.kaaba" = "Kaaba coordinates";
+
+/* Tools tab */
+"tab.tools" = "Tools";
+"tools.section.practice" = "Daily";
+"tools.note" = "Everything here is stored only on your device. No record is ever sent to a server.";
+
+/* Tasbih */
+"tasbih.title" = "Tasbih";
+"tasbih.of %@" = "/ %@";
+"tasbih.today %@" = "%@ today";
+"tasbih.reset" = "Reset";
+"tasbih.add" = "Add dhikr";
+"tasbih.delete" = "Delete";
+"tasbih.section.presets" = "Dhikr";
+"tasbih.note" = "Resetting clears the counter only; the daily total stays as it is. Press and hold a dhikr to delete it.";
+"tasbih.accessibility.tap" = "Counter. Double tap to increment.";
+"tasbih.new.name" = "Name";
+"tasbih.new.placeholder" = "Name of the dhikr";
+"tasbih.new.target" = "Target";
+"tasbih.new.save" = "Add";
+
+/* Prayer tracking */
+"log.title" = "Prayer tracking";
+"log.today" = "Today";
+"log.previous" = "Previous day";
+"log.next" = "Next day";
+"log.section.prayers" = "Prayers";
+"log.section.recent" = "Last seven days";
+"log.note" = "This record is for you alone. You can go back and mark a day you forgot.";
+"log.accessibility.done %@" = "%@, marked as prayed";
+"log.accessibility.notDone %@" = "%@, not marked";
+"log.accessibility.day %@ %@" = "%1$@: %2$@ prayers marked";
+
+/* Missed prayers */
+"qadha.title" = "Missed prayers";
+"qadha.total" = "Total";
+"qadha.section.prayers" = "Prayers";
+"qadha.addDay" = "Add a full day";
+"qadha.note" = "Adding a day raises each of the five prayers by one. Counters never go below zero.";
+"qadha.accessibility.increase %@" = "Increase missed %@";
+"qadha.accessibility.decrease %@" = "Decrease missed %@";

@@ -13,17 +13,28 @@ public struct Dependencies {
     /// Pusula. Kıble ekranı dışında kimse kullanmıyor ama burada duruyor: manyetometreyi
     /// açan tek nesnenin nereden geldiği tek bakışta görünsün.
     public let heading: HeadingProviding
+    /// Araçlar sekmesinin üç aracı. Hepsi aynı dosya deposunu paylaşıyor ama ayrı
+    /// dosyalara yazıyor — birinin bozulması diğerlerini etkilemesin.
+    public let tasbih: TasbihViewModel
+    public let prayerLog: PrayerLogViewModel
+    public let qadha: QadhaViewModel
 
     public init(
         homeModel: HomeViewModel,
         citySearch: CitySearching,
         notifications: NotificationCoordinator,
-        heading: HeadingProviding
+        heading: HeadingProviding,
+        tasbih: TasbihViewModel,
+        prayerLog: PrayerLogViewModel,
+        qadha: QadhaViewModel
     ) {
         self.homeModel = homeModel
         self.citySearch = citySearch
         self.notifications = notifications
         self.heading = heading
+        self.tasbih = tasbih
+        self.prayerLog = prayerLog
+        self.qadha = qadha
     }
 
     /// Üretim yapılandırması: gerçek CoreLocation ve gerçek coğrafi kodlama.
@@ -33,7 +44,10 @@ public struct Dependencies {
     /// kaynak paketinden geliyor.
     @MainActor
     public static func live() -> Dependencies {
-        Dependencies(
+        // Tek depo örneği: üç araç aynı klasörü paylaşıyor, her biri kendi dosyasına
+        // yazıyor. Ayrı örnekler kurmak aynı klasörü üç kez oluşturmaya çalışırdı.
+        let store = JSONFileStore()
+        return Dependencies(
             homeModel: HomeViewModel(
                 locationService: CoreLocationService(),
                 unknownPlaceName: L.t("home.location.fallback")
@@ -43,7 +57,10 @@ public struct Dependencies {
                 scheduler: UserNotificationScheduler(),
                 content: NotificationText.provider
             ),
-            heading: CoreLocationHeadingService()
+            heading: CoreLocationHeadingService(),
+            tasbih: TasbihViewModel(store: store),
+            prayerLog: PrayerLogViewModel(store: store),
+            qadha: QadhaViewModel(store: store)
         )
     }
 
@@ -52,7 +69,8 @@ public struct Dependencies {
     public static func preview(
         authorization: LocationAuthorization = .whenInUse
     ) -> Dependencies {
-        Dependencies(
+        let previewStore = InMemoryFileStore()
+        return Dependencies(
             homeModel: HomeViewModel(
                 locationService: StubLocationService(authorization: authorization),
                 preferences: Preferences(store: InMemoryPreferenceStore()),
@@ -67,7 +85,10 @@ public struct Dependencies {
             // Önizlemede manyetometre yok; sabit bir okuma kadranın çizimini gösteriyor.
             heading: StubHeadingService(
                 snapshots: [HeadingSnapshot(trueHeading: 120, accuracy: 8)]
-            )
+            ),
+            tasbih: TasbihViewModel(store: previewStore),
+            prayerLog: PrayerLogViewModel(store: previewStore),
+            qadha: QadhaViewModel(store: previewStore)
         )
     }
 }
