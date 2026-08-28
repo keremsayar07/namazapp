@@ -1,0 +1,103 @@
+name: Güvenlik Denetimi
+
+# Faz 7.6'da konulan kuralların her push'ta makine tarafından kontrol edilmesi.
+#
+# Neden ayrı bir iş akışı ve neden Ubuntu: buradaki kontrollerin hiçbiri derleyiciye ihtiyaç
+# duymuyor, dolayısıyla macOS koşucusunun dakikalarını harcamasına gerek yok. Saniyeler
+# içinde bitiyor ve her push'ta koşuyor.
+#
+# Bu denetim bir güvenlik garantisi değil. Yaptığı şey, insanın gözden kaçırdığı sınıfta
+# hataları yakalamak: derlemeye giren bir `print`, koda gömülmüş bir anahtar, sessizce
+# eklenmiş bir üçüncü parti bağımlılık. Tehdit modelinin tamamı `SECURITY.md` içinde.
+
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Derlemeye giren kaynaklar. Test hedefleri ve komut satırı araçları hariç:
+      # `PrayerKitCalibration` ile `PrayerKitHijriTable` CI'da rapor basan araçlar,
+      # uygulamayla birlikte dağıtılmıyorlar.
+      - name: Dağıtılan kaynakları listele
+        run: |
+          find Packages/*/Sources App WidgetExtension -name '*.swift' \
+            -not -path '*/PrayerKitCalibration/*' \
+            -not -path '*/PrayerKitHijriTable/*' \
+            > /tmp/shipping.txt
+          echo "Denetlenen dosya sayısı: $(wc -l < /tmp/shipping.txt)"
+
+      # `print` çıktısı iOS'ta da sistem günlüğüne düşüyor ve gizlilik seviyesi yok:
+      # ne yazarsanız açıkta duruyor. Uygulamanın tek günlük yüzeyi `Diagnostics` ve o,
+      # hassas veri geçirilmesini tip düzeyinde engelliyor.
+      - name: Serbest günlükleme yok
+        run: |
+          if xargs grep -nE '(^|[^A-Za-z_.])(print|NSLog|debugPrint|dump)\(' < /tmp/shipping.txt; then
+            echo "::error::Dağıtılan kodda serbest günlükleme var. Diagnostics.log(...) kullanın."
+            exit 1
+          fi
+          echo "Temiz."
+
+      # Kullanıcının koyduğu kural: API anahtarı veya secret Swift kaynağına konmayacak.
+      # Uygulamanın sunucusu yok, dolayısıyla burada bulunacak her şey hatadır.
+      - name: Koda gömülü sır yok
+        run: |
+          PATTERN='(api[_-]?key|apikey|secret[_-]?key|client[_-]?secret|access[_-]?token|bearer [A-Za-z0-9]|sk-[A-Za-z0-9]{16}|-----BEGIN [A-Z ]*PRIVATE KEY)'
+          if xargs grep -inE "$PATTERN" < /tmp/shipping.txt; then
+            echo "::error::Kaynak kodda sır benzeri bir dize var."
+            exit 1
+          fi
+          echo "Temiz."
+
+      # Uygulama hiçbir sunucuya bağlanmıyor. Bir gün bağlanırsa bile düz HTTP olmayacak.
+      - name: Şifresiz HTTP adresi yok
+        run: |
+          if xargs grep -nE '"http://' < /tmp/shipping.txt; then
+            echo "::error::Kaynakta http:// adresi var."
+            exit 1
+          fi
+          echo "Temiz."
+
+      # Üçüncü parti bağımlılık denetimi. Bugün sıfır tane var ve bu bilinçli bir karar:
+      # her bağımlılık, kodunu okumadığınız birinin uygulamanızda çalışması demek.
+      # Bir tanesi eklenirse bu adım kırmızı olur ve karar bilerek verilmiş olur.
+      - name: Üçüncü parti bağımlılık yok
+        run: |
+          if grep -rnE '\.package\(url:' Packages/*/Package.swift; then
+            echo "::error::Uzak bir paket bağımlılığı eklenmiş. SECURITY.md'deki bağımlılık bölümünü güncelleyin."
+            exit 1
+          fi
+          echo "Yalnızca yerel paketler."
+
+      # Apple, gizlilik manifestosu olmayan uygulamaları reddediyor. Eksikliği ancak
+      # App Store yüklemesinde fark edilirdi.
+      - name: Gizlilik manifestosu her iki hedefte de var
+        run: |
+          missing=0
+          for f in App/PrivacyInfo.xcprivacy WidgetExtension/PrivacyInfo.xcprivacy; do
+            if [ ! -f "$f" ]; then echo "::error::$f yok"; missing=1; fi
+          done
+          exit $missing
+
+      # Uygulamanın veri toplamadığı iddiası manifestoda da yazılı olmalı; ikisi ayrı
+      # düşerse App Store'daki gizlilik etiketi yanlış olur.
+      - name: Manifesto izleme yapılmadığını beyan ediyor
+        run: |
+          if ! grep -q 'NSPrivacyTracking' App/PrivacyInfo.xcprivacy; then
+            echo "::error::NSPrivacyTracking anahtarı yok."
+            exit 1
+          fi
+          if grep -A1 'NSPrivacyTracking<' App/PrivacyInfo.xcprivacy | grep -q '<true/>'; then
+            echo "::error::NSPrivacyTracking true görünüyor; uygulama izleme yapmıyor."
+            exit 1
+          fi
+          echo "Beyan tutarlı."
+
+      - name: Tehdit modeli dosyası duruyor
+        run: test -f SECURITY.md
