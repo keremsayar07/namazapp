@@ -26,8 +26,16 @@ permissions:
   contents: write
 
 concurrency:
-  # Depoya yazan diğer iş akışlarıyla aynı grupta — ikisi aynı anda push etmeye çalışmasın.
-  group: repo-write
+  # HER İŞ AKIŞI KENDİ GRUBUNDA.
+  #
+  # Bir ara dördünü birden `repo-write` adlı ortak bir gruba almıştım; amaç aynı anda iki
+  # push denemesini engellemekti. Ters tepti: GitHub bir grupta yalnızca BİR çalışan ve BİR
+  # bekleyen tutuyor, üçüncü ve sonrakiler sıraya girmek yerine iptal ediliyor. Tek bir
+  # push dört iş akışını birden tetiklediği için ikisi hep "Cancelling since a higher
+  # priority waiting request exists" diye düşüyordu.
+  #
+  # Push yarışının gerçek çözümü aşağıdaki rebase-retry döngüsü; o zaten çalışıyor.
+  group: app-build
   cancel-in-progress: false
 
 jobs:
