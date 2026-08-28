@@ -86,6 +86,12 @@ targets:
         # Protection) — bunlar ihracat muafiyeti kapsamında. Bu anahtar olmadan her
         # TestFlight yüklemesinde aynı soru tekrar sorulur.
         ITSAppUsesNonExemptEncryption: false
+        # Notlar sekmesinin isteğe bağlı kilidi Face ID kullanıyor. Bu anahtar OLMADAN
+        # `LAContext.evaluatePolicy` çağrısı uygulamayı ÇÖKERTİR — iOS, gerekçesi
+        # yazılmamış bir biyometri isteğini kabul etmiyor.
+        NSFaceIDUsageDescription: >-
+          Notlarınızı yalnızca siz açabilesiniz diye Face ID kullanılır. Kilidi Notlar
+          ekranından kapatabilirsiniz.
     entitlements:
       path: App/Namaz.entitlements
       properties:
