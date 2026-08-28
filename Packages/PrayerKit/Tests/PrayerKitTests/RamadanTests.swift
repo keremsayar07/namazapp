@@ -181,12 +181,12 @@ final class RamadanTests: XCTestCase {
     func test_aFullyCoveredPeriodIsMarkedVerified() {
         // Kapsamın diğer ucu: ay tamamen arşivin içindeyse uyarı gösterilmemeli.
         // Sürekli uyaran bir arayüz, uyarısı okunmayan bir arayüze dönüşür.
+        // Aralığın iki ucu ayrı değişkende: `...` bir sonraki satırın başına düşerse Swift
+        // onu ÖN EK operatörü sanıyor ve ifade sessizce `PartialRangeThrough`'a dönüşüyor.
+        let start = GregorianDay(year: 1900, month: 1, day: 1)
+        let end = GregorianDay(year: 2100, month: 1, day: 1)
         let covered = IslamicCalendar(
-            converter: DiyanetHijriDateConverter(
-                overrides: [:],
-                coverage: GregorianDay(year: 1900, month: 1, day: 1)
-                    ...GregorianDay(year: 2100, month: 1, day: 1)
-            )
+            converter: DiyanetHijriDateConverter(overrides: [:], coverage: start...end)
         )
         XCTAssertEqual(covered.ramadan(onOrAfter: samples[0])?.isVerified, true)
     }
