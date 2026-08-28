@@ -108,6 +108,33 @@ enum Formatting {
             .formatted(.measurement(width: .abbreviated, usage: .road))
     }
 
+    // MARK: - Notlar ve zamanlayıcı
+
+    /// Not listesindeki tarih. Bugünse saat, bu haftaysa gün adı, daha eskiyse tarih —
+    /// "3 saniye önce" gibi göreli ifadeler bir not defterinde gürültü yapıyor.
+    static func noteStamp(_ date: Date) -> String {
+        let calendar = Calendar.current
+        if calendar.isDateInToday(date) {
+            return date.formatted(Date.FormatStyle(date: .omitted, time: .shortened))
+        }
+        if let week = calendar.date(byAdding: .day, value: -6, to: Date()), date > week {
+            return date.formatted(Date.FormatStyle().weekday(.wide))
+        }
+        return date.formatted(Date.FormatStyle(date: .abbreviated, time: .omitted))
+    }
+
+    /// Zamanlayıcının seçili süresi: "20:00". Çalışırken bu kullanılmıyor —
+    /// orada `Text(date, style: .timer)` kendi kendine sayıyor.
+    static func timerDuration(_ interval: TimeInterval) -> String {
+        let total = max(0, Int(interval))
+        return "\(total / 60):\(String(format: "%02d", total % 60))"
+    }
+
+    /// Hazır süre etiketi: "10 dakika".
+    static func timerPreset(_ interval: TimeInterval) -> String {
+        L.t("timer.minutes %@", String(Int(interval / 60)))
+    }
+
     /// Hicri ay aralığı: "Rebiülevvel – Rebiülahir 1448" ya da tek aya sığıyorsa
     /// "Muharrem 1448". Yıl da değişiyorsa iki tarafta da yazılıyor.
     static func hijriSpanLine(_ span: [HijriDate]) -> String {

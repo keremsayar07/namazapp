@@ -43,6 +43,14 @@ public protocol NotificationScheduling: Sendable {
     func cancelAll() async
     /// Şu an sistemde bekleyen vakit bildirimlerinin sayısı — testler ve teşhis için.
     func pendingCount() async -> Int
+
+    /// Vakit planından BAĞIMSIZ tek bir bildirim kurar (zamanlayıcı bunu kullanıyor).
+    ///
+    /// `cancelAll()` yalnızca vakit bildirimlerini siliyor; buraya verilen kimlik o ad
+    /// alanının dışındaysa dokunulmuyor. Zamanlayıcı bildiriminin, uygulama her öne
+    /// geldiğinde vakitler yeniden kurulurken sessizce silinmemesi buna bağlı.
+    func schedule(identifier: String, at date: Date, title: String, body: String) async
+    func cancel(identifier: String) async
 }
 
 /// Test ve önizleme için bellek içi zamanlayıcı.
@@ -51,6 +59,9 @@ public actor StubNotificationScheduler: NotificationScheduling {
     private let authorizationAfterRequest: NotificationAuthorization?
     public private(set) var scheduled: [PlannedNotification] = []
     public private(set) var contents: [String: NotificationContent] = [:]
+    /// Plan dışı, tekil bildirimler. Testler zamanlayıcının gerçekten kurulup
+    /// kurulmadığına buradan bakıyor.
+    public private(set) var standalone: [String: Date] = [:]
 
     public init(
         authorization: NotificationAuthorization = .authorized,
@@ -89,4 +100,12 @@ public actor StubNotificationScheduler: NotificationScheduling {
     }
 
     public func pendingCount() async -> Int { scheduled.count }
+
+    public func schedule(identifier: String, at date: Date, title: String, body: String) async {
+        standalone[identifier] = date
+    }
+
+    public func cancel(identifier: String) async {
+        standalone[identifier] = nil
+    }
 }

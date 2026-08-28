@@ -18,6 +18,8 @@ public struct Dependencies {
     public let tasbih: TasbihViewModel
     public let prayerLog: PrayerLogViewModel
     public let qadha: QadhaViewModel
+    public let notes: NotesViewModel
+    public let timer: TimerViewModel
 
     public init(
         homeModel: HomeViewModel,
@@ -26,7 +28,9 @@ public struct Dependencies {
         heading: HeadingProviding,
         tasbih: TasbihViewModel,
         prayerLog: PrayerLogViewModel,
-        qadha: QadhaViewModel
+        qadha: QadhaViewModel,
+        notes: NotesViewModel,
+        timer: TimerViewModel
     ) {
         self.homeModel = homeModel
         self.citySearch = citySearch
@@ -35,6 +39,8 @@ public struct Dependencies {
         self.tasbih = tasbih
         self.prayerLog = prayerLog
         self.qadha = qadha
+        self.notes = notes
+        self.timer = timer
     }
 
     /// Üretim yapılandırması: gerçek CoreLocation ve gerçek coğrafi kodlama.
@@ -47,6 +53,7 @@ public struct Dependencies {
         // Tek depo örneği: üç araç aynı klasörü paylaşıyor, her biri kendi dosyasına
         // yazıyor. Ayrı örnekler kurmak aynı klasörü üç kez oluşturmaya çalışırdı.
         let store = JSONFileStore()
+        let scheduler = UserNotificationScheduler()
         return Dependencies(
             homeModel: HomeViewModel(
                 locationService: CoreLocationService(),
@@ -54,13 +61,17 @@ public struct Dependencies {
             ),
             citySearch: GeocoderCitySearch(),
             notifications: NotificationCoordinator(
-                scheduler: UserNotificationScheduler(),
+                scheduler: scheduler,
                 content: NotificationText.provider
             ),
             heading: CoreLocationHeadingService(),
             tasbih: TasbihViewModel(store: store),
             prayerLog: PrayerLogViewModel(store: store),
-            qadha: QadhaViewModel(store: store)
+            qadha: QadhaViewModel(store: store),
+            notes: NotesViewModel(store: store),
+            // Zamanlayıcı, vakit bildirimleriyle AYNI planlayıcıyı kullanıyor ama farklı
+            // bir kimlik ad alanında; `cancelAll()` ona dokunmuyor.
+            timer: TimerViewModel(store: store, scheduler: scheduler)
         )
     }
 
@@ -70,6 +81,7 @@ public struct Dependencies {
         authorization: LocationAuthorization = .whenInUse
     ) -> Dependencies {
         let previewStore = InMemoryFileStore()
+        let previewScheduler = StubNotificationScheduler()
         return Dependencies(
             homeModel: HomeViewModel(
                 locationService: StubLocationService(authorization: authorization),
@@ -78,7 +90,7 @@ public struct Dependencies {
             ),
             citySearch: StubCitySearch(),
             notifications: NotificationCoordinator(
-                scheduler: StubNotificationScheduler(),
+                scheduler: previewScheduler,
                 content: NotificationText.provider,
                 preferences: Preferences(store: InMemoryPreferenceStore())
             ),
@@ -88,7 +100,13 @@ public struct Dependencies {
             ),
             tasbih: TasbihViewModel(store: previewStore),
             prayerLog: PrayerLogViewModel(store: previewStore),
-            qadha: QadhaViewModel(store: previewStore)
+            qadha: QadhaViewModel(store: previewStore),
+            notes: NotesViewModel(
+                store: previewStore,
+                preferences: Preferences(store: InMemoryPreferenceStore()),
+                lock: StubBiometricLock()
+            ),
+            timer: TimerViewModel(store: previewStore, scheduler: previewScheduler)
         )
     }
 }

@@ -44,6 +44,16 @@ struct ToolsScreen: View {
                             QadhaScreen(model: dependencies.qadha)
                         }
 
+                        SectionLabel(L.t("tools.section.personal"))
+
+                        DisclosureRow(title: L.t("notes.title")) {
+                            NotesScreen(model: dependencies.notes)
+                        }
+
+                        DisclosureRow(title: L.t("timer.title")) {
+                            TimerScreen(model: dependencies.timer)
+                        }
+
                         SectionNote(L.t("tools.note"))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

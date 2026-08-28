@@ -142,4 +142,26 @@ public struct Preferences: Sendable {
         }
         store.setData(try? JSONEncoder().encode(value), forKey: key)
     }
+
+    // MARK: - Notlar kilidi
+
+    private static let notesLockedKey = "namaz.notesLocked"
+
+    /// Depo yalnızca `Data` tutuyor; tek bir Bool için ayrı bir tip açmak yerine küçük bir
+    /// sarmalayıcı. Üst düzey `Bool`'u doğrudan JSON'a yazmak bazı Foundation sürümlerinde
+    /// "fragment" sayılıp reddedilebiliyor — sarmalayıcı o belirsizliği tamamen kaldırıyor.
+    private struct Flag: Codable { var value: Bool }
+
+    /// Notlar sekmesi Face ID / parola ile kilitli mi.
+    ///
+    /// Varsayılan KAPALI. Açık gelseydi, kilidin ne olduğunu bilmeyen kullanıcı kendi
+    /// notlarına ulaşamadığını sanırdı; koruduğundan fazlasını engellemek olurdu.
+    public func areNotesLocked() -> Bool {
+        decode(Flag.self, forKey: Self.notesLockedKey)?.value ?? false
+    }
+
+    public func setNotesLocked(_ locked: Bool) {
+        encode(Flag(value: locked), forKey: Self.notesLockedKey)
+    }
+
 }

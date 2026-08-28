@@ -93,4 +93,31 @@ public struct UserNotificationScheduler: NotificationScheduling {
         @unknown default: return .denied
         }
     }
+
+    /// Plan dışı tek bildirim — zamanlayıcı için.
+    ///
+    /// Kimlik `namaz.` ön ekini TAŞIMAMALI; `cancelAll()` o ön ekli her şeyi siliyor ve
+    /// vakit bildirimleri uygulama her öne geldiğinde yeniden kuruluyor. Ad alanları
+    /// ayrı olduğu sürece ikisi birbirine dokunmuyor.
+    public func schedule(identifier: String, at date: Date, title: String, body: String) async {
+        let payload = UNMutableNotificationContent()
+        payload.title = title
+        payload.body = body
+        payload.sound = .default
+
+        // Geçmiş bir tarihe bildirim kurulamaz; sessizce vazgeçiyoruz.
+        let interval = date.timeIntervalSinceNow
+        guard interval > 0 else { return }
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        try? await center.add(
+            UNNotificationRequest(identifier: identifier, content: payload, trigger: trigger)
+        )
+    }
+
+    public func cancel(identifier: String) async {
+        center.removePendingNotificationRequests(withIdentifiers: [identifier])
+        center.removeDeliveredNotifications(withIdentifiers: [identifier])
+    }
+
 }

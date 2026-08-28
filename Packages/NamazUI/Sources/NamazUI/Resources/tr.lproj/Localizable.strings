@@ -261,3 +261,41 @@
 "occasion.unverified" = "Tarih Ümmü'l-Kura hesabına dayanıyor; Diyanet takviminden bir gün farklı olabilir.";
 "calendar.section.occasions" = "Bu ayın dini günleri";
 "calendar.occasions.none" = "Bu ayda dini gün ya da gece yok.";
+
+/* Araçlar — kişisel bölüm */
+"tools.section.personal" = "Kişisel";
+
+/* Notlar */
+"notes.title" = "Defter";
+"notes.new" = "Yeni not";
+"notes.search" = "Notlarda ara";
+"notes.section.list" = "Notlar";
+"notes.section.security" = "Güvenlik";
+"notes.empty" = "Henüz not yok. Yukarıdaki düğmeyle ilk notunuzu yazabilirsiniz.";
+"notes.noresults" = "Bu aramayla eşleşen not yok.";
+"notes.untitled" = "Başlıksız not";
+"notes.delete" = "Sil";
+"notes.editor.title" = "Başlık";
+"notes.editor.done" = "Bitti";
+"notes.lock.toggle" = "Face ID ile kilitle";
+"notes.lock.caption" = "Defter açılırken kimlik doğrulaması istenir. Uygulama arka plana geçtiğinde yeniden kilitlenir.";
+"notes.lock.reason" = "Notlarınızı açmak için";
+"notes.lock.unavailable" = "Bu cihazda Face ID, Touch ID veya parola tanımlı olmadığı için kilit kullanılamıyor.";
+"notes.locked.title" = "Defter kilitli";
+"notes.locked.body" = "Notlarınızı görmek için kimliğinizi doğrulayın.";
+"notes.locked.failed" = "Doğrulama tamamlanmadı. Tekrar deneyebilirsiniz.";
+"notes.locked.unlock" = "Kilidi aç";
+"notes.storage.note" = "Notlar yalnızca cihazınızda saklanır ve cihaz kilitliyken iOS tarafından şifreli tutulur. Hiçbir zaman sunucuya gönderilmez.";
+
+/* Zamanlayıcı */
+"timer.title" = "Zamanlayıcı";
+"timer.section.presets" = "Süre";
+"timer.section.label" = "Ad";
+"timer.custom" = "Özel süre";
+"timer.minutes %@" = "%@ dakika";
+"timer.label.placeholder" = "Örneğin: Kur'an okuma";
+"timer.start" = "Başlat";
+"timer.stop" = "Durdur";
+"timer.finished" = "Süre doldu";
+"timer.notification.body" = "Zamanlayıcı tamamlandı.";
+"timer.note" = "Zamanlayıcı bitiş anını saklar, geri sayan bir sayaç tutmaz. Uygulamayı kapatsanız da süre dolduğunda bildirim gelir.";

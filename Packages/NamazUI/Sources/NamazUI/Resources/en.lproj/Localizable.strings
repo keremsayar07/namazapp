@@ -262,3 +262,41 @@
 "occasion.unverified" = "This date comes from the Umm al-Qura calculation and may fall a day apart from Diyanet's calendar.";
 "calendar.section.occasions" = "Religious days this month";
 "calendar.occasions.none" = "No religious days or nights this month.";
+
+/* Tools — personal section */
+"tools.section.personal" = "Personal";
+
+/* Notes */
+"notes.title" = "Notebook";
+"notes.new" = "New note";
+"notes.search" = "Search notes";
+"notes.section.list" = "Notes";
+"notes.section.security" = "Security";
+"notes.empty" = "No notes yet. Use the button above to write your first one.";
+"notes.noresults" = "No note matches that search.";
+"notes.untitled" = "Untitled note";
+"notes.delete" = "Delete";
+"notes.editor.title" = "Title";
+"notes.editor.done" = "Done";
+"notes.lock.toggle" = "Lock with Face ID";
+"notes.lock.caption" = "You will be asked to authenticate when opening the notebook. It locks again whenever the app goes to the background.";
+"notes.lock.reason" = "To open your notes";
+"notes.lock.unavailable" = "This device has no Face ID, Touch ID or passcode set, so the lock is unavailable.";
+"notes.locked.title" = "Notebook locked";
+"notes.locked.body" = "Authenticate to see your notes.";
+"notes.locked.failed" = "Authentication did not complete. You can try again.";
+"notes.locked.unlock" = "Unlock";
+"notes.storage.note" = "Notes are stored only on your device and kept encrypted by iOS while it is locked. They are never sent to a server.";
+
+/* Timer */
+"timer.title" = "Timer";
+"timer.section.presets" = "Duration";
+"timer.section.label" = "Label";
+"timer.custom" = "Custom duration";
+"timer.minutes %@" = "%@ minutes";
+"timer.label.placeholder" = "For example: Quran reading";
+"timer.start" = "Start";
+"timer.stop" = "Stop";
+"timer.finished" = "Time is up";
+"timer.notification.body" = "Your timer has finished.";
+"timer.note" = "The timer stores an end time rather than running a counter. You will still get a notification when it finishes, even if you close the app.";
