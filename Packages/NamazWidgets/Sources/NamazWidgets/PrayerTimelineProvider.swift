@@ -87,12 +87,14 @@ public struct PrayerTimelineProvider: TimelineProvider {
         // Son girişten sonra sistem yeni çizelge istesin. Yarının vakitleri de elimizde
         // olduğu için bu genelde 24 saatten uzak — widget'ın uyanma bütçesini boşa harcamıyoruz.
         let refreshAt = boundaries.last ?? now.addingTimeInterval(3600)
+        Diagnostics.log(.widgetTimelineBuilt(entryCount: entries.count))
         completion(Timeline(entries: entries, policy: .after(refreshAt)))
     }
 
     /// Verilen an için çizelge. Şehir seçilmemişse `nil`.
     private func makeSchedule(at date: Date) -> PrayerSchedule? {
         guard let location = preferences.selectedLocation() ?? preferences.lastKnownLocation() else {
+            Diagnostics.log(.widgetHasNoLocation)
             return nil
         }
         return repository.schedule(

@@ -50,6 +50,7 @@ public final class NotificationCoordinator {
     @discardableResult
     public func requestAuthorization() async -> NotificationAuthorization {
         authorization = await scheduler.requestAuthorization()
+        Diagnostics.log(.notificationAuthorization(granted: authorization.canSchedule))
         return authorization
     }
 
@@ -70,6 +71,7 @@ public final class NotificationCoordinator {
         guard let location, authorization.canSchedule, !settings.isSilent else {
             await scheduler.cancelAll()
             plan = .empty
+            Diagnostics.log(.notificationsCleared)
             return
         }
 
@@ -86,6 +88,11 @@ public final class NotificationCoordinator {
             with: newPlan, content: content, playsSound: settings.playsSound
         )
         plan = newPlan
+        Diagnostics.log(.notificationsScheduled(
+            count: newPlan.notifications.count,
+            coveredDays: newPlan.coveredDays,
+            truncated: newPlan.wasTruncated
+        ))
     }
 
     /// Bildirim ayarı değişti: kaydet ve planı yenile.

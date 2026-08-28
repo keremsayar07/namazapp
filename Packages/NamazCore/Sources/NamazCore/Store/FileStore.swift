@@ -20,6 +20,21 @@ public protocol FileStoring: Sendable {
     func delete(_ name: String) async
 }
 
+/// Kullanıcı verisi tutan bütün dosyalar, tek listede.
+///
+/// **Neden merkezî.** "Tüm verilerimi sil" bir dosyayı atlarsa kullanıcıya söylenen şey
+/// yanlış olur — sildiğini sandığı notlar diskte kalır. Adlar görünüm modellerinin içine
+/// dağılmış olsaydı, yeni bir araç eklendiğinde silme listesine eklemeyi unutmak an
+/// meselesiydi. Burada tek bir enum var ve bir testi, `allCases` ile silinen dosya
+/// sayısının eşleştiğini doğruluyor.
+public enum UserDataFile: String, CaseIterable, Sendable {
+    case tasbih
+    case prayerLog = "prayer-log"
+    case qadha
+    case notes
+    case timer
+}
+
 /// Gerçek depo: App Group konteynerinde, dosya başına bir JSON.
 public actor JSONFileStore: FileStoring {
 
@@ -62,15 +77,28 @@ public actor JSONFileStore: FileStoring {
     }
 
     public func load<T: Decodable & Sendable>(_ type: T.Type, from name: String) async -> T? {
-        guard let url = url(for: name), let data = try? Data(contentsOf: url) else { return nil }
+        guard let url = url(for: name) else {
+            Diagnostics.log(.storeUnavailable)
+            return nil
+        }
+        // Dosyanın hiç olmaması olağan (ilk açılış); onu hata olarak kaydetmiyoruz.
+        guard let data = try? Data(contentsOf: url) else { return nil }
         // Bozuk veri çökmeye değil, "veri yok"a dönüşür. Uygulamanın hiçbir koşulda
         // çökmeme kuralı; kullanıcının kaydı bozulduysa uygulamayı açamamak, kaydı
-        // kaybetmekten kötü.
-        return try? decoder.decode(type, from: data)
+        // kaybetmekten kötü. Ama sessiz de kalmıyor: bu satır olmadan "notlarım kayboldu"
+        // şikâyetinin nedenini cihazdan öğrenmenin hiçbir yolu yok.
+        guard let decoded = try? decoder.decode(type, from: data) else {
+            Diagnostics.log(.storeLoadFailed(store: name))
+            return nil
+        }
+        return decoded
     }
 
     public func save<T: Encodable & Sendable>(_ value: T, to name: String) async {
-        guard let url = url(for: name), let data = try? encoder.encode(value) else { return }
+        guard let url = url(for: name), let data = try? encoder.encode(value) else {
+            Diagnostics.log(.storeWriteFailed(store: name))
+            return
+        }
         // `.atomic`: yazma yarıda kesilirse (uygulama öldürülürse) eski dosya bozulmadan
         // kalır. Yarım yazılmış bir JSON, hiç yazılmamış olmaktan kötüdür.
         try? data.write(to: url, options: [.atomic])

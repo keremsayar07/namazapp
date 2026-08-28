@@ -321,3 +321,15 @@
 "ramadan.unverified" = "Bu tarihler Ümmü'l-Kura hesabına dayanıyor; Diyanet'in ilan ettiği ramazan başlangıcı bir gün farklı olabilir. Bu durumda tablodaki gün numaralarının tamamı bir gün kayar.";
 "ramadan.imsakiye.note" = "İmsak sabah (fecr-i sadık) vaktinin, iftar akşam vaktinin kendisidir; ayrıca hesaplanmaz. Sahur ve iftar bildirimi için Ayarlar'dan Sabah ve Akşam vakitlerine hatırlatma süresi verebilirsiniz.";
 "ramadan.accessibility %@ %@ %@" = "Ramazan %1$@. gün, %2$@ %3$@ kaldı";
+
+/* Gizlilik */
+"settings.section.privacy" = "Gizlilik";
+"settings.erase" = "Tüm verileri sil";
+"settings.erase.caption" = "Notlar, namaz kaydı, kaza sayısı, zikir sayaçları, seçili şehir ve ayarlar.";
+"settings.erase.action" = "Sil";
+"settings.erase.confirm.title" = "Tüm veriler silinsin mi?";
+"settings.erase.confirm.body" = "Notlarınız, namaz kaydınız, kaza sayılarınız, zikir sayaçlarınız ve ayarlarınız silinecek. Bu işlem geri alınamaz.";
+"settings.erase.confirm.ok" = "Sil";
+"settings.erase.confirm.cancel" = "Tamam";
+"settings.erase.done" = "Veriler silindi.";
+"settings.privacy.note" = "Uygulamanın sunucusu yok. Notlarınız, namaz kaydınız ve konumunuz yalnızca bu cihazda duruyor; hiçbir yere gönderilmiyor ve kimseyle paylaşılmıyor. Şehir ararken yazdığınız metin, adresi çözmek için Apple'ın konum servisine gidiyor — bu Apple'ın gizlilik politikasına tabi.";

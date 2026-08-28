@@ -21,7 +21,7 @@ public final class TasbihViewModel {
     private let clock: @Sendable () -> Date
     private let timeZone: TimeZone
 
-    static let fileName = "tasbih"
+    static let fileName = UserDataFile.tasbih.rawValue
 
     public init(
         store: FileStoring,
@@ -125,7 +125,7 @@ public final class PrayerLogViewModel {
     /// kullanılırsa başlıkta bir tarih, kayıtta başka bir gün olur.
     public private(set) var timeZone: TimeZone
 
-    static let fileName = "prayer-log"
+    static let fileName = UserDataFile.prayerLog.rawValue
 
     public init(
         store: FileStoring,
@@ -211,7 +211,7 @@ public final class QadhaViewModel {
     public private(set) var counts = QadhaCounts()
 
     private let store: FileStoring
-    static let fileName = "qadha"
+    static let fileName = UserDataFile.qadha.rawValue
 
     public init(store: FileStoring) {
         self.store = store

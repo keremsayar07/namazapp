@@ -76,6 +76,7 @@ public final class HomeViewModel {
     public func refresh() async {
         if let manualLocation {
             state = .ready(makeSchedule(for: manualLocation))
+            Diagnostics.log(.locationResolved(source: .manual))
             return
         }
 
@@ -86,8 +87,10 @@ public final class HomeViewModel {
             authorization = await locationService.requestAuthorization()
         }
 
+        Diagnostics.log(.locationAuthorization(authorization))
         guard authorization.canUseLocation else {
             state = .locationDenied
+            Diagnostics.log(.locationFailed(.unauthorized))
             return
         }
 
@@ -98,10 +101,22 @@ public final class HomeViewModel {
             // konum bilgisi bu olacak. Her çözümde tazeliyoruz.
             preferences.setLastKnownLocation(location)
             state = .ready(makeSchedule(for: location))
+            // Kaydedilen tek şey konumun NEREDEN geldiği. Koordinat ya da yer adı
+            // günlüğe hiç girmiyor — `Diagnostics` zaten onları taşıyacak bir parametre
+            // sunmuyor.
+            Diagnostics.log(.locationResolved(source: .device))
         } catch LocationError.unauthorized {
             state = .locationDenied
+            Diagnostics.log(.locationFailed(.unauthorized))
+        } catch LocationError.servicesDisabled {
+            state = .locationUnavailable
+            Diagnostics.log(.locationFailed(.servicesDisabled))
+        } catch LocationError.unavailable {
+            state = .locationUnavailable
+            Diagnostics.log(.locationFailed(.timedOut))
         } catch {
             state = .locationUnavailable
+            Diagnostics.log(.locationFailed(.unknown))
         }
     }
 

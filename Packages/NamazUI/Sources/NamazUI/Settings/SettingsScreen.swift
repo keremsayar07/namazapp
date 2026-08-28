@@ -13,6 +13,8 @@ struct SettingsScreen: View {
     let dependencies: Dependencies
 
     @State private var isPickingCity = false
+    @State private var isConfirmingErase = false
+    @State private var didErase = false
     @Environment(\.openURL) private var openURL
 
     private var model: HomeViewModel { dependencies.homeModel }
@@ -38,6 +40,7 @@ struct SettingsScreen: View {
                         locationSection
                         preferencesSection
                         languageSection
+                        privacySection
                         aboutSection
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -151,6 +154,55 @@ struct SettingsScreen: View {
                 .microLabelStyle(color: Palette.mark)
             }
         }
+    }
+
+    // MARK: - Gizlilik
+
+    /// "Tüm verilerimi sil".
+    ///
+    /// Uygulamanın hesabı yok, sunucusu yok; silinecek uzak bir kopya da yok. Ama cihazdaki
+    /// veri kullanıcının dini pratiğini ve özel notlarını taşıyor. Telefonu devretmeden ya da
+    /// sadece baştan başlamak istediğinde bunu tek yerden yapabilmeli. "Uygulamayı silin"
+    /// demek de çözüm olurdu ama kullanıcı çoğu zaman uygulamayı tutup veriyi bırakmak
+    /// istiyor.
+    ///
+    /// Onay kutusu var ve geri alınamadığı açıkça yazıyor: tek dokunuşla silinen bir yıllık
+    /// namaz kaydının telafisi yok.
+    private var privacySection: some View {
+        Group {
+            SectionLabel(L.t("settings.section.privacy"))
+
+            SettingRow(
+                title: L.t("settings.erase"),
+                caption: L.t("settings.erase.caption")
+            ) {
+                Button(L.t("settings.erase.action"), role: .destructive) {
+                    isConfirmingErase = true
+                }
+                .microLabelStyle(color: Palette.mark)
+            }
+
+            SectionNote(L.t("settings.privacy.note"))
+        }
+        .alert(L.t("settings.erase.confirm.title"), isPresented: $isConfirmingErase) {
+            Button(L.t("settings.erase.confirm.cancel"), role: .cancel) {}
+            Button(L.t("settings.erase.confirm.ok"), role: .destructive) {
+                Task { await erase() }
+            }
+        } message: {
+            Text(L.t("settings.erase.confirm.body"))
+        }
+        .alert(L.t("settings.erase.done"), isPresented: $didErase) {
+            Button(L.t("settings.erase.confirm.cancel")) {}
+        }
+    }
+
+    /// Sildikten sonra ekranı yeniden kuruyoruz: bellekte duran görünüm modelleri diski
+    /// bilmiyor ve silinmiş bir notu göstermeye devam ederdi.
+    private func erase() async {
+        await dependencies.eraser.eraseAll()
+        await dependencies.reloadAfterErase()
+        didErase = true
     }
 
     // MARK: - Hakkında

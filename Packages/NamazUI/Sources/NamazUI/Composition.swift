@@ -20,6 +20,9 @@ public struct Dependencies {
     public let qadha: QadhaViewModel
     public let notes: NotesViewModel
     public let timer: TimerViewModel
+    /// "Tüm verilerimi sil". Depoyu ve tercihleri birlikte bilmesi gerektiği için ayrı bir
+    /// tip; hangi dosyaların silineceği `UserDataFile.allCases` ile tek yerden geliyor.
+    public let eraser: UserDataEraser
 
     public init(
         homeModel: HomeViewModel,
@@ -30,7 +33,8 @@ public struct Dependencies {
         prayerLog: PrayerLogViewModel,
         qadha: QadhaViewModel,
         notes: NotesViewModel,
-        timer: TimerViewModel
+        timer: TimerViewModel,
+        eraser: UserDataEraser
     ) {
         self.homeModel = homeModel
         self.citySearch = citySearch
@@ -41,6 +45,22 @@ public struct Dependencies {
         self.qadha = qadha
         self.notes = notes
         self.timer = timer
+        self.eraser = eraser
+    }
+
+    /// Silmeden sonra bellekteki her şeyi diskten yeniden okur.
+    ///
+    /// Bu çağrı olmasaydı görünüm modelleri silinmiş veriyi göstermeye devam ederdi: diski
+    /// boşaltmak bellekteki kopyayı düşürmüyor. Kullanıcı "sildim" deyip listede notunu
+    /// görmeye devam etseydi, silmenin gerçekten olduğuna inanması için hiçbir sebebi olmazdı.
+    @MainActor
+    public func reloadAfterErase() async {
+        await tasbih.load()
+        await prayerLog.load()
+        await qadha.load()
+        await notes.load()
+        await timer.load()
+        await homeModel.useDeviceLocation()
     }
 
     /// Üretim yapılandırması: gerçek CoreLocation ve gerçek coğrafi kodlama.
@@ -71,7 +91,8 @@ public struct Dependencies {
             notes: NotesViewModel(store: store),
             // Zamanlayıcı, vakit bildirimleriyle AYNI planlayıcıyı kullanıyor ama farklı
             // bir kimlik ad alanında; `cancelAll()` ona dokunmuyor.
-            timer: TimerViewModel(store: store, scheduler: scheduler)
+            timer: TimerViewModel(store: store, scheduler: scheduler),
+            eraser: UserDataEraser(store: store)
         )
     }
 
@@ -106,7 +127,11 @@ public struct Dependencies {
                 preferences: Preferences(store: InMemoryPreferenceStore()),
                 lock: StubBiometricLock()
             ),
-            timer: TimerViewModel(store: previewStore, scheduler: previewScheduler)
+            timer: TimerViewModel(store: previewStore, scheduler: previewScheduler),
+            eraser: UserDataEraser(
+                store: previewStore,
+                preferences: Preferences(store: InMemoryPreferenceStore())
+            )
         )
     }
 }

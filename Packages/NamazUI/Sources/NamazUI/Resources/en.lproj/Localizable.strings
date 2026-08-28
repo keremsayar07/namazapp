@@ -322,3 +322,15 @@
 "ramadan.unverified" = "These dates come from the Umm al-Qura calculation; the start of Ramadan announced by Diyanet may differ by a day. If it does, every day number in this table shifts by one.";
 "ramadan.imsakiye.note" = "Suhoor ends at fajr and iftar is maghrib — these are the same times, not a separate calculation. For suhoor and iftar alerts, set advance reminders for Fajr and Maghrib in Settings.";
 "ramadan.accessibility %@ %@ %@" = "Ramadan day %1$@, %2$@ %3$@ remaining";
+
+/* Privacy */
+"settings.section.privacy" = "Privacy";
+"settings.erase" = "Erase all data";
+"settings.erase.caption" = "Notes, prayer log, missed-prayer counts, tasbih counters, chosen city and settings.";
+"settings.erase.action" = "Erase";
+"settings.erase.confirm.title" = "Erase all data?";
+"settings.erase.confirm.body" = "Your notes, prayer log, missed-prayer counts, tasbih counters and settings will be deleted. This cannot be undone.";
+"settings.erase.confirm.ok" = "Erase";
+"settings.erase.confirm.cancel" = "OK";
+"settings.erase.done" = "Your data has been erased.";
+"settings.privacy.note" = "The app has no server. Your notes, prayer log and location stay on this device — nothing is sent anywhere and nothing is shared. Text you type when searching for a city goes to Apple's location service to resolve the address, which is covered by Apple's privacy policy.";

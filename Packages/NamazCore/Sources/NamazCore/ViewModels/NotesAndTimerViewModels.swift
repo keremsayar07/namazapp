@@ -19,7 +19,7 @@ public final class NotesViewModel {
     private let lock: BiometricLocking
     private let clock: @Sendable () -> Date
 
-    static let fileName = "notes"
+    static let fileName = UserDataFile.notes.rawValue
 
     public init(
         store: FileStoring,
@@ -134,7 +134,7 @@ public final class TimerViewModel {
     private let scheduler: NotificationScheduling
     private let clock: @Sendable () -> Date
 
-    static let fileName = "timer"
+    static let fileName = UserDataFile.timer.rawValue
 
     /// Bildirim kimliği bilerek `namaz.` ile BAŞLAMIYOR.
     ///

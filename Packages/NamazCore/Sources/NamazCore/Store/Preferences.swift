@@ -164,4 +164,25 @@ public struct Preferences: Sendable {
         encode(Flag(value: locked), forKey: Self.notesLockedKey)
     }
 
+    // MARK: - Silme
+
+    /// Uygulamanın yazdığı bütün tercih anahtarları.
+    ///
+    /// Elle sayılıyor, `UserDefaults`'un tamamı silinmiyor. Paylaşılan kap bize ait olsa da
+    /// "içindeki her şeyi sil" demek, ileride oraya başka bir şey yazan bir bileşeni sessizce
+    /// bozmanın en kısa yolu. Ne yazdıysak onu siliyoruz.
+    private static var allKeys: [String] {
+        [Key.location, Key.settings, Key.notifications, Key.lastKnownLocation, notesLockedKey]
+    }
+
+    /// Kullanıcının "tüm verilerimi sil" isteğinde tercihler kısmı.
+    ///
+    /// Konum ve ayarlar da gidiyor: kullanıcı verisinin içinde en çok bilgi taşıyan şey
+    /// **en son bulunduğu yer**. Onu bırakıp notları silmek, silmiş gibi yapmak olurdu.
+    public func removeAll() {
+        for key in Self.allKeys {
+            store.setData(nil, forKey: key)
+        }
+    }
+
 }

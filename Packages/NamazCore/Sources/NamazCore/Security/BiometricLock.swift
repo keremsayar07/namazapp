@@ -34,12 +34,20 @@ public struct DeviceBiometricLock: BiometricLocking {
     }
 
     public func authenticate(reason: String) async -> Bool {
+        // Her çağrıda YENİ bir `LAContext`. Aynı bağlam yeniden kullanılsaydı iOS önceki
+        // doğrulamayı bir süre geçerli sayardı ve kullanıcı arka plandan döndüğünde kilit
+        // hiç sorulmadan açılabilirdi.
         let context = LAContext()
-        guard context.canEvaluatePolicy(Self.policy, error: nil) else { return false }
+        guard context.canEvaluatePolicy(Self.policy, error: nil) else {
+            Diagnostics.log(.biometricUnavailable)
+            return false
+        }
         // Hata fırlatılırsa (iptal, başarısızlık, izin yok) sonuç `false`. Kilit
         // açılmadığında notlar gösterilmiyor — hata durumunda "aç" tarafına düşmek,
         // kilidi anlamsız kılardı.
-        return (try? await context.evaluatePolicy(Self.policy, localizedReason: reason)) ?? false
+        let granted = (try? await context.evaluatePolicy(Self.policy, localizedReason: reason)) ?? false
+        Diagnostics.log(.biometricResult(granted: granted))
+        return granted
     }
 }
 
