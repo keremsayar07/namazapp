@@ -65,13 +65,18 @@ struct CalendarScreen: View {
                     month: month,
                     timeZone: timeZone,
                     selected: model.selectedDay,
+                    occasions: model.occasions(on:),
                     onSelect: model.select
                 )
                 .padding(.top, 14)
 
                 if let day = model.selectedDay {
-                    DayDetail(day: day, timeZone: timeZone)
-                        .padding(.top, 26)
+                    DayDetail(
+                        day: day,
+                        timeZone: timeZone,
+                        occasions: model.occasions(on: day)
+                    )
+                    .padding(.top, 26)
                 } else {
                     // Kullanıcı başka bir aya geçtiğinde seçim düşüyor. Boş bırakmak yerine
                     // ne yapması gerektiğini söylüyoruz.
@@ -80,6 +85,9 @@ struct CalendarScreen: View {
                         .foregroundStyle(Palette.inkSoft)
                         .padding(.top, 26)
                 }
+
+                MonthOccasions(items: model.occasionsThisMonth, timeZone: timeZone)
+                    .padding(.top, 30)
 
                 if !month.days.contains(where: \.isToday) {
                     Button(L.t("calendar.today"), action: model.goToToday)
@@ -152,6 +160,7 @@ private struct MonthGrid: View {
     let month: CalendarMonth
     let timeZone: TimeZone
     let selected: CalendarDay?
+    let occasions: (CalendarDay) -> [IslamicOccasionDay]
     let onSelect: (CalendarDay) -> Void
 
     private var calendar: Calendar {
@@ -192,6 +201,7 @@ private struct MonthGrid: View {
                         day: day,
                         timeZone: timeZone,
                         isSelected: day.id == selected?.id,
+                        hasOccasion: !occasions(day).isEmpty,
                         action: { onSelect(day) }
                     )
                 }
@@ -204,6 +214,7 @@ private struct DayCell: View {
     let day: CalendarDay
     let timeZone: TimeZone
     let isSelected: Bool
+    let hasOccasion: Bool
     let action: () -> Void
 
     private var foreground: Color {
@@ -233,6 +244,17 @@ private struct DayCell: View {
                             .padding(.bottom, 5)
                     }
                 }
+                .overlay(alignment: .top) {
+                    // Dini gün işareti ÜSTTE, bugün işareti ALTTA. İkisi aynı hücrede
+                    // birlikte görünebildiği için konumları ayrıldı; aynı yere konsalardı
+                    // üst üste biner ve hangisinin ne olduğu anlaşılmazdı.
+                    if hasOccasion {
+                        Circle()
+                            .fill(isSelected ? Palette.ground : Palette.mark)
+                            .frame(width: 4, height: 4)
+                            .padding(.top, 5)
+                    }
+                }
                 .contentShape(Rectangle())
         }
         .accessibilityLabel(accessibilityLabel)
@@ -255,6 +277,7 @@ private struct DayCell: View {
 private struct DayDetail: View {
     let day: CalendarDay
     let timeZone: TimeZone
+    let occasions: [IslamicOccasionDay]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -267,6 +290,11 @@ private struct DayDetail: View {
                     .font(Typography.dateline)
                     .foregroundStyle(Palette.inkSoft)
                     .padding(.top, 3)
+            }
+
+            ForEach(occasions) { item in
+                OccasionRow(item: item)
+                    .padding(.top, 12)
             }
 
             ledger.padding(.top, 14)
@@ -348,4 +376,100 @@ private struct CalendarEmptyView: View {
 
 #Preview("Konum yok") {
     CalendarScreen(location: nil, calculationSettings: .defaultForTurkey())
+}
+
+// MARK: - Dini günler
+
+/// Tek bir dini gün satırı.
+///
+/// Gece kandillerinde "akşam ezanıyla başlar" notu var. Sebep dilsel ve önemli:
+/// "16 Mart Kadir Gecesi" ifadesini kullanıcı "16 Mart gündüzü" diye okuyor. Oysa gece,
+/// o günün akşamında başlıyor. Notu koymazsak tarih doğru ama anlaşılan şey yanlış olur.
+private struct OccasionRow: View {
+    let item: IslamicOccasionDay
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                Rectangle()
+                    .fill(Palette.mark)
+                    .frame(width: 3, height: 14)
+                    .accessibilityHidden(true)
+
+                Text(title)
+                    .font(Font.system(.headline, design: .serif))
+                    .foregroundStyle(Palette.mark)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            if item.occasion.isNight {
+                Text(L.t("occasion.night.note"))
+                    .font(Typography.dateline)
+                    .foregroundStyle(Palette.inkSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            // Arşiv penceresi dar; dışındaki tarihler Ümmü'l-Kura tahmini. Bunu söylemek
+            // zorundayız — bayram tarihini bir gün yanlış göstermek, hiç göstermemekten kötü.
+            if !item.isVerified {
+                Text(L.t("occasion.unverified"))
+                    .font(Typography.dateline)
+                    .foregroundStyle(Palette.inkSoft)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    private var title: String {
+        let name = L.t(item.occasion.localizationKey)
+        guard let ordinal = item.ordinal else { return name }
+        return L.t("occasion.feast.day %@ %@", name, String(ordinal))
+    }
+}
+
+/// Görüntülenen ayın dini günleri, tarih sırasıyla.
+private struct MonthOccasions: View {
+    let items: [IslamicOccasionDay]
+    let timeZone: TimeZone
+
+    var body: some View {
+        Group {
+            SectionLabel(L.t("calendar.section.occasions"), topPadding: 0)
+
+            if items.isEmpty {
+                Text(L.t("calendar.occasions.none"))
+                    .font(Typography.dateline)
+                    .foregroundStyle(Palette.inkSoft)
+            } else {
+                ForEach(items) { item in
+                    HStack(alignment: .firstTextBaseline, spacing: 12) {
+                        Text(String(item.day.day))
+                            .font(Typography.prayerTime)
+                            .foregroundStyle(Palette.inkSoft)
+                            .frame(minWidth: 26, alignment: .trailing)
+
+                        Text(name(for: item))
+                            .font(Typography.prayerName)
+                            .foregroundStyle(Palette.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Spacer(minLength: 0)
+                    }
+                    .padding(.vertical, 7)
+                    .overlay(alignment: .bottom) {
+                        Rectangle().fill(Palette.rule).frame(height: 1)
+                    }
+                    .accessibilityElement(children: .combine)
+                }
+            }
+        }
+    }
+
+    private func name(for item: IslamicOccasionDay) -> String {
+        let base = L.t(item.occasion.localizationKey)
+        guard let ordinal = item.ordinal else { return base }
+        return L.t("occasion.feast.day %@ %@", base, String(ordinal))
+    }
 }

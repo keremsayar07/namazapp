@@ -243,3 +243,22 @@
 "qadha.note" = "Adding a day raises each of the five prayers by one. Counters never go below zero.";
 "qadha.accessibility.increase %@" = "Increase missed %@";
 "qadha.accessibility.decrease %@" = "Decrease missed %@";
+
+/* Religious days and nights */
+"occasion.hijriNewYear" = "Hijri New Year";
+"occasion.ashura" = "Day of Ashura";
+"occasion.mawlid" = "Mawlid";
+"occasion.regaib" = "Laylat al-Raghaib";
+"occasion.miraj" = "Laylat al-Mi'raj";
+"occasion.berat" = "Laylat al-Bara'ah";
+"occasion.ramadanStart" = "Start of Ramadan";
+"occasion.laylatAlQadr" = "Laylat al-Qadr";
+"occasion.ramadanEve" = "Eve of Eid al-Fitr";
+"occasion.ramadanFeast" = "Eid al-Fitr";
+"occasion.qurbanEve" = "Eve of Eid al-Adha";
+"occasion.qurbanFeast" = "Eid al-Adha";
+"occasion.feast.day %@ %@" = "%1$@, day %2$@";
+"occasion.night.note" = "Begins at the maghrib call to prayer and lasts until dawn the next morning.";
+"occasion.unverified" = "This date comes from the Umm al-Qura calculation and may fall a day apart from Diyanet's calendar.";
+"calendar.section.occasions" = "Religious days this month";
+"calendar.occasions.none" = "No religious days or nights this month.";

@@ -69,6 +69,14 @@ public final class CalendarViewModel {
     private let repository: PrayerTimesRepository
     private let clock: @Sendable () -> Date
 
+    /// Dini günler miladi yıl bazında hesaplanıyor ve bir yılın taranması 365 gün sürüyor —
+    /// mikrosaniyeler, ama ay değiştikçe tekrar tekrar yapmanın anlamı yok. Yıl başına bir
+    /// kez hesaplanıp saklanıyor.
+    @ObservationIgnored
+    private var occasionCache: [Int: [IslamicOccasionDay]] = [:]
+    @ObservationIgnored
+    private let islamicCalendar = IslamicCalendar()
+
     private var location: SavedLocation?
     private var settings: CalculationSettings
 
@@ -99,6 +107,37 @@ public final class CalendarViewModel {
 
     public func select(_ day: CalendarDay) {
         selectedDay = day
+    }
+
+    // MARK: - Dini günler
+
+    /// Görüntülenen aya düşen dini gün ve geceler, tarih sırasıyla.
+    public var occasionsThisMonth: [IslamicOccasionDay] {
+        guard let month else { return [] }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let year = calendar.component(.year, from: month.anchor)
+        let monthNumber = calendar.component(.month, from: month.anchor)
+        return occasions(inYear: year).filter { $0.day.month == monthNumber }
+    }
+
+    /// Belirli bir güne düşenler. Aynı güne birden fazla düşebilir (ör. arefe ile bir kandil).
+    public func occasions(on day: CalendarDay) -> [IslamicOccasionDay] {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let components = calendar.dateComponents([.year, .month, .day], from: day.date)
+        guard let y = components.year, let m = components.month, let d = components.day else {
+            return []
+        }
+        let key = GregorianDay(year: y, month: m, day: d)
+        return occasions(inYear: y).filter { $0.day == key }
+    }
+
+    private func occasions(inYear year: Int) -> [IslamicOccasionDay] {
+        if let cached = occasionCache[year] { return cached }
+        let computed = islamicCalendar.occasions(inGregorianYear: year)
+        occasionCache[year] = computed
+        return computed
     }
 
     /// Şehir veya hesaplama ayarı değiştiğinde. Görüntülenen ay korunuyor — kullanıcı

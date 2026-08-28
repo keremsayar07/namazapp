@@ -242,3 +242,22 @@
 "qadha.note" = "Bir gün eklemek beş vaktin her birini bir artırır. Sayaçlar sıfırın altına inmez.";
 "qadha.accessibility.increase %@" = "%@ kazasını artır";
 "qadha.accessibility.decrease %@" = "%@ kazasını azalt";
+
+/* Dini gün ve geceler */
+"occasion.hijriNewYear" = "Hicri Yılbaşı";
+"occasion.ashura" = "Aşure Günü";
+"occasion.mawlid" = "Mevlid Kandili";
+"occasion.regaib" = "Regaib Kandili";
+"occasion.miraj" = "Miraç Kandili";
+"occasion.berat" = "Berat Kandili";
+"occasion.ramadanStart" = "Ramazan Başlangıcı";
+"occasion.laylatAlQadr" = "Kadir Gecesi";
+"occasion.ramadanEve" = "Ramazan Bayramı Arefesi";
+"occasion.ramadanFeast" = "Ramazan Bayramı";
+"occasion.qurbanEve" = "Kurban Bayramı Arefesi";
+"occasion.qurbanFeast" = "Kurban Bayramı";
+"occasion.feast.day %@ %@" = "%1$@ %2$@. gün";
+"occasion.night.note" = "Akşam ezanıyla başlar, ertesi sabah imsak vaktine kadar sürer.";
+"occasion.unverified" = "Tarih Ümmü'l-Kura hesabına dayanıyor; Diyanet takviminden bir gün farklı olabilir.";
+"calendar.section.occasions" = "Bu ayın dini günleri";
+"calendar.occasions.none" = "Bu ayda dini gün ya da gece yok.";
