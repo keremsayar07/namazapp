@@ -114,8 +114,23 @@ jobs:
 
       - name: App Group kimliği tutarlı mı
         run: |
-          SWIFT_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' \
-            Packages/PrayerKit/Sources/PrayerKit/SharedStore/PrayerTimesSnapshot.swift | head -1)
+          # Dosya adı DEĞİL, kaynak ağacının tamamı taranıyor.
+          #
+          # Burada eskiden `SharedStore/PrayerTimesSnapshot.swift` yazılıydı. Faz 7.6'da o
+          # dosya kaldırılıp `AppGroup` kendi dosyasına taşınınca grep boş döndü, adım da
+          # "kimlikler tutmuyor" diye kırmızı verdi — oysa üçü de aynıydı. Denetimin kendisi,
+          # denetlediği şeyden daha kırılgandı. Yola bağlı olmayan arama bunu bir daha
+          # yaşatmıyor; dosya nereye taşınırsa taşınsın kimlik bulunuyor.
+          SWIFT_ID=$(grep -rhoE 'group\.[a-zA-Z0-9._-]+' \
+            Packages/PrayerKit/Sources/PrayerKit --include='*.swift' | sort -u | head -1)
+          # Birden fazla farklı kimlik geçiyorsa bu da bir hata: hangisinin geçerli olduğu
+          # belirsiz demektir.
+          SWIFT_ID_COUNT=$(grep -rhoE 'group\.[a-zA-Z0-9._-]+' \
+            Packages/PrayerKit/Sources/PrayerKit --include='*.swift' | sort -u | wc -l | tr -d ' ')
+          if [ "$SWIFT_ID_COUNT" -gt 1 ]; then
+            echo "HATA: PrayerKit içinde $SWIFT_ID_COUNT farklı App Group kimliği var."
+            exit 1
+          fi
           APP_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' App/Namaz.entitlements | head -1)
           WIDGET_ID=$(grep -oE 'group\.[a-zA-Z0-9._-]+' WidgetExtension/NamazWidgets.entitlements | head -1)
           echo "PrayerKit : $SWIFT_ID"
