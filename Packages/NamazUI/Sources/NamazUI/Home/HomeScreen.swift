@@ -92,6 +92,10 @@ private struct ScheduleView: View {
 
                 header
 
+                // Yalnızca ramazanda görünüyor; kendi içinde karar veriyor. Yılın on bir
+                // ayında boş bir kutu bırakmamak için `if` burada değil, şeridin içinde.
+                RamadanStrip(schedule: schedule, now: now)
+
                 PrayerLedger(
                     times: schedule.today.times,
                     currentPrayer: schedule.currentPrayer(at: now),

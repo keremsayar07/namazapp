@@ -15,7 +15,7 @@ struct NotificationSettingsScreen: View {
 
     /// Seçilebilir hatırlatma süreleri. Serbest sayı girişi yok: 7 dakika gibi bir değerin
     /// kimseye faydası olmadığı gibi, bildirim bütçesini de öngörülemez kılıyor.
-    private let reminderChoices: [Int?] = [nil, 10, 15, 20, 30, 45]
+    private let reminderChoices: [Int?] = [nil, 5, 10, 15, 20, 30, 45, 60]
 
     var body: some View {
         SettingsPage(title: L.t("notifications.title")) {
@@ -98,8 +98,37 @@ struct NotificationSettingsScreen: View {
                     .tint(Palette.mark)
             }
 
-            SettingRow(title: L.t("notifications.remind_before")) {
-                Picker("", selection: reminderBinding) {
+            SettingRow(title: L.t("notifications.sound")) {
+                Toggle("", isOn: boolBinding(\.playsSound))
+                    .labelsHidden()
+                    .tint(Palette.mark)
+            }
+
+            reminderSection
+
+            coverage
+        }
+    }
+
+    /// Vakit başına hatırlatma.
+    ///
+    /// Yalnızca **açık** vakitler listeleniyor. Kapalı bir vakit için süre seçtirmek,
+    /// hiç gelmeyecek bir bildirimi ayarlıyormuş gibi hissettirirdi; ayar saklanıyor ama
+    /// burada görünmüyor — kullanıcı vakti tekrar açtığında süresi yerinde duruyor.
+    @ViewBuilder
+    private var reminderSection: some View {
+        let prayers = Prayer.allCases
+            .filter { $0.isPerformablePrayer && coordinator.settings.isEnabled($0) }
+
+        SectionLabel(L.t("notifications.section.reminders"))
+
+        if prayers.isEmpty {
+            SectionNote(L.t("notifications.reminders.none"))
+        } else {
+            // Çoğunluk beş vakti tek tek ayarlamıyor, "hepsi 15 dakika" diyor. Bu satır
+            // olmasaydı en yaygın istek beş ayrı dokunuş gerektirirdi.
+            SettingRow(title: L.t("notifications.reminders.all")) {
+                Picker("", selection: allRemindersBinding) {
                     ForEach(reminderChoices, id: \.self) { choice in
                         Text(label(for: choice)).tag(choice)
                     }
@@ -108,13 +137,18 @@ struct NotificationSettingsScreen: View {
                 .tint(Palette.mark)
             }
 
-            SettingRow(title: L.t("notifications.sound")) {
-                Toggle("", isOn: boolBinding(\.playsSound))
+            ForEach(prayers) { prayer in
+                SettingRow(title: Formatting.prayerName(prayer)) {
+                    Picker("", selection: reminderBinding(for: prayer)) {
+                        ForEach(reminderChoices, id: \.self) { choice in
+                            Text(label(for: choice)).tag(choice)
+                        }
+                    }
                     .labelsHidden()
                     .tint(Palette.mark)
+                }
             }
-
-            coverage
+            SectionNote(L.t("notifications.reminders.note"))
         }
     }
 
@@ -129,6 +163,17 @@ struct NotificationSettingsScreen: View {
             )
             .font(Typography.prayerName)
             .foregroundStyle(Palette.ink)
+
+            // Günlük bildirim sayısı ile kapsanan gün arasındaki bağ doğrudan söyleniyor.
+            // "Neden sadece 5 gün?" sorusunun cevabı, kullanıcının kendi yaptığı seçimde.
+            if coordinator.settings.notificationsPerDay > 0 {
+                Text(L.t(
+                    "notifications.budget %@",
+                    String(coordinator.settings.notificationsPerDay)
+                ))
+                .font(Typography.dateline)
+                .foregroundStyle(Palette.inkSoft)
+            }
 
             Text(L.t("notifications.coverage.note"))
                 .font(Typography.dateline)
@@ -182,10 +227,28 @@ struct NotificationSettingsScreen: View {
         )
     }
 
-    private var reminderBinding: Binding<Int?> {
+    /// "Hepsi" satırı. Okurken vakitler farklı süredeyse `nil` göstermiyor — tek bir değer
+    /// yazmak "hepsi bu" demek olurdu ve yanlış olurdu. Ortak değer varsa o, yoksa `nil`.
+    private var allRemindersBinding: Binding<Int?> {
         Binding(
-            get: { coordinator.settings.remindBeforeMinutes },
-            set: { newValue in apply { $0.remindBeforeMinutes = newValue } }
+            get: {
+                let settings = coordinator.settings
+                let values = Prayer.allCases
+                    .filter { $0.isPerformablePrayer && settings.isEnabled($0) }
+                    .map { settings.reminderMinutes(for: $0) }
+                guard let first = values.first, values.allSatisfy({ $0 == first }) else {
+                    return nil
+                }
+                return first
+            },
+            set: { newValue in apply { $0.setReminderForAll(newValue) } }
+        )
+    }
+
+    private func reminderBinding(for prayer: Prayer) -> Binding<Int?> {
+        Binding(
+            get: { coordinator.settings.reminderMinutes(for: prayer) },
+            set: { newValue in apply { $0.setReminder(newValue, for: prayer) } }
         )
     }
 

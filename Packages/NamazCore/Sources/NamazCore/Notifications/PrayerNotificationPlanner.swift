@@ -73,7 +73,7 @@ public struct PrayerNotificationPlanner: Sendable {
                 guard settings.isEnabled(time.prayer) else { continue }
 
                 // Hatırlatma önce geliyor, sıralamayı bozmayalım.
-                if let minutesBefore = settings.remindBeforeMinutes, minutesBefore > 0 {
+                if let minutesBefore = settings.reminderMinutes(for: time.prayer), minutesBefore > 0 {
                     let fire = time.date.addingTimeInterval(-Double(minutesBefore) * 60)
                     if fire > now {
                         guard planned.count < capacity else { truncated = true; break dayLoop }

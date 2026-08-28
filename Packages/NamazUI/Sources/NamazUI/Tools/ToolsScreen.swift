@@ -44,6 +44,15 @@ struct ToolsScreen: View {
                             QadhaScreen(model: dependencies.qadha)
                         }
 
+                        SectionLabel(L.t("tools.section.ramadan"))
+
+                        DisclosureRow(title: L.t("ramadan.imsakiye.title")) {
+                            ImsakiyeScreen(
+                                location: dependencies.homeModel.state.schedule?.location,
+                                calculationSettings: dependencies.homeModel.settings
+                            )
+                        }
+
                         SectionLabel(L.t("tools.section.personal"))
 
                         DisclosureRow(title: L.t("notes.title")) {

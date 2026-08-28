@@ -198,7 +198,10 @@ public struct IslamicCalendar: Sendable {
     /// Aralıktaki her gün için (miladi gün, hicri karşılığı, çapa tarih).
     ///
     /// Çapa öğle vakti UTC: hangi saat diliminden bakılırsa bakılsın gün kaymasın.
-    private func scan(
+    ///
+    /// `internal`, çünkü `Ramadan.swift` aynı taramayı kullanıyor. Ramazan için ayrı bir
+    /// tarama yazmak, iki hesabın aynı dönüştürücüyü kullandığı garantisini kaybetmek olurdu.
+    func scan(
         from start: GregorianDay, to end: GregorianDay
     ) -> [(GregorianDay, HijriDate, Date)] {
         var calendar = Calendar(identifier: .gregorian)
@@ -234,7 +237,7 @@ public struct IslamicCalendar: Sendable {
         return calendar.date(from: components)
     }
 
-    private func isVerified(_ date: Date) -> Bool {
+    func isVerified(_ date: Date) -> Bool {
         (converter as? DiyanetHijriDateConverter)?.isVerified(date) ?? false
     }
 }

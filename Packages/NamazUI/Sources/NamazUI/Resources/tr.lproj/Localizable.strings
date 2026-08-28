@@ -78,12 +78,16 @@
 "notifications.section.timing" = "Zamanlama";
 "notifications.at_time" = "Vakit girdiğinde";
 "notifications.sound" = "Ses çal";
-"notifications.remind_before" = "Önceden hatırlat";
 "notifications.remind_before.off" = "Kapalı";
 "notifications.remind_before.value %@" = "%@ dakika önce";
+"notifications.section.reminders" = "Önceden hatırlatma";
+"notifications.reminders.all" = "Hepsi";
+"notifications.reminders.none" = "Önce bir vakit açın; hatırlatma süreleri burada görünecek.";
+"notifications.reminders.note" = "Her vakit için ayrı süre seçebilirsiniz. Kapattığınız bir vaktin süresi saklanıyor, tekrar açtığınızda yerinde duruyor.";
 "notifications.coverage %@" = "Bildirimler önümüzdeki %@ gün için kurulu.";
 "notifications.coverage.none" = "Şu an kurulu bildirim yok.";
-"notifications.coverage.note" = "iOS bir uygulamaya aynı anda 64 bekleyen bildirim izni veriyor. Önceden hatırlatma açıkken her vakit için iki bildirim kurulduğundan bu süre yaklaşık yarıya iniyor. Uygulamayı açtığınızda pencere kendiliğinden tazeleniyor.";
+"notifications.budget %@" = "Günde %@ bildirim kuruluyor.";
+"notifications.coverage.note" = "iOS bir uygulamaya aynı anda 64 bekleyen bildirim izni veriyor. Günde ne kadar çok bildirim kurulursa kapsanan gün o kadar azalıyor; her hatırlatma bu sayıyı bir artırıyor. Uygulamayı açtığınızda pencere kendiliğinden tazeleniyor.";
 
 /* Bildirim metinleri */
 "notification.body.at_time %@" = "%@ vakti girdi.";
@@ -299,3 +303,21 @@
 "timer.finished" = "Süre doldu";
 "timer.notification.body" = "Zamanlayıcı tamamlandı.";
 "timer.note" = "Zamanlayıcı bitiş anını saklar, geri sayan bir sayaç tutmaz. Uygulamayı kapatsanız da süre dolduğunda bildirim gelir.";
+
+/* Ramazan */
+"tools.section.ramadan" = "Ramazan";
+"ramadan.imsakiye.title" = "İmsakiye";
+"ramadan.heading %@" = "Ramazan %@";
+"ramadan.span %@ %@" = "%1$@ – %2$@";
+"ramadan.day %@" = "Ramazan, %@. gün";
+"ramadan.starts_in %@" = "%@ gün kaldı";
+"ramadan.until_imsak" = "İmsağa";
+"ramadan.until_iftar" = "İftara";
+"ramadan.column.day" = "GÜN";
+"ramadan.column.date" = "TARİH";
+"ramadan.column.imsak" = "İMSAK";
+"ramadan.column.iftar" = "İFTAR";
+"ramadan.unavailable" = "İmsakiye için önce bir şehir seçin.";
+"ramadan.unverified" = "Bu tarihler Ümmü'l-Kura hesabına dayanıyor; Diyanet'in ilan ettiği ramazan başlangıcı bir gün farklı olabilir. Bu durumda tablodaki gün numaralarının tamamı bir gün kayar.";
+"ramadan.imsakiye.note" = "İmsak sabah (fecr-i sadık) vaktinin, iftar akşam vaktinin kendisidir; ayrıca hesaplanmaz. Sahur ve iftar bildirimi için Ayarlar'dan Sabah ve Akşam vakitlerine hatırlatma süresi verebilirsiniz.";
+"ramadan.accessibility %@ %@ %@" = "Ramazan %1$@. gün, %2$@ %3$@ kaldı";

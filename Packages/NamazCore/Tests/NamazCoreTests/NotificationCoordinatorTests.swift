@@ -87,7 +87,7 @@ final class NotificationCoordinatorTests: XCTestCase {
 
         var custom = NotificationSettings()
         custom.enabledPrayers = [.fajr]
-        custom.remindBeforeMinutes = 15
+        custom.setReminderForAll(15)
         custom.playsSound = false
         await first.update(custom, location: istanbul, calculationSettings: .defaultForTurkey())
 

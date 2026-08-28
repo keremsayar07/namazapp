@@ -24,6 +24,14 @@ final class NotificationPlannerTests: XCTestCase {
         return formatter.date(from: iso) ?? Date()
     }
 
+    /// Beş vaktin hepsine aynı hatırlatma süresi. Bütçeye en hızlı yüklenen ayar,
+    /// dolayısıyla sınır testlerinin çoğu bunu kullanıyor.
+    private func reminding(_ minutes: Int) -> NotificationSettings {
+        var settings = NotificationSettings()
+        settings.setReminderForAll(minutes)
+        return settings
+    }
+
     private func makePlan(
         now: Date,
         settings: NotificationSettings,
@@ -42,7 +50,7 @@ final class NotificationPlannerTests: XCTestCase {
 
     func test_neverExceedsCapacity() {
         // Hatırlatma da açık: vakit başına iki bildirim, yani sınıra en hızlı giden ayar.
-        let settings = NotificationSettings(remindBeforeMinutes: 15)
+        let settings = reminding(15)
         let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: settings)
 
         XCTAssertLessThanOrEqual(plan.notifications.count, PrayerNotificationPlanner.capacity)
@@ -55,7 +63,7 @@ final class NotificationPlannerTests: XCTestCase {
     func test_reminderHalvesTheCoveredDays() {
         let now = date("2026-08-25T00:01:00+03:00")
         let withoutReminder = makePlan(now: now, settings: NotificationSettings())
-        let withReminder = makePlan(now: now, settings: NotificationSettings(remindBeforeMinutes: 20))
+        let withReminder = makePlan(now: now, settings: reminding(20))
 
         // Kullanıcıya söylenecek şey bu: hatırlatma açıkken kapsanan gün sayısı düşüyor.
         XCTAssertGreaterThan(withoutReminder.coveredDays, withReminder.coveredDays)
@@ -119,14 +127,14 @@ final class NotificationPlannerTests: XCTestCase {
 
         var noTrigger = NotificationSettings()
         noTrigger.notifyAtPrayerTime = false
-        noTrigger.remindBeforeMinutes = nil
+        noTrigger.setReminderForAll(nil)
         XCTAssertTrue(makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: noTrigger).notifications.isEmpty)
     }
 
     // MARK: - Hatırlatma
 
     func test_reminderFiresBeforeItsPrayer() {
-        let settings = NotificationSettings(remindBeforeMinutes: 30)
+        let settings = reminding(30)
         let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: settings, capacity: 20)
 
         guard let reminder = plan.notifications.first(where: { $0.kind == .reminder }) else {
@@ -134,6 +142,57 @@ final class NotificationPlannerTests: XCTestCase {
         }
         XCTAssertEqual(reminder.prayerDate.timeIntervalSince(reminder.fireDate), 30 * 60, accuracy: 1)
         XCTAssertEqual(reminder.minutesBefore, 30)
+    }
+
+    func test_eachPrayerUsesItsOwnOffset() {
+        // Özelliğin bütün amacı bu: sabaha 45 dakika, akşama 5 dakika. Tek bir genel
+        // süreyle bu ikisi aynı anda karşılanamıyordu.
+        var settings = NotificationSettings()
+        settings.notifyAtPrayerTime = false
+        settings.setReminder(45, for: .fajr)
+        settings.setReminder(5, for: .maghrib)
+
+        let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: settings, capacity: 20)
+
+        XCTAssertEqual(Set(plan.notifications.map(\.prayer)), [.fajr, .maghrib])
+        for notification in plan.notifications {
+            let offset = notification.prayerDate.timeIntervalSince(notification.fireDate)
+            XCTAssertEqual(offset, Double(notification.prayer == .fajr ? 45 : 5) * 60, accuracy: 1)
+        }
+    }
+
+    func test_aPrayerWithoutAnOffsetGetsNoReminder() {
+        var settings = NotificationSettings()
+        settings.setReminder(15, for: .isha)
+
+        let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: settings, capacity: 30)
+        let reminders = plan.notifications.filter { $0.kind == .reminder }
+
+        XCTAssertFalse(reminders.isEmpty)
+        XCTAssertTrue(reminders.allSatisfy { $0.prayer == .isha })
+    }
+
+    func test_aDisabledPrayersReminderIsNotScheduled() {
+        // Ayar saklanıyor ama bildirim kurulmamalı: kapattığı vakit için hatırlatma alan
+        // kullanıcı, kapatmanın işe yaramadığını düşünürdü.
+        var settings = NotificationSettings()
+        settings.setReminderForAll(15)
+        settings.enabledPrayers = [.fajr]
+
+        let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: settings, capacity: 30)
+        XCTAssertTrue(plan.notifications.allSatisfy { $0.prayer == .fajr })
+    }
+
+    func test_theBudgetLineMatchesWhatIsActuallyScheduled() {
+        // Ekranda yazan "günde N bildirim" ile planlayıcının kurduğu sayı ayrı düşerse,
+        // kullanıcıya söylenen şey yanlış olur. Aynı ayardan iki farklı sayı çıkmamalı.
+        var settings = NotificationSettings()
+        settings.setReminder(20, for: .fajr)
+        settings.setReminder(10, for: .maghrib)
+
+        // Gece yarısından hemen sonra: günün hiçbir vakti geçmemiş durumda.
+        let plan = makePlan(now: date("2026-08-26T00:01:00+03:00"), settings: settings, maxDaysAhead: 1)
+        XCTAssertEqual(plan.notifications.count, settings.notificationsPerDay)
     }
 
     // MARK: - İdempotanlık
@@ -149,7 +208,7 @@ final class NotificationPlannerTests: XCTestCase {
     }
 
     func test_identifiersAreUnique() {
-        let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: NotificationSettings(remindBeforeMinutes: 10))
+        let plan = makePlan(now: date("2026-08-25T00:01:00+03:00"), settings: reminding(10))
         let ids = plan.notifications.map(\.id)
         XCTAssertEqual(Set(ids).count, ids.count, "Kimlikler çakışırsa bildirimler birbirini siler")
     }

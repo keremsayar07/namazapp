@@ -79,12 +79,16 @@
 "notifications.section.timing" = "Timing";
 "notifications.at_time" = "At the prayer time";
 "notifications.sound" = "Play sound";
-"notifications.remind_before" = "Remind me before";
 "notifications.remind_before.off" = "Off";
 "notifications.remind_before.value %@" = "%@ minutes before";
+"notifications.section.reminders" = "Advance reminders";
+"notifications.reminders.all" = "All";
+"notifications.reminders.none" = "Turn on a prayer first — its reminder will appear here.";
+"notifications.reminders.note" = "Each prayer can have its own reminder. Turning a prayer off keeps its reminder saved for when you turn it back on.";
 "notifications.coverage %@" = "Notifications are set for the next %@ days.";
 "notifications.coverage.none" = "No notifications are currently set.";
-"notifications.coverage.note" = "iOS allows an app 64 pending notifications at a time. With the early reminder on, each prayer schedules two, so this window roughly halves. Opening the app refreshes it.";
+"notifications.budget %@" = "%@ notifications are scheduled per day.";
+"notifications.coverage.note" = "iOS allows an app 64 pending notifications at a time. The more you schedule per day, the fewer days are covered — each reminder adds one. The window refreshes itself whenever you open the app.";
 
 /* Notification text */
 "notification.body.at_time %@" = "It's time for %@.";
@@ -300,3 +304,21 @@
 "timer.finished" = "Time is up";
 "timer.notification.body" = "Your timer has finished.";
 "timer.note" = "The timer stores an end time rather than running a counter. You will still get a notification when it finishes, even if you close the app.";
+
+/* Ramadan */
+"tools.section.ramadan" = "Ramadan";
+"ramadan.imsakiye.title" = "Fasting timetable";
+"ramadan.heading %@" = "Ramadan %@";
+"ramadan.span %@ %@" = "%1$@ – %2$@";
+"ramadan.day %@" = "Ramadan, day %@";
+"ramadan.starts_in %@" = "%@ days to go";
+"ramadan.until_imsak" = "Until suhoor ends";
+"ramadan.until_iftar" = "Until iftar";
+"ramadan.column.day" = "DAY";
+"ramadan.column.date" = "DATE";
+"ramadan.column.imsak" = "SUHOOR";
+"ramadan.column.iftar" = "IFTAR";
+"ramadan.unavailable" = "Choose a city to see the timetable.";
+"ramadan.unverified" = "These dates come from the Umm al-Qura calculation; the start of Ramadan announced by Diyanet may differ by a day. If it does, every day number in this table shifts by one.";
+"ramadan.imsakiye.note" = "Suhoor ends at fajr and iftar is maghrib — these are the same times, not a separate calculation. For suhoor and iftar alerts, set advance reminders for Fajr and Maghrib in Settings.";
+"ramadan.accessibility %@ %@ %@" = "Ramadan day %1$@, %2$@ %3$@ remaining";

@@ -76,6 +76,14 @@ enum Formatting {
         return date.formatted(style)
     }
 
+    /// İmsakiye satırı: "12 Şub Per". Otuz satırlık bir tabloda tam ay adı ve tam gün adı
+    /// satırı taşırıyor; kısaltma burada okunabilirliği artırıyor, azaltmıyor.
+    static func shortDayLine(_ date: Date, in timeZone: TimeZone) -> String {
+        var style = Date.FormatStyle().day().month(.abbreviated).weekday(.abbreviated)
+        style.timeZone = timeZone
+        return date.formatted(style)
+    }
+
     /// Izgaranın üstündeki gün kısaltmaları — haftanın ilk gününden başlayarak.
     ///
     /// `veryShortWeekdaySymbols` her zaman pazardan başlar; takvimin `firstWeekday`'ine göre
