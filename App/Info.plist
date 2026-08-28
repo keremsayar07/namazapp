@@ -22,6 +22,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Notlarınızı yalnızca siz açabilesiniz diye Face ID kullanılır. Kilidi Notlar ekranından kapatabilirsiniz.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Namaz vakitlerini bulunduğunuz yere göre hesaplamak için konumunuz kullanılır.</string>
 	<key>UILaunchScreen</key>
