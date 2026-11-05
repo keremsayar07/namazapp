@@ -1,0 +1,35 @@
+{
+  "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
+  "mirrorBaseUrl": "https://ezanvakti.emushaf.net",
+  "endpoint": "/vakitler/9225",
+  "province": "ANTALYA",
+  "district": "ANTALYA",
+  "districtId": "9225",
+  "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9225/namaz-vakti",
+  "month": "2026-10",
+  "days": {
+    "2026-10-31": {
+      "HicriTarihKisa": "20.5.1448",
+      "HicriTarihKisaIso8601": null,
+      "HicriTarihUzun": "20 Cemaziyelevvel 1448",
+      "HicriTarihUzunIso8601": null,
+      "AyinSekliURL": "https://namazvakti.diyanet.gov.tr/images/d5.gif",
+      "MiladiTarihKisa": "31.10.2026",
+      "MiladiTarihKisaIso8601": "31.10.2026",
+      "MiladiTarihUzun": "31 Ekim 2026 Cumartesi",
+      "MiladiTarihUzunIso8601": "2026-10-31T00:00:00.0000000+03:00",
+      "GreenwichOrtalamaZamani": 3.0,
+      "Aksam": "18:09",
+      "Gunes": "07:13",
+      "GunesBatis": "18:02",
+      "GunesDogus": "07:20",
+      "Ikindi": "15:43",
+      "Imsak": "05:52",
+      "KibleSaati": "11:01",
+      "Ogle": "12:46",
+      "Yatsi": "19:25"
+    }
+  },
+  "dayCount": 1,
+  "lastUpdatedUTC": "2026-11-05T12:53:50Z"
+}

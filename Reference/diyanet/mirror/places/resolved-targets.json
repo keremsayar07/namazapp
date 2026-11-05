@@ -1,0 +1,89 @@
+{
+  "resolvedAtUTC": "2026-11-05T12:53:44Z",
+  "targets": [
+    {
+      "province": "İSTANBUL",
+      "district": "İSTANBUL",
+      "districtId": "9541",
+      "provinceId": "539",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9541/namaz-vakti"
+    },
+    {
+      "province": "ANKARA",
+      "district": "ANKARA",
+      "districtId": "9206",
+      "provinceId": "506",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9206/namaz-vakti"
+    },
+    {
+      "province": "İZMİR",
+      "district": "İZMİR",
+      "districtId": "9560",
+      "provinceId": "540",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9560/namaz-vakti"
+    },
+    {
+      "province": "ANTALYA",
+      "district": "ANTALYA",
+      "districtId": "9225",
+      "provinceId": "507",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9225/namaz-vakti"
+    },
+    {
+      "province": "GAZİANTEP",
+      "district": "GAZİANTEP",
+      "districtId": "9479",
+      "provinceId": "532",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9479/namaz-vakti"
+    },
+    {
+      "province": "DİYARBAKIR",
+      "district": "DİYARBAKIR",
+      "districtId": "9402",
+      "provinceId": "525",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9402/namaz-vakti"
+    },
+    {
+      "province": "ERZURUM",
+      "district": "ERZURUM",
+      "districtId": "9451",
+      "provinceId": "530",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9451/namaz-vakti"
+    },
+    {
+      "province": "TRABZON",
+      "district": "TRABZON",
+      "districtId": "9905",
+      "provinceId": "574",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9905/namaz-vakti"
+    },
+    {
+      "province": "KONYA",
+      "district": "KONYA",
+      "districtId": "9676",
+      "provinceId": "552",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9676/namaz-vakti"
+    },
+    {
+      "province": "HATAY",
+      "district": "HATAY",
+      "districtId": "20089",
+      "provinceId": "536",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/20089/namaz-vakti"
+    },
+    {
+      "province": "VAN",
+      "district": "VAN",
+      "districtId": "9930",
+      "provinceId": "577",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9930/namaz-vakti"
+    },
+    {
+      "province": "SİNOP",
+      "district": "SİNOP",
+      "districtId": "9847",
+      "provinceId": "569",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9847/namaz-vakti"
+    }
+  ]
+}

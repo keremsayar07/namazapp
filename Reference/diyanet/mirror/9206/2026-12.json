@@ -1,0 +1,35 @@
+{
+  "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
+  "mirrorBaseUrl": "https://ezanvakti.emushaf.net",
+  "endpoint": "/vakitler/9206",
+  "province": "ANKARA",
+  "district": "ANKARA",
+  "districtId": "9206",
+  "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9206/namaz-vakti",
+  "month": "2026-12",
+  "days": {
+    "2026-12-01": {
+      "HicriTarihKisa": "22.6.1448",
+      "HicriTarihKisaIso8601": null,
+      "HicriTarihUzun": "22 Cemaziyelahir 1448",
+      "HicriTarihUzunIso8601": null,
+      "AyinSekliURL": "https://namazvakti.diyanet.gov.tr/images/sondordun.gif",
+      "MiladiTarihKisa": "01.12.2026",
+      "MiladiTarihKisaIso8601": "01.12.2026",
+      "MiladiTarihUzun": "01 Aralık 2026 Salı",
+      "MiladiTarihUzunIso8601": "2026-12-01T00:00:00.0000000+03:00",
+      "GreenwichOrtalamaZamani": 3.0,
+      "Aksam": "17:31",
+      "Gunes": "07:44",
+      "GunesBatis": "17:24",
+      "GunesDogus": "07:51",
+      "Ikindi": "15:10",
+      "Imsak": "06:15",
+      "KibleSaati": "11:21",
+      "Ogle": "12:42",
+      "Yatsi": "18:55"
+    }
+  },
+  "dayCount": 1,
+  "lastUpdatedUTC": "2026-11-05T12:53:47Z"
+}

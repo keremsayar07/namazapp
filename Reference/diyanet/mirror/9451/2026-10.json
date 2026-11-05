@@ -1,0 +1,35 @@
+{
+  "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
+  "mirrorBaseUrl": "https://ezanvakti.emushaf.net",
+  "endpoint": "/vakitler/9451",
+  "province": "ERZURUM",
+  "district": "ERZURUM",
+  "districtId": "9451",
+  "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9451/namaz-vakti",
+  "month": "2026-10",
+  "days": {
+    "2026-10-31": {
+      "HicriTarihKisa": "20.5.1448",
+      "HicriTarihKisaIso8601": null,
+      "HicriTarihUzun": "20 Cemaziyelevvel 1448",
+      "HicriTarihUzunIso8601": null,
+      "AyinSekliURL": "https://namazvakti.diyanet.gov.tr/images/d5.gif",
+      "MiladiTarihKisa": "31.10.2026",
+      "MiladiTarihKisaIso8601": "31.10.2026",
+      "MiladiTarihUzun": "31 Ekim 2026 Cumartesi",
+      "MiladiTarihUzunIso8601": "2026-10-31T00:00:00.0000000+03:00",
+      "GreenwichOrtalamaZamani": 3.0,
+      "Aksam": "17:22",
+      "Gunes": "06:35",
+      "GunesBatis": "17:15",
+      "GunesDogus": "06:42",
+      "Ikindi": "14:55",
+      "Imsak": "05:11",
+      "KibleSaati": "12:13",
+      "Ogle": "12:04",
+      "Yatsi": "18:41"
+    }
+  },
+  "dayCount": 1,
+  "lastUpdatedUTC": "2026-11-05T12:53:54Z"
+}

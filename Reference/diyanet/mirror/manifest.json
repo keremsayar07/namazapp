@@ -1,18 +1,20 @@
 {
-  "generatedAtUTC": "2026-11-02T13:00:12Z",
+  "generatedAtUTC": "2026-11-05T12:54:00Z",
   "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
   "verificationStatus": "BEKLEMEDE — bkz. PROVENANCE.md",
-  "totalDayRecords": 384,
+  "totalDayRecords": 768,
   "coverage": {
-    "20089": {
-      "province": "HATAY",
-      "district": "HATAY",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/20089/namaz-vakti",
+    "9541": {
+      "province": "İSTANBUL",
+      "district": "İSTANBUL",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9541/namaz-vakti",
       "months": {
-        "2026-08": 10,
-        "2026-09": 22
+        "2026-08": 13,
+        "2026-09": 19,
+        "2026-11": 28,
+        "2026-12": 4
       },
-      "totalDays": 32
+      "totalDays": 64
     },
     "9206": {
       "province": "ANKARA",
@@ -20,59 +22,12 @@
       "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9206/namaz-vakti",
       "months": {
         "2026-08": 11,
-        "2026-09": 21
+        "2026-09": 21,
+        "2026-10": 1,
+        "2026-11": 30,
+        "2026-12": 1
       },
-      "totalDays": 32
-    },
-    "9225": {
-      "province": "ANTALYA",
-      "district": "ANTALYA",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9225/namaz-vakti",
-      "months": {
-        "2026-08": 11,
-        "2026-09": 21
-      },
-      "totalDays": 32
-    },
-    "9402": {
-      "province": "DİYARBAKIR",
-      "district": "DİYARBAKIR",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9402/namaz-vakti",
-      "months": {
-        "2026-08": 10,
-        "2026-09": 22
-      },
-      "totalDays": 32
-    },
-    "9451": {
-      "province": "ERZURUM",
-      "district": "ERZURUM",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9451/namaz-vakti",
-      "months": {
-        "2026-08": 11,
-        "2026-09": 21
-      },
-      "totalDays": 32
-    },
-    "9479": {
-      "province": "GAZİANTEP",
-      "district": "GAZİANTEP",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9479/namaz-vakti",
-      "months": {
-        "2026-08": 14,
-        "2026-09": 18
-      },
-      "totalDays": 32
-    },
-    "9541": {
-      "province": "İSTANBUL",
-      "district": "İSTANBUL",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9541/namaz-vakti",
-      "months": {
-        "2026-08": 13,
-        "2026-09": 19
-      },
-      "totalDays": 32
+      "totalDays": 64
     },
     "9560": {
       "province": "İZMİR",
@@ -80,29 +35,62 @@
       "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9560/namaz-vakti",
       "months": {
         "2026-08": 13,
-        "2026-09": 19
+        "2026-09": 19,
+        "2026-11": 28,
+        "2026-12": 4
       },
-      "totalDays": 32
+      "totalDays": 64
     },
-    "9676": {
-      "province": "KONYA",
-      "district": "KONYA",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9676/namaz-vakti",
+    "9225": {
+      "province": "ANTALYA",
+      "district": "ANTALYA",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9225/namaz-vakti",
+      "months": {
+        "2026-08": 11,
+        "2026-09": 21,
+        "2026-10": 1,
+        "2026-11": 30,
+        "2026-12": 1
+      },
+      "totalDays": 64
+    },
+    "9479": {
+      "province": "GAZİANTEP",
+      "district": "GAZİANTEP",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9479/namaz-vakti",
+      "months": {
+        "2026-08": 14,
+        "2026-09": 18,
+        "2026-11": 29,
+        "2026-12": 3
+      },
+      "totalDays": 64
+    },
+    "9402": {
+      "province": "DİYARBAKIR",
+      "district": "DİYARBAKIR",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9402/namaz-vakti",
       "months": {
         "2026-08": 10,
-        "2026-09": 22
+        "2026-09": 22,
+        "2026-10": 1,
+        "2026-11": 30,
+        "2026-12": 1
       },
-      "totalDays": 32
+      "totalDays": 64
     },
-    "9847": {
-      "province": "SİNOP",
-      "district": "SİNOP",
-      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9847/namaz-vakti",
+    "9451": {
+      "province": "ERZURUM",
+      "district": "ERZURUM",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9451/namaz-vakti",
       "months": {
-        "2026-08": 13,
-        "2026-09": 19
+        "2026-08": 11,
+        "2026-09": 21,
+        "2026-10": 1,
+        "2026-11": 30,
+        "2026-12": 1
       },
-      "totalDays": 32
+      "totalDays": 64
     },
     "9905": {
       "province": "TRABZON",
@@ -110,9 +98,35 @@
       "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9905/namaz-vakti",
       "months": {
         "2026-08": 10,
-        "2026-09": 22
+        "2026-09": 22,
+        "2026-11": 30,
+        "2026-12": 2
       },
-      "totalDays": 32
+      "totalDays": 64
+    },
+    "9676": {
+      "province": "KONYA",
+      "district": "KONYA",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9676/namaz-vakti",
+      "months": {
+        "2026-08": 10,
+        "2026-09": 22,
+        "2026-11": 30,
+        "2026-12": 2
+      },
+      "totalDays": 64
+    },
+    "20089": {
+      "province": "HATAY",
+      "district": "HATAY",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/20089/namaz-vakti",
+      "months": {
+        "2026-08": 10,
+        "2026-09": 22,
+        "2026-11": 30,
+        "2026-12": 2
+      },
+      "totalDays": 64
     },
     "9930": {
       "province": "VAN",
@@ -120,9 +134,23 @@
       "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9930/namaz-vakti",
       "months": {
         "2026-08": 14,
-        "2026-09": 18
+        "2026-09": 18,
+        "2026-11": 29,
+        "2026-12": 3
       },
-      "totalDays": 32
+      "totalDays": 64
+    },
+    "9847": {
+      "province": "SİNOP",
+      "district": "SİNOP",
+      "diyanetPageUrl": "https://namazvakitleri.diyanet.gov.tr/tr-TR/9847/namaz-vakti",
+      "months": {
+        "2026-08": 13,
+        "2026-09": 19,
+        "2026-11": 28,
+        "2026-12": 4
+      },
+      "totalDays": 64
     }
   },
   "note": "Ayna kayan ~31 günlük bir pencere döndürüyor. Bu iş düzenli çalıştıkça arşiv kendiliğinden büyür; bir yıl sonra tam mevsimsel kapsama oluşur."
