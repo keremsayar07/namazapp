@@ -1,8 +1,8 @@
 {
-  "generatedAtUTC": "2026-11-05T12:54:00Z",
+  "generatedAtUTC": "2026-11-09T13:33:04Z",
   "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
   "verificationStatus": "BEKLEMEDE — bkz. PROVENANCE.md",
-  "totalDayRecords": 768,
+  "totalDayRecords": 807,
   "coverage": {
     "9541": {
       "province": "İSTANBUL",
@@ -25,9 +25,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 1
+        "2026-12": 5
       },
-      "totalDays": 64
+      "totalDays": 68
     },
     "9560": {
       "province": "İZMİR",
@@ -50,9 +50,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 1
+        "2026-12": 5
       },
-      "totalDays": 64
+      "totalDays": 68
     },
     "9479": {
       "province": "GAZİANTEP",
@@ -75,9 +75,9 @@
         "2026-09": 22,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 1
+        "2026-12": 7
       },
-      "totalDays": 64
+      "totalDays": 70
     },
     "9451": {
       "province": "ERZURUM",
@@ -88,9 +88,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 1
+        "2026-12": 5
       },
-      "totalDays": 64
+      "totalDays": 68
     },
     "9905": {
       "province": "TRABZON",
@@ -100,9 +100,9 @@
         "2026-08": 10,
         "2026-09": 22,
         "2026-11": 30,
-        "2026-12": 2
+        "2026-12": 7
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "9676": {
       "province": "KONYA",
@@ -112,9 +112,9 @@
         "2026-08": 10,
         "2026-09": 22,
         "2026-11": 30,
-        "2026-12": 2
+        "2026-12": 7
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "20089": {
       "province": "HATAY",
@@ -124,9 +124,9 @@
         "2026-08": 10,
         "2026-09": 22,
         "2026-11": 30,
-        "2026-12": 2
+        "2026-12": 8
       },
-      "totalDays": 64
+      "totalDays": 70
     },
     "9930": {
       "province": "VAN",
@@ -136,9 +136,9 @@
         "2026-08": 14,
         "2026-09": 18,
         "2026-11": 29,
-        "2026-12": 3
+        "2026-12": 8
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "9847": {
       "province": "SİNOP",
