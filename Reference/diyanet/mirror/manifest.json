@@ -1,8 +1,8 @@
 {
-  "generatedAtUTC": "2026-11-09T13:33:04Z",
+  "generatedAtUTC": "2026-11-12T13:29:38Z",
   "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
   "verificationStatus": "BEKLEMEDE — bkz. PROVENANCE.md",
-  "totalDayRecords": 807,
+  "totalDayRecords": 850,
   "coverage": {
     "9541": {
       "province": "İSTANBUL",
@@ -12,9 +12,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 4
+        "2026-12": 9
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "9206": {
       "province": "ANKARA",
@@ -25,9 +25,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 5
+        "2026-12": 10
       },
-      "totalDays": 68
+      "totalDays": 73
     },
     "9560": {
       "province": "İZMİR",
@@ -37,9 +37,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 4
+        "2026-12": 9
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "9225": {
       "province": "ANTALYA",
@@ -50,9 +50,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 5
+        "2026-12": 10
       },
-      "totalDays": 68
+      "totalDays": 73
     },
     "9479": {
       "province": "GAZİANTEP",
@@ -62,9 +62,9 @@
         "2026-08": 14,
         "2026-09": 18,
         "2026-11": 29,
-        "2026-12": 3
+        "2026-12": 8
       },
-      "totalDays": 64
+      "totalDays": 69
     },
     "9402": {
       "province": "DİYARBAKIR",
@@ -75,9 +75,9 @@
         "2026-09": 22,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 7
+        "2026-12": 11
       },
-      "totalDays": 70
+      "totalDays": 74
     },
     "9451": {
       "province": "ERZURUM",
@@ -88,9 +88,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 5
+        "2026-12": 10
       },
-      "totalDays": 68
+      "totalDays": 73
     },
     "9905": {
       "province": "TRABZON",
@@ -100,9 +100,9 @@
         "2026-08": 10,
         "2026-09": 22,
         "2026-11": 30,
-        "2026-12": 7
+        "2026-12": 11
       },
-      "totalDays": 69
+      "totalDays": 73
     },
     "9676": {
       "province": "KONYA",
@@ -148,9 +148,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 4
+        "2026-12": 9
       },
-      "totalDays": 64
+      "totalDays": 69
     }
   },
   "note": "Ayna kayan ~31 günlük bir pencere döndürüyor. Bu iş düzenli çalıştıkça arşiv kendiliğinden büyür; bir yıl sonra tam mevsimsel kapsama oluşur."
