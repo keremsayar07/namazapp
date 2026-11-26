@@ -1,8 +1,8 @@
 {
-  "generatedAtUTC": "2026-11-23T15:37:14Z",
+  "generatedAtUTC": "2026-11-26T14:39:25Z",
   "provenance": "Diyanet İşleri Başkanlığı vakitlerini yeniden yayımlayan üçüncü taraf ayna (ezanvakti.emushaf.net). Birincil kaynak değildir — bkz. PROVENANCE.md.",
   "verificationStatus": "BEKLEMEDE — bkz. PROVENANCE.md",
-  "totalDayRecords": 980,
+  "totalDayRecords": 1011,
   "coverage": {
     "9541": {
       "province": "İSTANBUL",
@@ -12,9 +12,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 19
+        "2026-12": 24
       },
-      "totalDays": 79
+      "totalDays": 84
     },
     "9206": {
       "province": "ANKARA",
@@ -37,9 +37,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 19
+        "2026-12": 24
       },
-      "totalDays": 79
+      "totalDays": 84
     },
     "9225": {
       "province": "ANTALYA",
@@ -62,9 +62,9 @@
         "2026-08": 14,
         "2026-09": 18,
         "2026-11": 29,
-        "2026-12": 19
+        "2026-12": 24
       },
-      "totalDays": 80
+      "totalDays": 85
     },
     "9402": {
       "province": "DİYARBAKIR",
@@ -88,9 +88,9 @@
         "2026-09": 21,
         "2026-10": 1,
         "2026-11": 30,
-        "2026-12": 20
+        "2026-12": 25
       },
-      "totalDays": 83
+      "totalDays": 88
     },
     "9905": {
       "province": "TRABZON",
@@ -136,9 +136,9 @@
         "2026-08": 14,
         "2026-09": 18,
         "2026-11": 29,
-        "2026-12": 17
+        "2026-12": 22
       },
-      "totalDays": 78
+      "totalDays": 83
     },
     "9847": {
       "province": "SİNOP",
@@ -148,9 +148,9 @@
         "2026-08": 13,
         "2026-09": 19,
         "2026-11": 28,
-        "2026-12": 19
+        "2026-12": 25
       },
-      "totalDays": 79
+      "totalDays": 85
     }
   },
   "note": "Ayna kayan ~31 günlük bir pencere döndürüyor. Bu iş düzenli çalıştıkça arşiv kendiliğinden büyür; bir yıl sonra tam mevsimsel kapsama oluşur."
